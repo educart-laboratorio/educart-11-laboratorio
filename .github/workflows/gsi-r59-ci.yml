@@ -1,0 +1,43 @@
+name: "GSI-R59 | R50 integridade e build isolada"
+on:
+  push:
+    branches:
+      - gsi-r59-ci-isolada-20261115
+    paths:
+      - .github/workflows/gsi-r59-ci.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validar-r50:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_placeholder
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Instalar dependencias sem scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Testes locais de portaria R07
+        run: |
+          node --experimental-strip-types scripts/testar-r07-portaria-nativa.mjs
+          node --experimental-vm-modules scripts/testar-r07-proxy-execucao.mjs
+      - name: Teste de gate sem deploy
+        run: node scripts/testar-homologacao-gate-r29.mjs
+      - name: Validar tipos
+        run: npx tsc --noEmit
+      - name: Compilar Vinext sem publicar
+        run: npm run build:vinext
+      - name: Conferir artefato local
+        run: test -s .cloudflare/output/v0/workers/default/bundle/index.js
