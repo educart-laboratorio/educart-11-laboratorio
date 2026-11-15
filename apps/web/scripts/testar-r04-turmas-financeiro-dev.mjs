@@ -1,0 +1,22 @@
+/** R04 histórico: confirma que o cadastro e financeiro atuais sucederam o protótipo, sem perder RLS. */
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const read=p=>readFileSync(p,'utf8');
+const admin=read('src/app/admin/page.tsx');
+const academia=read('src/components/AdminRotinaAcademicaLab.tsx');
+const turmas=read('src/components/AdminPlanejamentoFormacaoTurmaDev.tsx');
+const financeiro=read('src/components/AdminFinanceiroEssencialR11Dev.tsx');
+const r04=read('../../supabase/security-review/R04_DEV_TURMAS_CRIACAO_SECRETARIA_COORDENACAO_20261105.sql');
+assert.match(admin, /<AdminRotinaAcademicaLab/);
+assert.match(admin, /<AdminFinanceiroDev/);
+assert.match(academia, /<AdminPlanejamentoFormacaoTurmaDev/);
+assert.match(turmas, /educart_criar_formacao_turma_guiada_dev/);
+assert.match(turmas, /supabase\.auth\.getUser\(\)/);
+assert.match(turmas, /papeis\.includes\('coordenacao'\)/);
+assert.match(turmas, /'planejada'/);
+assert.match(financeiro, /educart_parcelas_financeiras_r11_dev/);
+assert.match(financeiro, /educart_baixas_financeiras_r11_dev/);
+assert.doesNotMatch(financeiro, /educart_conferir_pix_dev|AdminFinanceiroLegadoDev/);
+for(const regra of ['FOR INSERT TO authenticated',"situacao = 'planejada'",'criada_por = (SELECT auth.uid())',"ep.papel = 'secretaria'"])assert(r04.includes(regra),'Contrato R04 histórico ausente: '+regra);
+assert(!/FOR UPDATE|FOR DELETE|TO anon/.test(r04));
+console.log('R04: UI unificada e contrato histórico RLS preservados, sem formulários paralelos.');
