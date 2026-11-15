@@ -1,0 +1,43 @@
+name: "GSI-R59 | HTTP real isolado R50"
+on:
+  push:
+    branches:
+      - gsi-r59-ci-isolada-20261115
+    paths:
+      - .github/workflows/gsi-r59-http-loopback.yml
+permissions:
+  contents: read
+concurrency:
+  group: gsi-r59-http-r50
+  cancel-in-progress: true
+jobs:
+  http-r50:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_placeholder
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Instalar dependencias sem scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Fixar hostname de homologacao ao loopback somente no runner
+        run: |
+          echo '127.0.0.1 educart-11-homologacao.educartsuporte.workers.dev' | sudo tee -a /etc/hosts
+          getent ahostsv4 educart-11-homologacao.educartsuporte.workers.dev | head -n 1
+      - name: Provar HTTP Worker simulado e Codespaces (somente loopback)
+        run: node scripts/testar-r072-http-loopback.mjs
+      - name: Provar HTTP localhost (somente loopback)
+        run: node scripts/testar-r072-http-loopback.mjs --local
