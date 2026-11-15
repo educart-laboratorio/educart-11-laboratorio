@@ -1,0 +1,2027 @@
+/* ==============================================================================
+   ESTILOS DO PAINEL ADMINISTRATIVO EDUCART (/admin)
+   ============================================================================== */
+
+.admin-layout-root {
+  min-height: 100vh;
+  background-color: var(--bg-primary, #090d16);
+  color: var(--text-primary, #f8fafc);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header do Painel Admin */
+.admin-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--bg-card, rgba(15, 23, 42, 0.85));
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.admin-brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-badge-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  background: rgba(37, 99, 235, 0.18);
+  color: #60a5fa;
+  border: 1px solid rgba(37, 99, 235, 0.35);
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+.admin-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-user-tag {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #94a3b8);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-card-hover, rgba(255, 255, 255, 0.04));
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
+}
+
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+
+.admin-btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary, #f8fafc);
+  border-color: var(--border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+.admin-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.admin-btn-danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.admin-btn-danger:hover {
+  background: rgba(239, 68, 68, 0.22);
+  color: #ffffff;
+}
+
+.admin-btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.admin-btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.admin-btn-success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.admin-btn-success:hover {
+  background: rgba(16, 185, 129, 0.25);
+  color: #ffffff;
+}
+
+/* Área de Conteúdo Principal */
+.admin-container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+/* Cabeçalho da Página */
+.admin-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.admin-page-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-primary, #ffffff);
+}
+
+.admin-page-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #94a3b8);
+  margin-top: 4px;
+}
+
+/* Grade de Métricas (KPIs) */
+.admin-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.admin-kpi-card {
+  background: var(--bg-card, rgba(15, 23, 42, 0.7));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.admin-kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--kpi-accent, #3b82f6);
+}
+
+.admin-kpi-card.kpi-total::before { background: #3b82f6; }
+.admin-kpi-card.kpi-pending::before { background: #f59e0b; }
+.admin-kpi-card.kpi-confirmed::before { background: #10b981; }
+.admin-kpi-card.kpi-enrolled::before { background: #8b5cf6; }
+
+.kpi-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.kpi-value {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--text-primary, #ffffff);
+  line-height: 1;
+}
+
+.kpi-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted, #64748b);
+  margin-top: 4px;
+}
+
+/* Card Informativo de Tráfego / Google Analytics */
+.admin-traffic-card {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(245, 158, 11, 0.05) 100%);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.traffic-info-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.traffic-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.traffic-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  margin: 0;
+}
+
+.traffic-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-secondary, #94a3b8);
+  margin: 4px 0 0;
+  line-height: 1.4;
+}
+
+.traffic-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Barra de Filtros e Busca */
+.admin-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: var(--bg-card, rgba(15, 23, 42, 0.6));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+}
+
+.search-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+  max-width: 450px;
+}
+
+.search-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.12));
+  color: var(--text-primary, #ffffff);
+  padding: 10px 14px 10px 38px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: #3b82f6;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted, #64748b);
+  pointer-events: none;
+}
+
+.filter-select {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.12));
+  color: var(--text-primary, #ffffff);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.filter-select option {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+/* Tabela e Cards de Inscrições */
+.admin-table-container {
+  background: var(--bg-card, rgba(15, 23, 42, 0.6));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.admin-table th {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 14px 18px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-secondary, #94a3b8);
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+}
+
+.admin-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.04));
+  color: var(--text-primary, #f1f5f9);
+  vertical-align: middle;
+}
+
+.admin-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Badges de Status */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.status-pendente_confirmacao {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-confirmado {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-matriculado {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-cancelado {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Ações Rápidas de Linha */
+.action-buttons-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quick-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary, #ffffff);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.quick-action-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.quick-action-btn.whatsapp-btn {
+  color: #25d366;
+  border-color: rgba(37, 211, 102, 0.3);
+  background: rgba(37, 211, 102, 0.1);
+}
+
+.quick-action-btn.whatsapp-btn:hover {
+  background: rgba(37, 211, 102, 0.25);
+  color: #ffffff;
+}
+
+/* Modal de Visualização Completa */
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.admin-modal-box {
+  background: var(--bg-card, #0f172a);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.12));
+  border-radius: 16px;
+  max-width: 650px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  padding: 28px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+}
+
+.modal-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--text-muted, #94a3b8);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modal-close-btn:hover {
+  color: #ffffff;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted, #94a3b8);
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  color: var(--text-primary, #ffffff);
+  word-break: break-word;
+}
+
+/* Tela de Login Admin (/admin/login) */
+.admin-login-wrapper {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.admin-login-card {
+  max-width: 440px;
+  width: 100%;
+  background: var(--bg-card, rgba(15, 23, 42, 0.85));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(16px);
+  text-align: center;
+}
+
+.login-header {
+  margin-bottom: 28px;
+}
+
+.login-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 16px 0 6px;
+  color: var(--text-primary, #ffffff);
+}
+
+.login-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: left;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary, #cbd5e1);
+}
+
+.login-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.15));
+  color: var(--text-primary, #ffffff);
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.login-input:focus {
+  border-color: #3b82f6;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.login-error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  text-align: left;
+}
+
+.login-footer-hint {
+  margin-top: 24px;
+  font-size: 0.82rem;
+  color: var(--text-muted, #64748b);
+  line-height: 1.4;
+}
+
+/* Responsividade Mobile */
+@media (max-width: 768px) {
+  .admin-navbar {
+    padding: 14px 16px;
+  }
+
+  .admin-container {
+    padding: 20px 16px 48px;
+  }
+
+  .admin-page-title {
+    font-size: 1.4rem;
+  }
+
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .admin-filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-input-wrap {
+    max-width: 100%;
+  }
+}
+
+
+/* AutoDEV 2.0 — identidade visual do portal principal | RC gestão */
+/* Tokens isolados: tema escuro da EducART sem alterar a experiência pública. */
+.admin-layout-root {
+  --bg-primary: #080d18;
+  --bg-card: #141c2b;
+  --bg-card-hover: #1b2a3d;
+  --border-subtle: #2a3549;
+  --border-highlight: #4e6179;
+  --text-primary: #f9fbff;
+  --text-secondary: #c2cddd;
+  --text-muted: #9aaac0;
+  --admin-gold: #f4bc5a;
+  --admin-blue: #0b4dac;
+  color-scheme: dark;
+  background: radial-gradient(ellipse 70% 25% at 50% -8%, rgba(11,77,172,.20), transparent 80%), #080d18;
+  color: var(--text-primary);
+}
+
+.admin-layout-root .admin-navbar {
+  min-height: 88px;
+  padding: 17px clamp(18px, 4.3vw, 62px);
+  background: rgba(11,17,30,.96);
+  border-bottom: 1px solid rgba(255,255,255,.11);
+  box-shadow: 0 12px 36px rgba(0,0,0,.12);
+}
+.admin-layout-root .admin-brand-wrap { gap: clamp(10px, 1.4vw, 20px); }
+.admin-layout-root .admin-brand-wrap .educart-brand-block { flex-shrink: 0; }
+.admin-layout-root .admin-badge-pill {
+  border-radius: 999px;
+  background: rgba(244,188,90,.09);
+  border: 1px solid rgba(244,188,90,.34);
+  color: #f4bc5a;
+  font-size: 10px;
+  font-weight: 850;
+  padding: 7px 12px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.admin-layout-root .admin-user-tag {
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.10);
+  color: #becbdc;
+  border-radius: 999px;
+  padding: 9px 13px;
+}
+.admin-layout-root .admin-btn {
+  border-radius: 11px;
+  min-height: 44px;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.admin-layout-root .admin-btn:focus-visible,
+.admin-layout-root .filter-select:focus-visible,
+.admin-layout-root .search-input:focus-visible,
+.admin-layout-root .quick-action-btn:focus-visible,
+.admin-layout-root .modal-close-btn:focus-visible {
+  outline: 3px solid var(--admin-gold);
+  outline-offset: 3px;
+}
+.admin-layout-root .admin-btn-secondary {
+  background: rgba(255,255,255,.035);
+  color: #f7faff;
+  border-color: rgba(255,255,255,.21);
+}
+.admin-layout-root .admin-btn-secondary:hover { background: #1d2b40; border-color: #b1c0d5; }
+.admin-layout-root .admin-btn-success,
+.admin-layout-root .admin-btn-primary {
+  background: #f4bc5a;
+  color: #111827;
+  border-color: #f4bc5a;
+  font-weight: 850;
+}
+.admin-layout-root .admin-btn-success:hover,
+.admin-layout-root .admin-btn-primary:hover { background: #ffda8d; border-color: #ffda8d; color: #101722; }
+/* Estado de matrícula já vinculada: neutro, sem interação nem aparência de ação disponível. */
+.admin-layout-root .admin-btn-vinculo-inativo,
+.admin-layout-root .admin-btn-vinculo-inativo:hover {
+  background: #364152;
+  border-color: #4b5563;
+  color: #cbd5e1;
+  opacity: .72;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+.admin-layout-root .admin-btn-danger {
+  background: rgba(239,68,68,.08);
+  border-color: rgba(239,68,68,.22);
+}
+
+.admin-layout-root .admin-container {
+  max-width: 1320px;
+  padding: clamp(26px, 4.2vw, 54px) clamp(18px, 4.3vw, 62px) 86px;
+}
+/* R09: aviso discreto de operador único, sem alterar a autorização do banco. */
+.admin-layout-root .admin-single-operator-note {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 0 0 17px;
+  margin: 0 0 22px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  color: #b8c3d3;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.admin-layout-root .admin-single-operator-note strong {
+  color: #f4bc5a;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.admin-layout-root .admin-single-operator-note span { flex: 1 1 440px; }
+.admin-layout-root .admin-header-row { align-items: end; gap: 22px; margin-bottom: 29px; }
+.admin-layout-root .admin-header-row > div:first-child { max-width: 690px; }
+.admin-layout-root .admin-kicker {
+  display: inline-block;
+  color: #f4bc5a;
+  font-weight: 900;
+  letter-spacing: .18em;
+  font-size: 10px;
+  margin-bottom: 12px;
+}
+.admin-layout-root .admin-page-title {
+  color: #fff;
+  font-size: clamp(28px, 3.3vw, 44px);
+  letter-spacing: -.055em;
+  line-height: 1.12;
+  font-weight: 850;
+}
+.admin-layout-root .admin-title-accent { color: #f4bc5a; }
+.admin-layout-root .admin-page-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 660px;
+  margin-top: 12px;
+  color: #b8c3d3;
+}
+.admin-layout-root .admin-kpi-grid { gap: 14px; margin-bottom: 20px; }
+.admin-layout-root .admin-kpi-card {
+  background: linear-gradient(146deg, rgba(28,41,61,.92), rgba(16,24,39,.98));
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 19px;
+  padding: 23px 22px 22px;
+  min-height: 156px;
+  box-shadow: 0 16px 38px rgba(0,0,0,.13);
+}
+.admin-layout-root .admin-kpi-card::before { height: 3px; }
+.admin-layout-root .kpi-total::before { background: #f4bc5a; }
+.admin-layout-root .kpi-pending::before { background: #ffca73; }
+.admin-layout-root .kpi-confirmed::before { background: #5e9eeb; }
+.admin-layout-root .kpi-enrolled::before { background: #5ac7aa; }
+.admin-layout-root .kpi-label {
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: .085em;
+  color: #c1ccda;
+}
+.admin-layout-root .kpi-value { font-size: clamp(34px, 3vw, 46px); letter-spacing: -.06em; margin: 8px 0 4px; }
+.admin-layout-root .kpi-hint { color: #aab8cc; font-size: 11px; line-height: 1.55; }
+
+.admin-layout-root .admin-traffic-card {
+  background: linear-gradient(110deg, rgba(244,188,90,.065), rgba(11,77,172,.085)), #101827;
+  border: 1px solid rgba(244,188,90,.19);
+  border-radius: 17px;
+  padding: 21px 23px;
+  margin-bottom: 22px;
+  align-items: center;
+}
+.admin-layout-root .traffic-icon-box {
+  background: #f4bc5a18;
+  color: #f4bc5a;
+  border: 1px solid rgba(244,188,90,.20);
+  border-radius: 12px;
+}
+.admin-layout-root .traffic-title { color: #fff; font-size: 15px; }
+.admin-layout-root .traffic-subtitle { color: #b8c3d3; font-size: 12px; line-height: 1.65; max-width: 820px; }
+.admin-layout-root .admin-traffic-note {
+  color: #f4bc5a;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  border: 1px solid #f4bc5a4d;
+  border-radius: 999px;
+  padding: 9px 13px;
+}
+.admin-layout-root .admin-data-summary {
+  padding: 0 2px;
+  color: #aebdd0;
+  font-size: 12px;
+  line-height: 1.65;
+  margin-bottom: 15px;
+}
+.admin-layout-root .admin-filters-bar {
+  background: #141c2b;
+  border-color: #304058;
+  border-radius: 17px;
+  padding: 18px 19px;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.admin-layout-root .filter-select, .admin-layout-root .search-input {
+  background: #0e1727;
+  color: #f9fbff;
+  border-color: #3d4c63;
+  border-radius: 11px;
+  min-height: 45px;
+  font-size: 13px;
+}
+.admin-layout-root .filter-select:hover, .admin-layout-root .search-input:hover { border-color: #64758c; }
+.admin-layout-root .filter-select option { background: #141c2b; }
+.admin-layout-root .search-input { min-width: 0; }
+.admin-layout-root .search-input::placeholder { color: #8fa0b7; }
+.admin-layout-root .admin-table-container {
+  overflow-x: auto;
+  background: #111a2a;
+  border-color: #304058;
+  border-radius: 17px;
+}
+.admin-layout-root .admin-table { min-width: 900px; }
+.admin-layout-root .admin-table th {
+  background: #1c2a40;
+  color: #c5d1df;
+  letter-spacing: .075em;
+}
+.admin-layout-root .admin-table td { border-bottom-color: #ffffff12; }
+.admin-layout-root .admin-table tr:hover td { background: #1e2c42; }
+.admin-layout-root .admin-table tr:last-child td { border-bottom: 0; }
+.admin-layout-root .status-badge { padding: 8px 10px; border-radius: 10px; }
+.admin-layout-root .quick-action-btn { border-radius: 10px; min-height: 40px; min-width: 40px; }
+.admin-layout-root .admin-modal-backdrop { background: rgba(2,6,13,.86); }
+.admin-layout-root .admin-modal-box {
+  background: #141c2b;
+  border-color: #455772;
+  border-radius: 23px;
+  padding: clamp(18px, 3vw, 32px);
+}
+.admin-layout-root .modal-title { color: #fff; }
+.admin-layout-root .detail-label { color: #aab8cc; }
+.admin-layout-root .detail-value { color: #f9fbff; }
+
+/* O login deve parecer parte da mesma EducART, sem autenticação simulada. */
+.admin-layout-root .admin-login-wrapper {
+  background: radial-gradient(ellipse at 50% 11%, rgba(11,77,172,.26), transparent 57%),
+    linear-gradient(175deg, #0b111e 0%, #080d18 100%);
+  min-height: 100svh;
+}
+.admin-layout-root .admin-login-card {
+  background: linear-gradient(155deg,#18253a,#101827 84%);
+  border: 1px solid rgba(244,188,90,.22);
+  border-radius: 25px;
+  padding: clamp(24px, 4vw, 40px);
+  box-shadow: 0 25px 80px rgba(0,0,0,.38);
+}
+.admin-layout-root .admin-login-card .educart-brand-block { justify-content: center; }
+.admin-layout-root .login-title { color: #fff; font-size: clamp(25px,3vw,33px); letter-spacing: -.045em; margin-top: 25px; }
+.admin-layout-root .login-desc { color: #b8c3d3; line-height: 1.5; }
+.admin-layout-root .login-label { color: #dce5f2; }
+.admin-layout-root .login-input { background: #0e1727; border-color: #47566b; min-height: 48px; border-radius: 11px; }
+.admin-layout-root .login-input:focus { border-color: #f4bc5a; background: #101d2f; }
+.admin-layout-root .login-footer-hint { color: #aab7c9; }
+.admin-layout-root .login-footer-hint a { color: #f4bc5a !important; }
+
+@media (max-width: 1050px) {
+  .admin-layout-root .admin-navbar { align-items: flex-start; }
+  .admin-layout-root .admin-kpi-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .admin-layout-root .admin-filters-bar { align-items: stretch; }
+  .admin-layout-root .search-input-wrap { max-width: none; }
+}
+@media (max-width: 720px) {
+  .admin-layout-root .admin-navbar { min-height: 76px; padding: 15px 17px; }
+  .admin-layout-root .admin-brand-wrap { flex-wrap: wrap; gap: 9px; }
+  .admin-layout-root .admin-badge-pill { font-size: 9px; padding: 5px 9px; }
+  .admin-layout-root .admin-nav-actions .admin-user-tag { display: none; }
+  .admin-layout-root .admin-nav-actions { gap: 5px; }
+  .admin-layout-root .admin-nav-actions a { display: none; }
+  .admin-layout-root .admin-container { padding: 28px 17px 65px; }
+  .admin-layout-root .admin-header-row { align-items: stretch; }
+  .admin-layout-root .admin-header-row > div:last-child { width: 100%; flex-wrap: wrap; }
+  .admin-layout-root .admin-header-row > div:last-child button { flex: 1; white-space: nowrap; font-size: 12px; }
+  .admin-layout-root .admin-kpi-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .admin-layout-root .admin-kpi-card { padding: 17px 13px; min-height: 153px; }
+  .admin-layout-root .kpi-value { font-size: 35px; }
+  .admin-layout-root .kpi-label { font-size: 9px; }
+  .admin-layout-root .admin-traffic-card { padding: 17px; }
+  .admin-layout-root .traffic-info-left { min-width: 0; align-items: flex-start; }
+  .admin-layout-root .traffic-icon-box { width: 37px; height: 37px; }
+  .admin-layout-root .traffic-actions { display: none; }
+  .admin-layout-root .admin-filters-bar { flex-direction: column; gap: 15px; }
+  .admin-layout-root .admin-filters-bar > div { min-width: 0; width: 100%; }
+  .admin-layout-root .admin-filters-bar > div select { width: 100%; min-width: 0; }
+  .admin-layout-root .admin-filters-bar > div label { min-width: 62px; }
+  .admin-layout-root .admin-table-container { background: transparent; border: 0; box-shadow: none; overflow: visible; }
+  .admin-layout-root .admin-table { display: block; min-width: 0; }
+  .admin-layout-root .admin-table thead { display: none; }
+  .admin-layout-root .admin-table tbody { display: grid; gap: 12px; }
+  .admin-layout-root .admin-table tr {
+    display: block;
+    border-radius: 17px;
+    border: 1px solid #33445d;
+    background: #141e2f;
+    overflow: hidden;
+  }
+  .admin-layout-root .admin-table td {
+    display: grid;
+    grid-template-columns: 90px minmax(0,1fr);
+    gap: 12px;
+    padding: 12px 14px;
+    font-size: 12px;
+    border-bottom: 1px solid #ffffff12;
+  }
+  .admin-layout-root .admin-table td::before {
+    display: block;
+    color: #a5b4c8;
+    letter-spacing: .06em;
+    font-size: 10px;
+    font-weight: 850;
+    text-transform: uppercase;
+    align-self: start;
+    padding-top: 2px;
+  }
+  .admin-layout-root .admin-table td:nth-child(1)::before { content: 'Data'; }
+  .admin-layout-root .admin-table td:nth-child(2)::before { content: 'Candidato'; }
+  .admin-layout-root .admin-table td:nth-child(3)::before { content: 'Contato'; }
+  .admin-layout-root .admin-table td:nth-child(4)::before { content: 'Localização'; }
+  .admin-layout-root .admin-table td:nth-child(5)::before { content: 'Objetivo'; }
+  .admin-layout-root .admin-table td:nth-child(6)::before { content: 'Status'; }
+  .admin-layout-root .admin-table td:nth-child(7)::before { content: 'Ações'; }
+  .admin-layout-root .admin-table td::before { grid-column: 1; }
+  .admin-layout-root .admin-table td > * { grid-column: 2; min-width: 0; }
+  .admin-layout-root .admin-table td:last-child { border-bottom: 0; }
+  /* R07.1: alvos de toque da Secretaria (Felipe) >= 44px em celular. */
+  .admin-layout-root .quick-action-btn { min-width: 44px; min-height: 44px; }
+  .admin-layout-root .admin-modal-box .admin-btn { min-height: 44px; }
+  .admin-layout-root .admin-table td:last-child .action-buttons-cell { gap: 10px; }
+  .admin-layout-root .admin-table .status-badge { max-width: 100%; }
+  .admin-layout-root .admin-modal-box { max-height: 87svh; }
+}
+@media (max-width: 350px) {
+  .admin-layout-root .admin-kpi-grid { grid-template-columns: 1fr; }
+  .admin-layout-root .admin-navbar .educart-brand-block svg { width: 30px; height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-layout-root .admin-btn { transition: none; }
+}
+html.high-contrast .admin-layout-root {
+  --bg-primary: #000 !important;
+  --bg-card: #000 !important;
+  --border-subtle: #ff0 !important;
+  --text-primary: #ff0 !important;
+  --text-secondary: #fff !important;
+  --text-muted: #fff !important;
+}
+
+
+
+/* EducART 1.1 — fluxo de secretaria e coordenação submetido à identidade da 1.0.
+   Aplicação: apenas componentes dentro de /admin, sem CSS em páginas públicas. */
+.admin-layout-root .admin-area-selector {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  margin: 0 0 32px;
+  max-width: 650px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: #101827;
+}
+.admin-layout-root .admin-area-selector button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 13px 17px;
+  background: transparent;
+  color: #c5d0dd;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.admin-layout-root .admin-area-selector button span { font-size: 13px; font-weight: 850; }
+.admin-layout-root .admin-area-selector button small { font-size: 10px; color: #96a5bb; }
+.admin-layout-root .admin-area-selector button:hover { background: #1c293c; }
+.admin-layout-root .admin-area-selector button.active {
+  color: #fff;
+  background: #1b2b45;
+  border-color: rgba(244,188,90,.43);
+  box-shadow: inset 0 3px 0 #f4bc5a;
+}
+.admin-layout-root .admin-area-selector button.active small { color: #e2c898; }
+.admin-layout-root .admin-area-selector button:focus-visible,
+.admin-layout-root .admin-academico button:focus-visible,
+.admin-layout-root .admin-academico input:focus-visible,
+.admin-layout-root .admin-academico textarea:focus-visible,
+.admin-layout-root .admin-academico select:focus-visible {
+  outline: 3px solid #f4bc5a;
+  outline-offset: 3px;
+}
+
+.admin-layout-root .admin-academico { min-width: 0; }
+.admin-layout-root .admin-academico-lab-tag,
+.admin-layout-root .admin-academico-etapa {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 8px 11px;
+  font-size: 10px;
+  font-weight: 850;
+  color: #f4bc5a;
+  background: rgba(244,188,90,.08);
+  border: 1px solid rgba(244,188,90,.26);
+  border-radius: 999px;
+  line-height: 1.5;
+}
+.admin-layout-root .admin-academico-regras {
+  background: linear-gradient(100deg,rgba(17,45,88,.45),rgba(17,28,45,.92));
+  color: #c8d3e1;
+  border: 1px solid #375172;
+  border-left: 3px solid #f4bc5a;
+  border-radius: 14px;
+  padding: 17px 20px;
+  font-size: 12px;
+  line-height: 1.75;
+  margin-bottom: 22px;
+}
+.admin-layout-root .admin-academico-regras strong { color: #f9fbff; }
+.admin-layout-root .admin-academico-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin-bottom: 24px;
+}
+.admin-layout-root .admin-academico-dates {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+}
+.admin-layout-root .admin-academico-dates > div { min-width: 0; }
+.admin-layout-root .admin-academico-dates .admin-academico-input { width: 100%; }
+.admin-layout-root .admin-academico-panel form.admin-academico-panel {
+  margin-top: 10px;
+  background: #101d30;
+}
+@media (max-width: 580px) {
+  .admin-layout-root .admin-academico-dates { grid-template-columns: 1fr; }
+}
+.admin-layout-root .admin-academico-tab {
+  border: 1px solid #31445e;
+  border-radius: 15px;
+  background: #141d2d;
+  color: #c8d3e1;
+  padding: 14px 14px 13px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  transition: border-color .15s, background .15s;
+}
+.admin-layout-root .admin-academico-tab strong { font-size: 12px; line-height: 1.25; }
+.admin-layout-root .admin-academico-tab small { font-size: 10px; color: #9dacbf; }
+.admin-layout-root .admin-academico-tab:hover { border-color: #f4bc5a; }
+.admin-layout-root .admin-academico-tab.active {
+  background: linear-gradient(140deg,#263a56,#17263b);
+  border-color: #f4bc5a;
+  color: #fff;
+  box-shadow: inset 0 3px 0 #f4bc5a;
+}
+.admin-layout-root .admin-academico-message {
+  background: #26361d;
+  border: 1px solid #69865a;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #e4f7d9;
+  font-size: 12px;
+  margin-bottom: 17px;
+}
+.admin-layout-root .admin-academico-panels {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 16px;
+}
+
+/* LIPE: ações auxiliares separadas do menu acadêmico permanente. */
+.admin-layout-root .admin-academico-aux-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: -6px 0 22px;
+}
+.admin-layout-root .admin-academico-panels-single {
+  grid-template-columns: minmax(0,1fr);
+}
+
+.admin-layout-root .admin-academico-panel {
+  background: linear-gradient(154deg,#19283e,#121b2b 78%);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px;
+  padding: clamp(20px,3vw,29px);
+  color: #dbe5f0;
+  min-width: 0;
+  margin-bottom: 16px;
+}
+.admin-layout-root .admin-academico-panel h2 {
+  font-size: clamp(21px,2.5vw,29px);
+  font-weight: 850;
+  line-height: 1.2;
+  letter-spacing: -.04em;
+  margin: 6px 0 12px;
+  color: #fff;
+}
+.admin-layout-root .admin-academico-panel p {
+  color: #b9c7d7;
+  font-size: 13px;
+  line-height: 1.65;
+  max-width: 700px;
+}
+.admin-layout-root .admin-academico-panel a { color: #f4bc5a; }
+.admin-layout-root .admin-academico-curso { background: linear-gradient(140deg,rgba(244,188,90,.12),#122036 75%); }
+.admin-layout-root .admin-academico-section-head {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+}
+.admin-layout-root .admin-academico-section-head p { margin-top: 8px; }
+.admin-layout-root .admin-academico-section-head button { flex-shrink: 0; }
+.admin-layout-root .admin-academico-note {
+  font-size: 11px !important;
+  margin: 19px 0 0;
+  color: #9fb0c7 !important;
+  line-height: 1.65;
+}
+.admin-layout-root .admin-academico-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+.admin-layout-root .admin-academico-label {
+  display: block;
+  color: #c6d4e4;
+  font-weight: 850;
+  font-size: 11px;
+  margin: 13px 0 8px;
+  letter-spacing: .035em;
+}
+.admin-layout-root .admin-academico-input,
+.admin-layout-root .admin-academico-textarea {
+  display: block;
+  width: min(100%,560px);
+  background: #0c1728;
+  border: 1px solid #475e7b;
+  border-radius: 10px;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  padding: 12px 14px;
+  min-height: 44px;
+}
+.admin-layout-root .admin-academico-textarea { width: 100%; max-width: 700px; resize: vertical; }
+.admin-layout-root .admin-academico-fichas { margin-top: 22px; display: grid; gap: 9px; }
+.admin-layout-root .admin-academico-ficha {
+  background: #111d2f;
+  border: 1px solid #30455e;
+  padding: 17px 18px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.admin-layout-root .admin-academico-ficha strong { display: block; color: #fff; font-size: 13px; }
+.admin-layout-root .admin-academico-ficha small { display: block; color: #a1b3c7; font-size: 11px; margin-top: 5px; line-height: 1.5; }
+.admin-layout-root .admin-academico-ficha-direita { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+.admin-layout-root .admin-academico-ficha-direita .filter-select { min-width: 152px; }
+.admin-layout-root .admin-academico-marcacoes { display: flex; gap: 7px; flex-wrap: wrap; }
+.admin-layout-root .admin-academico-marcacao {
+  border: 1px solid #425978;
+  background: #17273d;
+  color: #c5d2df;
+  border-radius: 10px;
+  padding: 10px 11px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+}
+.admin-layout-root .admin-academico-marcacao:hover { border-color: #f4bc5a; }
+.admin-layout-root .admin-academico-marcacao.active {
+  border-color: #f4bc5a;
+  background: #584b2c;
+  color: #ffe5ab;
+}
+.admin-layout-root .admin-academico-financeiro {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 13px;
+  max-width: 680px;
+  margin: 24px 0 22px;
+}
+.admin-layout-root .admin-academico-financeiro > div {
+  background: #101e30;
+  border: 1px solid #3a4a61;
+  border-radius: 16px;
+  padding: 17px;
+}
+.admin-layout-root .admin-academico-financeiro strong { display: block; color: #f4bc5a; font-size: 25px; margin: 10px 0; }
+.admin-layout-root .admin-academico-financeiro small { color: #a5b5cb; font-size: 10px; }
+.admin-layout-root .admin-academico-perfil {
+  display: grid;
+  grid-template-columns: minmax(175px,235px) minmax(0,1fr);
+  gap: 27px;
+  margin-top: 25px;
+}
+.admin-layout-root .admin-academico-foto {
+  display: grid;
+  width: 100%;
+  height: 230px;
+  place-items: center;
+  border-radius: 17px;
+  background: linear-gradient(150deg,#253955,#16243b);
+  border: 1px solid #54708e;
+  color: #f4bc5a;
+  font-size: 64px;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+}
+.admin-layout-root .admin-academico-foto img { width: 100%; height: 100%; object-fit: cover; }
+.admin-layout-root .admin-academico-foto small {
+  position: absolute;
+  bottom: 12px;
+  padding: 7px 12px;
+  background: #071421d9;
+  color: #fff;
+  font-size: 10px;
+  border-radius: 999px;
+}
+.admin-layout-root .admin-academico-upload {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+.admin-layout-root .admin-academico-upload input { display: none; }
+.admin-layout-root .admin-academico-perfil-dados h3 {
+  font-size: 28px;
+  color: white;
+  letter-spacing: -.04em;
+  margin: 16px 0 7px;
+}
+.admin-layout-root .admin-academico-perfil-dados dl {
+  display: grid;
+  grid-template-columns: minmax(110px, .45fr) 1fr;
+  gap: 12px;
+  margin-top: 24px;
+  font-size: 12px;
+}
+.admin-layout-root .admin-academico-perfil-dados dt { color: #90a2bd; }
+.admin-layout-root .admin-academico-perfil-dados dd { color: #f7f9fd; margin: 0; }
+.admin-layout-root .admin-academico-modal { width: min(94vw,800px); display: grid; gap: 14px; }
+.admin-layout-root .admin-academico-modal img { max-width: 100%; max-height: 72vh; object-fit: contain; margin: auto; }
+.admin-layout-root .admin-modal-close {
+  justify-self: end;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #65768b;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.admin-layout-root .admin-academico-footer {
+  color: #91a3b9;
+  font-size: 11px;
+  text-align: center;
+  margin: 18px auto 24px;
+}
+
+@media (max-width: 850px) {
+  .admin-layout-root .admin-academico-nav { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .admin-layout-root .admin-academico-panels { grid-template-columns: 1fr; }
+  .admin-layout-root .admin-academico-ficha { align-items: flex-start; flex-direction: column; }
+  .admin-layout-root .admin-academico-ficha-direita { width: 100%; justify-content: space-between; }
+}
+@media (max-width: 580px) {
+  .admin-layout-root .admin-area-selector { max-width: none; }
+  .admin-layout-root .admin-area-selector button { padding: 11px 10px; }
+  .admin-layout-root .admin-area-selector button span { font-size: 11px; }
+  .admin-layout-root .admin-area-selector button small { font-size: 9px; }
+  .admin-layout-root .admin-academico-nav { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  .admin-layout-root .admin-academico-panel { padding: 19px 15px; }
+  .admin-layout-root .admin-academico-section-head { flex-direction: column; }
+  .admin-layout-root .admin-academico-marcacoes { width: 100%; }
+  .admin-layout-root .admin-academico-marcacao { flex: 1; }
+  .admin-layout-root .admin-academico-financeiro { grid-template-columns: 1fr; }
+  .admin-layout-root .admin-academico-perfil { grid-template-columns: 1fr; }
+  .admin-layout-root .admin-academico-foto { max-width: 250px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-layout-root .admin-academico-tab { transition: none; }
+}
+
+/* EducART 1.1: quatro módulos institucionais com os tokens originais da 1.0. */
+.admin-layout-root .admin-area-selector {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: none;
+}
+.admin-layout-root .admin-subarea-selector {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 890px;
+}
+.admin-layout-root .admin-area-selector button { min-width: 0; }
+.admin-layout-root .admin-area-selector button span { line-height: 1.3; }
+@media (max-width: 780px) {
+  .admin-layout-root .admin-area-selector,
+  .admin-layout-root .admin-subarea-selector { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+  .admin-layout-root .admin-area-selector button span { font-size: 11px; }
+  .admin-layout-root .admin-area-selector button small { font-size: 9px; }
+}
+
+/* R10: ajuda por função, restrita ao painel administrativo. */
+.admin-layout-root .admin-help { position:relative; display:inline-flex; align-items:center; vertical-align:middle; margin-inline-start:5px; font-size:13px; line-height:1; letter-spacing:normal; font-weight:400; text-transform:none; }
+.admin-layout-root .admin-help .admin-help-trigger,
+.admin-layout-root .admin-area-selector .admin-help .admin-help-trigger {
+  display:inline-flex; align-items:center; justify-content:center; flex:none;
+  width:28px; height:28px; min-width:28px; min-height:28px; padding:0;
+  border:1px solid rgba(244,188,90,.5); border-radius:999px;
+  background:rgba(244,188,90,.05); color:#f4bc5a;
+  font:750 13px/1 system-ui,sans-serif; text-align:center; cursor:pointer; box-shadow:none;
+}
+.admin-layout-root .admin-help .admin-help-trigger:hover,
+.admin-layout-root .admin-help .admin-help-trigger[aria-expanded="true"] { color:#101827; background:#f4bc5a; }
+.admin-layout-root .admin-help .admin-help-trigger:focus-visible { outline:3px solid #f4bc5a; outline-offset:3px; }
+.admin-layout-root .admin-help .admin-help-balloon {
+  position:absolute; top:calc(100% + 8px); left:0; z-index:100;
+  display:flex; flex-direction:column; gap:9px; width:min(340px,calc(100vw - 40px));
+  padding:15px 17px; border:1px solid #7e8da4; border-radius:14px;
+  background:#0e192a; color:#e3eaf4; font:400 13px/1.55 system-ui,sans-serif;
+  letter-spacing:normal; text-align:left; text-transform:none; white-space:normal;
+  box-shadow:0 16px 40px rgba(0,0,0,.45);
+}
+.admin-layout-root .admin-help .admin-help-title { color:#f4bc5a; font-weight:800; font-size:14px; }
+.admin-layout-root .admin-help .admin-help-warning { color:#f8d8a2; border-top:1px solid rgba(255,255,255,.15); padding-top:9px; }
+.admin-layout-root .admin-area-option,
+.admin-layout-root .admin-academico-option { position:relative; min-width:0; display:flex; }
+.admin-layout-root .admin-area-option > button,
+.admin-layout-root .admin-academico-option > button { width:100%; height:100%; padding-right:40px; }
+.admin-layout-root .admin-area-option > .admin-help,
+.admin-layout-root .admin-academico-option > .admin-help { position:absolute; top:8px; right:7px; z-index:5; margin:0; }
+@media (max-width:640px) {
+  .admin-layout-root .admin-help .admin-help-balloon {
+    position:fixed; inset:auto 16px max(16px,env(safe-area-inset-bottom)) 16px;
+    width:auto; max-height:min(60vh,420px); overflow-y:auto; z-index:1000;
+  }
+}
+@media (forced-colors:active) {
+  .admin-layout-root .admin-help .admin-help-trigger,
+  .admin-layout-root .admin-help .admin-help-balloon { border:1px solid CanvasText; }
+}
+
+/* R11 — Financeiro essencial, escopado exclusivamente ao painel administrativo. */
+.admin-layout-root .admin-r11 {display:grid;gap:20px;min-width:0}
+.admin-layout-root .admin-r11-cabecalho,
+.admin-layout-root .admin-r11-linha {display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.admin-layout-root .admin-r11-cabecalho h1 {margin:8px 0 5px}
+.admin-layout-root .admin-r11-abas {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.admin-layout-root .admin-r11-aba {display:flex;position:relative;min-width:0}
+.admin-layout-root .admin-r11-aba > button {width:100%;padding:15px 38px 15px 13px;border:1px solid #3b536c;border-radius:12px;background:#111d31;color:#c8d6e6;font-weight:800;text-align:left;cursor:pointer}
+.admin-layout-root .admin-r11-aba > button.active {color:#fff;background:#273b56;border-color:#f4bc5a}
+.admin-layout-root .admin-r11-aba > .admin-help {position:absolute;top:7px;right:5px;z-index:3}
+.admin-layout-root .admin-r11-resumo {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.admin-layout-root .admin-r11-resumo > :is(div,button) {display:flex;flex-direction:column;gap:8px;background:#16283d;border:1px solid #3a4b65;border-radius:14px;padding:17px}
+.admin-layout-root .admin-r11-resumo > button {text-align:left;color:inherit;font:inherit;cursor:pointer}
+.admin-layout-root .admin-r11-resumo > button:is(:hover,:focus-visible) {border-color:#f4bc5a}
+.admin-layout-root button.admin-kpi-card {text-align:left;cursor:pointer;color:inherit;font:inherit}
+.admin-layout-root button.admin-kpi-card:is(:hover,:focus-visible) {border-color:#f4bc5a}
+.admin-layout-root .admin-r11-resumo small {color:#a5b7ce;font-size:11px}
+.admin-layout-root .admin-r11-resumo strong {font-size:clamp(17px,2.5vw,25px);color:white}
+.admin-layout-root .admin-r11-principal,.admin-layout-root .admin-r11-lista {display:grid;gap:13px}
+.admin-layout-root .admin-r11-principal h2 {color:white;font-size:20px;margin:0}
+.admin-layout-root .admin-r11-cliente {padding:16px;background:#17263b;border:1px solid #3b536c;border-radius:15px;display:grid;gap:13px}
+.admin-layout-root .admin-r11-cliente strong {color:white}
+.admin-layout-root .admin-r11-cliente small {color:#a5b7cc;font-size:11px}
+.admin-layout-root .admin-r11-linha > div {display:grid;gap:4px}
+.admin-layout-root .admin-r11-grade,.admin-layout-root .admin-r11-historico-grade {display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:5px}
+.admin-layout-root .admin-r11-parcela {min-width:0;padding:6px 0;color:white;border:1px solid #67778b;border-radius:6px;font-size:10px;font-weight:750;cursor:pointer}
+.admin-layout-root .admin-r11-paga {background:#156841!important;color:white!important;border-color:#31a371!important}
+.admin-layout-root .admin-r11-vencida {background:#922929!important;color:white!important;border-color:#d65e5e!important}
+.admin-layout-root .admin-r11-pendente {background:#80601a!important;color:white!important;border-color:#d1a74e!important}
+.admin-layout-root .admin-r11-cancelada,.admin-layout-root .admin-r11-sem_lancamento,.admin-layout-root .admin-r11-sem_plano {background:#364456!important;color:#d2d9e3!important;border-color:#52647a!important}
+.admin-layout-root .admin-r11-estado {padding:7px 11px;border-radius:999px;border:1px solid #778396;font-size:12px}
+.admin-layout-root .admin-r11-meses {display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.admin-layout-root .admin-r11-mes {padding:7px;border:1px solid #617286;border-radius:8px;font-size:11px}
+.admin-layout-root .admin-r11-cliente details summary {color:#f4bc5a;cursor:pointer;font-size:12px}
+.admin-layout-root .admin-r11-editor {display:grid;gap:12px;background:#112036;border:1px solid #526780;border-radius:14px;padding:18px}
+.admin-layout-root .admin-r11-editor h2 {color:white;font-size:19px;margin:0}
+.admin-layout-root .admin-r11-editor > select,
+.admin-layout-root .admin-r11-form input:not([type=checkbox]),
+.admin-layout-root .admin-r11-form select,
+.admin-layout-root .admin-r11-linha input {width:100%;min-width:0;padding:10px;border:1px solid #536882;border-radius:9px;background:#0e1a2a;color:white}
+.admin-layout-root .admin-r11-editor label,.admin-layout-root .admin-r11-form label {display:grid;gap:6px;color:#c4d2e1;font-size:12px}
+.admin-layout-root .admin-r11-form {display:grid;gap:13px}
+.admin-layout-root .admin-r11-form p {color:#b7c8d7;font-size:12px;margin:0}
+.admin-layout-root .admin-r11-historico-grade .admin-r11-check {display:flex;align-items:center;justify-content:center;position:relative;background:#283a52;border:1px solid #52677f;border-radius:6px;padding:7px 0;cursor:pointer}
+.admin-layout-root .admin-r11-check input {position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.admin-layout-root .admin-r11-check:has(input:checked) {background:#176a43;border-color:#4bac7d}
+.admin-layout-root .admin-r11-check:has(input:focus-visible) {outline:3px solid #f4bc5a}
+.admin-layout-root .admin-r11-check span {pointer-events:none;color:white;font-size:11px}
+.admin-layout-root .admin-r11-form .admin-r11-confirma {display:flex;gap:10px;align-items:flex-start;line-height:1.6}
+.admin-layout-root .admin-r11-confirma input {margin-top:3px}
+.admin-layout-root .admin-r11-legado {border:1px solid #34465c;border-radius:12px;margin-top:22px;padding:12px}
+.admin-layout-root .admin-r11-legado > summary {cursor:pointer;font-size:12px;color:#a5b8ce}
+.admin-layout-root .admin-r11-legado > section {margin-top:18px}
+@media(max-width:650px){.admin-layout-root .admin-r11-abas{grid-template-columns:1fr}.admin-layout-root .admin-r11-resumo{grid-template-columns:1fr 1fr}.admin-layout-root .admin-r11-parcela{font-size:9px;padding:5px 0}.admin-layout-root .admin-r11-grade,.admin-layout-root .admin-r11-historico-grade{gap:3px}}
+
+/* R11.4 — legenda acessível e cor neutra para competências futuras já emitidas. */
+.admin-layout-root .admin-r11-futura {background:#364456!important;color:#d2d9e3!important;border-color:#52647a!important}
+.admin-layout-root .admin-r11-legenda {display:flex;flex-wrap:wrap;gap:7px 15px;padding:8px 0}
+.admin-layout-root .admin-r11-legenda-item {display:inline-flex;align-items:center;gap:6px;color:#c2d0df;font-size:11px}
+.admin-layout-root .admin-r11-legenda-item i {display:inline-block;flex:0 0 12px;width:12px;height:12px;border:1px solid #5b7085;border-radius:3px}
+
+/* R11.5 — Resumo antes da ativação: legível no desktop e celular. */
+.admin-layout-root .admin-r11-revisao{display:grid;gap:13px;border:1px solid #6e8399;border-radius:14px;padding:15px;background:#142136}
+.admin-layout-root .admin-r11-revisao h3{margin:0;color:white;font-size:18px}
+.admin-layout-root .admin-r11-revisao-rol{display:grid;gap:5px;margin-top:10px;max-height:380px;overflow-y:auto}
+.admin-layout-root .admin-r11-revisao-linha{display:grid;grid-template-columns:1fr 1fr .8fr 1.4fr;gap:8px;padding:8px 6px;background:#1f2d43;border-radius:7px;color:#e6edf7;font-size:12px;align-items:center}
+.admin-layout-root .admin-r11-revisao summary{cursor:pointer;color:#f4bc5a}
+@media(max-width:650px){.admin-layout-root .admin-r11-revisao-linha{grid-template-columns:1fr 1fr;gap:4px}.admin-layout-root .admin-r11-revisao{padding:10px}}
+
+
+/* R16 — modais privados para fichas acadêmicas e área de apoio no rodapé. */
+.admin-layout-root .admin-registro-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(94vw, 760px);
+  max-width: 760px;
+  max-height: min(88vh, 920px);
+  overflow: auto;
+  padding: 0;
+  border-radius: 20px;
+  border: 1px solid #5b7190;
+  color: #eaf2fb;
+  background: #142136;
+  box-shadow: 0 24px 90px rgba(0,0,0,.65);
+  z-index: 9999;
+}
+.admin-layout-root .admin-registro-dialog::backdrop {
+  background: rgba(4,8,15,.8);
+  backdrop-filter: blur(4px);
+}
+.admin-layout-root .admin-registro-dialog-wide { max-width: 850px; }
+.admin-layout-root .admin-registro-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px;
+  background: #1a2c46;
+  border-bottom: 1px solid #3c536f;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.admin-layout-root .admin-registro-dialog-header h2 {
+  color: #fff; font-size: clamp(20px,3vw,28px); margin: 0 0 6px;
+}
+.admin-layout-root .admin-registro-dialog-header p {
+  color: #b5c7db; margin: 0; font-size: 12px; line-height: 1.5;
+}
+.admin-layout-root .admin-registro-dialog-body {
+  padding: 20px 22px 26px;
+}
+.admin-layout-root .admin-registro-dialog-body .admin-academico-panel { margin-bottom: 0; }
+.admin-layout-root .admin-registro-dialog-body .admin-academico-input,
+.admin-layout-root .admin-registro-dialog-body .admin-academico-textarea { max-width: 100%; }
+.admin-layout-root .admin-registro-profile-data {
+  display: grid; grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px; margin: 16px 0;
+}
+.admin-layout-root .admin-registro-profile-data > div {
+  min-width: 0; border-radius: 12px; padding: 13px;
+  background: #102038; border: 1px solid #344963;
+}
+.admin-layout-root .admin-registro-profile-data dt {
+  color: #9fb3c9; font-size: 11px; font-weight: 650; margin-bottom: 6px;
+}
+.admin-layout-root .admin-registro-profile-data dd {
+  color: #f0f5fa; font-size: 13px; margin: 0; overflow-wrap: anywhere; white-space: pre-wrap;
+}
+.admin-layout-root .admin-registro-cohort-list {
+  list-style: none; padding: 0; margin: 10px 0 18px;
+  display: grid; gap: 8px;
+}
+.admin-layout-root .admin-registro-cohort-list li {
+  border: 1px solid #344963; background: #0e1c31;
+  border-radius: 12px; padding: 12px 14px; font-size: 12px; color: #d8e5f2;
+}
+.admin-layout-root .admin-registro-cohort-list small { display:block; margin-top: 5px; color: #a9bcd0; }
+.admin-layout-root .admin-registro-action-row {
+  display:flex; gap: 9px; flex-wrap:wrap; align-items:center;
+}
+.admin-layout-root .admin-secretaria-footer {
+  margin-top: 32px; padding-top: 22px;
+  border-top: 1px solid #33465e;
+}
+.admin-layout-root .admin-secretaria-footer-title {
+  color: #dce8f5; font-size: clamp(18px,2.2vw,24px); margin: 0 0 6px;
+}
+.admin-layout-root .admin-secretaria-footer-desc {
+  color: #a8bacf; font-size: 12px; margin: 0 0 20px;
+}
+.admin-layout-root .admin-secretaria-footer-items {
+  display:grid; gap:14px; grid-template-columns: repeat(2,minmax(0,1fr));
+}
+.admin-layout-root .admin-secretaria-footer-items > details { margin-bottom:0; }
+@media (max-width: 700px) {
+ .admin-layout-root .admin-registro-dialog-header,
+ .admin-layout-root .admin-registro-dialog-body {padding: 16px;}
+ .admin-layout-root .admin-registro-dialog-header {flex-wrap:wrap;}
+ .admin-layout-root .admin-registro-profile-data,
+ .admin-layout-root .admin-secretaria-footer-items {grid-template-columns: minmax(0,1fr);}
+}
+
+/* ABRACADABRA · R16: área integral dos quatro indicadores acadêmicos interativa. */
+button.admin-kpi-card { cursor: pointer; width: 100%; text-align: left; font: inherit; color: inherit; }
+button.admin-kpi-card * { cursor: pointer; }
+button.admin-kpi-card:hover { border-color: #f8bf5c; transform: translateY(-2px); }
+button.admin-kpi-card:focus-visible { outline: 3px solid #f8bf5c; outline-offset: 3px; }
+button.admin-kpi-card:active { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { button.admin-kpi-card { transition: none; } }
+/* PORTÃO A1 — cadastro guiado no modal P0, sem alterar os diálogos de fichas.
+   Cabeçalho com X visível e conteúdo responsivo de rolagem interna. */
+.admin-layout-root .admin-registro-dialog-cadastro[open] {
+  display: flex;
+  flex-direction: column;
+  width: min(96vw, 1100px);
+  max-width: 1100px;
+  height: min(92dvh, 960px);
+  max-height: calc(100dvh - 16px);
+  overflow: hidden;
+}
+.admin-layout-root .admin-registro-dialog-cadastro .admin-registro-dialog-header {
+  flex: 0 0 auto;
+}
+.admin-layout-root .admin-registro-dialog-cadastro .admin-registro-dialog-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.admin-layout-root .admin-registro-dialog-cadastro .admin-academico-wizard-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: 12px 4px;
+  background: #142136;
+  border-top: 1px solid #3c536f;
+}
+@media (max-width: 700px) {
+  .admin-layout-root .admin-registro-dialog-cadastro[open] {
+    width: calc(100vw - 12px);
+    max-height: calc(100dvh - 12px);
+    height: calc(100dvh - 12px);
+    border-radius: 12px;
+  }
+}
+
+/* EducART R12 — ajuste visual isolado do vínculo dentro do modal DEV.
+   Preserva campos, permissões, RPCs e os estilos dos demais diálogos. */
+.admin-layout-root .admin-registro-dialog-cadastro .admin-r12-vinculo {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+.admin-layout-root .admin-r12-vinculo > h2 {
+  font-size: clamp(20px, 2.4vw, 25px);
+  letter-spacing: -.025em;
+  margin: 4px 0 8px;
+}
+.admin-layout-root .admin-r12-vinculo > p {
+  max-width: 72ch;
+  font-size: 14px;
+}
+.admin-layout-root .admin-r12-vinculo > form.admin-academico-panel {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin: 18px 0 0;
+}
+.admin-layout-root .admin-r12-vinculo > form > fieldset.admin-academico-panel {
+  min-width: 0;
+  margin: 0 0 18px;
+  padding: 18px 20px 20px;
+  border: 1px solid #415873;
+  border-radius: 14px;
+  background: #17273d;
+}
+.admin-layout-root .admin-r12-vinculo > form > fieldset > legend.admin-academico-label {
+  padding: 0 8px;
+  margin: 0;
+  color: #f5c46f;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+.admin-layout-root .admin-r12-vinculo .admin-academico-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  max-width: 740px;
+  margin: 12px 0;
+  color: #e2ecf8;
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.admin-layout-root .admin-r12-vinculo .admin-academico-check input[type="radio"],
+.admin-layout-root .admin-r12-vinculo .admin-academico-check input[type="checkbox"] {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  accent-color: #f5c46f;
+}
+.admin-layout-root .admin-r12-vinculo .admin-academico-label {
+  color: #dce8f5;
+  font-size: 13px;
+}
+.admin-layout-root .admin-r12-vinculo .admin-academico-note {
+  font-size: 13px !important;
+  color: #b8cbe1 !important;
+  margin-top: 10px;
+}
+.admin-layout-root .admin-r12-vinculo .admin-academico-input,
+.admin-layout-root .admin-r12-vinculo .filter-select {
+  width: min(100%, 720px);
+  max-width: 100%;
+  font-size: 14px;
+}
+@media (max-width: 700px) {
+  .admin-layout-root .admin-r12-vinculo > form > fieldset.admin-academico-panel {
+    padding: 14px 12px 16px;
+  }
+  .admin-layout-root .admin-r12-vinculo .admin-academico-input,
+  .admin-layout-root .admin-r12-vinculo .filter-select {
+    width: 100%;
+  }
+}
+
+/* EducART · Docentes — cartões de leitura limpa, preservando ações e fichas existentes. */
+.admin-layout-root .admin-docentes-card {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 164px;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 22px;
+  background: linear-gradient(135deg,#14243a,#101d30);
+  border-color: #37516d;
+}
+.admin-layout-root .admin-docentes-card-main { min-width: 0; }
+.admin-layout-root .admin-docentes-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.admin-layout-root .admin-docentes-card-name {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(16px,1.65vw,19px);
+  line-height: 1.35;
+  font-weight: 800;
+  letter-spacing: -.025em;
+  overflow-wrap: anywhere;
+}
+.admin-layout-root .admin-docentes-card-artistic {
+  display: block;
+  margin-top: 4px;
+  color: #b8c9dd;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.admin-layout-root .admin-docentes-status {
+  flex: 0 0 auto;
+  display: inline-flex;
+  padding: 6px 10px;
+  border: 1px solid #516781;
+  border-radius: 999px;
+  color: #d9e6f4;
+  background: #26374e;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+.admin-layout-root .admin-docentes-status.is-active {
+  color: #d9f2dc;
+  background: #18372d;
+  border-color: #527d65;
+}
+.admin-layout-root .admin-docentes-status.is-pending {
+  color: #ffe1a3;
+  background: #47371f;
+  border-color: #8c7142;
+}
+.admin-layout-root .admin-docentes-card .admin-docentes-card-areas {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  margin: 12px 0 0;
+  max-width: none;
+  color: #c9d7e6;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.admin-layout-root .admin-docentes-card .admin-docentes-card-cohorts {
+  margin: 12px 0 0;
+  max-width: none;
+  color: #d8e6f3;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.admin-layout-root .admin-docentes-card-actions {
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  align-self: center;
+  gap: 9px;
+  width: 164px;
+}
+.admin-layout-root .admin-docentes-card-actions .admin-btn {
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+}
+@media (max-width: 780px) {
+  .admin-layout-root .admin-docentes-card { grid-template-columns: minmax(0,1fr); }
+  .admin-layout-root .admin-docentes-card-actions {
+    width: 100%;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  .admin-layout-root .admin-docentes-card-actions .admin-btn { white-space: normal; }
+}
+@media (max-width: 420px) {
+  .admin-layout-root .admin-docentes-card { padding: 17px 15px; }
+  .admin-layout-root .admin-docentes-card-header { flex-direction: column; align-items: flex-start; }
+}
+
+/* Cartões compactos da gestão operacional 1.2; ações existentes preservadas. */
+.admin-layout-root .admin-academico-ficha.educart-formacao-card{
+ display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr) auto;
+ align-items:center;gap:12px;padding:13px 16px;min-height:74px
+}
+.admin-layout-root .admin-academico-ficha.educart-formacao-card>div{margin-top:0!important}
+/* A largura real do diálogo (não a do viewport) determina o layout.
+   Os campos e ações nunca devem ficar fora do cartão ou gerar rolagem lateral. */
+.admin-layout-root .admin-academico-ficha.educart-turma-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 16px 18px;
+}
+.admin-layout-root .educart-turma-card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+  gap: 10px;
+}
+.admin-layout-root .educart-turma-card-heading strong {
+  font-size: 15px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.admin-layout-root .educart-turma-card-situacao {
+  display: inline-block;
+  border: 1px solid #536987;
+  background: #233551;
+  color: #e6effa;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.admin-layout-root .educart-turma-card-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+.admin-layout-root .educart-turma-card-meta > div { min-width: 0; }
+.admin-layout-root .educart-turma-card-meta span {
+  display: block;
+  font-size: 11px;
+  color: #93a9c4;
+  margin-bottom: 5px;
+}
+.admin-layout-root .educart-turma-card-meta p {
+  margin: 0;
+  color: #e9f2fc;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.admin-layout-root .educart-turma-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  align-items: center;
+  min-width: 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(161,179,199,.18);
+}
+.admin-layout-root .educart-turma-card-actions .admin-btn {
+  max-width: 100%;
+  white-space: normal;
+}
+.admin-layout-root .admin-academico-ficha.educart-formacao-card>strong {
+  font-size: 14px;
+  line-height: 1.4;
+}
+.admin-layout-root .admin-academico-ficha.educart-formacao-card>small {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 12px;
+}
+@media(max-width:650px) {
+  .admin-layout-root .admin-academico-ficha.educart-formacao-card {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  .admin-layout-root .admin-academico-ficha.educart-turma-card { padding: 14px; }
+}
+
+/* EducART 1.2: navegação por tarefa, restrita ao painel autenticado. */
+.admin-layout-root .admin-area-selector button span{font-size:clamp(13px,1.15vw,15px);line-height:1.35}
+.admin-layout-root .admin-area-selector button small{font-size:12px;line-height:1.4}
+.admin-layout-root .admin-subarea-selector{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ max-width:none;margin-top:-22px;margin-bottom:24px;padding:5px;
+ background:#152236;border-color:#3b4b63
+}
+.admin-layout-root .admin-subarea-selector button{min-height:46px;justify-content:center;padding:12px}
+.admin-layout-root .admin-subarea-selector button span{font-size:13px;font-weight:750;overflow-wrap:anywhere}
+@media(max-width:700px){
+ .admin-layout-root .admin-area-selector,.admin-layout-root .admin-subarea-selector{
+  grid-template-columns:repeat(2,minmax(0,1fr))
+ }
+ .admin-layout-root .admin-area-selector button{min-height:52px;padding:12px}
+ .admin-layout-root .admin-subarea-selector{margin-top:-23px}
+}
+
+/* R26: acesso rápido à busca existente de estudante, sem cadastro paralelo. */
+.admin-layout-root .admin-tarefa-busca{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,1.45fr);align-items:center;gap:18px;padding:20px 22px;margin-bottom:24px;border:1px solid rgba(244,188,90,.42);border-radius:18px;background:#152338}
+.admin-layout-root .admin-tarefa-busca-texto label{display:block;font-size:17px;font-weight:850;color:#fff}
+.admin-layout-root .admin-tarefa-busca-texto p{margin:6px 0 0;color:#b9c7d8;font-size:13px;line-height:1.5}
+.admin-layout-root .admin-tarefa-busca-controles{display:flex;gap:10px;align-items:center;min-width:0}
+.admin-layout-root .admin-tarefa-busca-controles input{flex:1;min-width:0;width:100%}
+.admin-layout-root .admin-tarefa-busca-controles button{flex-shrink:0;min-height:46px}
+.admin-layout-root .admin-tarefa-busca input:focus-visible,.admin-layout-root .admin-tarefa-busca button:focus-visible{outline:3px solid #f4bc5a;outline-offset:3px}
+@media(max-width:900px){.admin-layout-root .admin-tarefa-busca{grid-template-columns:minmax(0,1fr)}.admin-layout-root .admin-tarefa-busca-controles{flex-wrap:wrap}.admin-layout-root .admin-tarefa-busca-controles button{flex:1}}
+
+
+/* EducART DEV: ingreso simples e mensalidade por status; identidade visual existente. */
+.admin-layout-root .admin-subarea-selector{grid-template-columns:repeat(auto-fit,minmax(155px,1fr))}
+.admin-layout-root .educart-ingresso-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin:20px 0}
+.admin-layout-root .educart-ingresso-form{display:flex;flex-direction:column;gap:10px}
+.admin-layout-root .educart-ingresso-bolsas{display:flex;flex-wrap:wrap;gap:12px;border:1px solid var(--border-subtle,rgba(255,255,255,.12));padding:12px;border-radius:10px}
+.admin-layout-root .educart-ingresso-bolsas legend{padding:0 6px}
+.admin-layout-root .educart-ingresso-bolsas label{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.admin-layout-root .educart-ingresso-total{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px;border-radius:8px;background:rgba(37,99,235,.14)}
+.admin-layout-root .educart-ingresso-meses{display:grid;gap:12px}
+/* Professor e local: layout controlado pela largura interna do modal, nunca da janela. */
+.admin-layout-root .educart-ingresso-turmas-gestao{min-width:0;width:100%;box-sizing:border-box}
+.admin-layout-root .educart-ingresso-turmas-topo{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.admin-layout-root .educart-ingresso-turmas-topo p{margin:0;color:#b9c9dc;line-height:1.5;font-size:13px}
+.admin-layout-root .educart-ingresso-turmas{display:grid;gap:12px;min-width:0;width:100%}
+.admin-layout-root .educart-ingresso-turma{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0;width:100%;box-sizing:border-box;padding:17px 19px;border:1px solid #3b536f;border-radius:14px;background:#101e32}
+.admin-layout-root .educart-ingresso-turma-titulo{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;min-width:0}
+.admin-layout-root .educart-ingresso-turma-titulo strong{font-size:16px;color:#fff;overflow-wrap:anywhere}
+.admin-layout-root .educart-ingresso-turma-titulo small{border:1px solid #4b607a;border-radius:999px;padding:5px 9px;background:#20344f;color:#d7e7f8;font-size:11px}
+.admin-layout-root .educart-ingresso-turma-campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;min-width:0}
+.admin-layout-root .educart-ingresso-turma-campos>div{min-width:0}
+.admin-layout-root .educart-ingresso-turma-campos label{display:block;font-size:12px;font-weight:700;color:#b9cde3;margin-bottom:7px}
+.admin-layout-root .educart-ingresso-turma-campos select{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+.admin-layout-root .educart-ingresso-turma-acoes{display:flex;gap:8px;flex-wrap:wrap;padding-top:12px;border-top:1px solid #344963}
+.admin-layout-root .educart-ingresso-turma-acoes button{max-width:100%;white-space:normal}
+.admin-layout-root .educart-ingresso-cobranca{border-top:1px solid var(--border-subtle,rgba(255,255,255,.1));padding:18px 0;display:flex;justify-content:space-between;gap:16px;align-items:start}
+.admin-layout-root .educart-ingresso-cobranca p{margin:6px 0;color:var(--text-secondary,#94a3b8)}
+.admin-layout-root .educart-ingresso-meses{min-width:290px}
+.admin-layout-root .educart-ingresso-mes{display:flex;justify-content:space-between;align-items:center;gap:12px}
+@media(max-width:1050px){.admin-layout-root .educart-ingresso-grid{grid-template-columns:1fr}.admin-layout-root .educart-ingresso-cobranca{flex-direction:column}.admin-layout-root .educart-ingresso-meses{width:100%}}
+@media(max-width:680px){.admin-layout-root .educart-ingresso-turma{grid-template-columns:1fr 1fr}.admin-layout-root .educart-ingresso-turmas-topo .admin-btn{max-width:100%;white-space:normal}.admin-layout-root .educart-ingresso-mes{flex-wrap:wrap}.admin-layout-root .educart-ingresso-mes button{width:100%}}
+
+
+/* R28 — V3 coesa em pop-ups nativos; preserva estrutura e responsividade existentes. */
+.admin-layout-root .educart-popup-work{--educart-popup-gold:#f2bd69}
+.admin-layout-root .educart-popup-resumo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}
+.admin-layout-root .educart-popup-resumo span{background:#111f33;border:1px solid #34465d;border-radius:13px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#c0cede;font-size:13px}
+.admin-layout-root .educart-popup-resumo strong{font-size:26px;color:#fff}
+.admin-layout-root .educart-popup-tarefas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.admin-layout-root .educart-popup-tarefa{display:flex;flex-direction:column;align-items:flex-start;min-height:205px;text-align:left;background:linear-gradient(130deg,#15263d,#142138);border:1px solid #425675;border-radius:17px;padding:23px;color:#fff}
+.admin-layout-root .educart-popup-tarefa:hover{background:#1b304e;border-color:var(--educart-popup-gold)}
+.admin-layout-root .educart-popup-tarefa-top{display:flex;align-items:center;gap:9px;margin-bottom:12px;color:#d9b979}
+.admin-layout-root .educart-popup-tarefa-top b{display:grid;place-items:center;background:var(--educart-popup-gold);color:#142033;width:32px;height:32px;border-radius:50%}
+.admin-layout-root .educart-popup-tarefa>strong{font-size:20px}
+.admin-layout-root .educart-popup-tarefa>span:not(.educart-popup-tarefa-top){color:#b8c9da;font-weight:400;font-size:14px;margin-top:5px}
+.admin-layout-root .educart-popup-tarefa em{font-style:normal;color:#a7c9ff;margin-top:auto;padding-top:15px;font-size:13px}
+.admin-layout-root .educart-popup-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0 18px}
+.admin-layout-root .educart-popup-contatos{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.admin-layout-root .educart-popup-contatos .admin-btn[aria-disabled=true]{opacity:.55;cursor:not-allowed}
+.admin-layout-root .educart-popup-filtros{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.admin-layout-root .educart-popup-filtros label,.admin-layout-root .educart-popup-form label{display:block;font-size:13px;font-weight:700;color:#d6e4f3}
+.admin-layout-root .educart-popup-filtros input,.admin-layout-root .educart-popup-filtros select{display:block;width:100%;margin-top:5px}
+.admin-layout-root .educart-popup-item{padding:14px 0;border-top:1px solid #34465d}
+.admin-layout-root .educart-popup-item strong{font-size:16px}
+.admin-layout-root .educart-popup-item p{color:#b8c9da;font-size:13px;margin:4px 0}
+.admin-layout-root .educart-popup-periodo{display:flex;gap:12px;align-items:end;padding:13px 16px;background:#152b46;border:1px solid #365373;border-radius:12px}
+.admin-layout-root .educart-popup-periodo label{flex:1}
+.admin-layout-root .educart-popup-periodo button{font-size:19px;min-width:43px}
+.admin-layout-root .educart-popup-mes{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:14px 0;border-top:1px solid #34465d}
+.admin-layout-root .educart-popup-mes p{font-size:13px;color:#b8c9da;margin:4px 0}
+.admin-layout-root .educart-popup-form{display:grid;gap:12px}
+.admin-layout-root .educart-popup-form .admin-btn{justify-self:start}
+.admin-layout-root .educart-popup-ficha{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.admin-layout-root .educart-popup-ficha>div{background:#152338;border:1px solid #34465d;padding:12px;border-radius:10px;min-width:0}
+.admin-layout-root .educart-popup-ficha dt{font-size:12px;color:#b8c9da}
+.admin-layout-root .educart-popup-ficha dd{margin:4px 0 0;font-weight:700;overflow-wrap:anywhere}
+.admin-layout-root .educart-popup-historico>div{display:flex;justify-content:space-between;border-top:1px solid #34465d;padding:8px}
+.admin-layout-root .educart-popup-work .admin-registro-dialog-body>.admin-academico-panel{border:0;background:transparent;box-shadow:none}
+@media(max-width:800px){.admin-layout-root .educart-popup-mes{flex-wrap:wrap}.admin-layout-root .educart-popup-mes>button{width:100%}}
+@media(max-width:680px){.admin-layout-root .educart-popup-resumo{grid-template-columns:1fr}.admin-layout-root .educart-popup-tarefas{grid-template-columns:1fr}.admin-layout-root .educart-popup-tarefa{min-height:150px}.admin-layout-root .educart-popup-filtros,.admin-layout-root .educart-popup-ficha{grid-template-columns:1fr}.admin-layout-root .educart-popup-periodo{gap:7px;padding:9px}}
+
+/* R50: matrícula unificada na ficha, sem alterar regras financeiras ou outros modais. */
+.admin-layout-root .admin-modal-box form.admin-academico-panel {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.admin-layout-root .admin-modal-box form.admin-academico-panel :is(
+  .filter-select, .admin-academico-input, input[type="file"]
+) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.admin-layout-root .admin-modal-box form.admin-academico-panel fieldset {
+  min-width: 0;
+  max-width: 100%;
+}
+.admin-layout-root .admin-modal-box form.admin-academico-panel .admin-academico-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+  margin: 10px 0;
+}
+.admin-layout-root .admin-modal-box form.admin-academico-panel .admin-academico-check input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+}
+.admin-layout-root .admin-modal-box form.admin-academico-panel input[type="file"] {
+  font-size: 12px;
+}
+@media (max-width: 580px) {
+  .admin-layout-root .admin-modal-box {
+    max-width: calc(100vw - 24px);
+    padding: 16px;
+  }
+  .admin-layout-root .admin-modal-box form.admin-academico-panel {
+    padding: 16px 12px;
+  }
+}

@@ -1,0 +1,74 @@
+/* EducART 1.1 — atalhos discretos no topo da home, somente rota /. */
+.educart-home-acessos {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: 20px;
+  z-index: 30;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.educart-home-acesso {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid rgba(196, 216, 245, .38);
+  border-radius: 12px;
+  background: rgba(9, 19, 37, .88);
+  color: #f2f6ff;
+  text-decoration: none;
+  text-align: left;
+  line-height: 1.2;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, .2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.educart-home-acesso > span {
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: -.01em;
+}
+.educart-home-acesso > small {
+  font-size: 10px;
+  font-weight: 500;
+  color: #c3d2e6;
+}
+.educart-home-acesso-cliente { border-color: rgba(244, 188, 90, .53); }
+.educart-home-acesso:hover { border-color: #f4bc5a; background: #172d4c; color: #fff; }
+.educart-home-acesso:focus-visible {
+  outline: 3px solid #f4bc5a;
+  outline-offset: 3px;
+}
+@media (max-width: 480px) {
+  .educart-home-acessos {
+    top: max(8px, env(safe-area-inset-top));
+    right: 10px;
+    left: 10px;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .educart-home-acesso { min-height: 44px; padding: 8px 10px; }
+  .educart-home-acesso > span { font-size: 11px; }
+  .educart-home-acesso > small { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .educart-home-acesso { scroll-behavior: auto; }
+}
+@media (forced-colors: active) {
+  .educart-home-acesso { border: 1px solid CanvasText; background: Canvas; color: CanvasText; }
+  .educart-home-acesso > small { color: CanvasText; }
+}
+
+/* Mobile: a navegação guiada precisa manter o botão Voltar desobstruído.
+   Os atalhos continuam visíveis na abertura, mas saem da tela nas etapas. */
+@media (max-width: 620px) {
+  body:has(.eg-stage[data-educart-etapa]:not([data-educart-etapa="abertura"])) .educart-home-acessos {
+    display: none;
+  }
+}
