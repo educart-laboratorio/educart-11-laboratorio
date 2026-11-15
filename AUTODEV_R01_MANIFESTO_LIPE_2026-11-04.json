@@ -1,0 +1,254 @@
+{
+  "id": "AutoDEV-R01-LIPE-2026-11-04",
+  "updatedOn": "2026-11-14",
+  "status": "REFERENCIA_REAL_CLOUDFLARE_VERIFICADA__14_COMPONENTES_PUBLICOS_IDENTICOS",
+  "source": {
+    "repository": "educartsuporte-netizen/educart-portal",
+    "branch": "autodev-lipe-r01-producao-real-20261104",
+    "commit": "5844b0408a8e53c4c283916ef1a1310b753350c9",
+    "assertion": "Git commit apontado no deployment Cloudflare ativo do Worker educart-production em 04/11/2026; baseline canônica R01."
+  },
+  "laboratory": {
+    "branch": "autodev-laboratorio-editavel-2026-11-03",
+    "commitAudited": "8fa79e90aa6bde438247ee2e524c3bb5dc1a4946",
+    "relationship": "históricos divergentes, conteúdos públicos conferidos por Git blob SHA",
+    "approvedChanges": [
+      {
+        "workOrder": "R02",
+        "authorizedBy": "Pedido explícito da direção: 'r02 ahora', em 04/11/2026",
+        "scope": "Corrigir classificação contextual de tela de inscrição sem formulário; NÃO alterar SVG, CSS, posição, destinatário ou texto de mensagens existentes.",
+        "path": "apps/web/src/components/WhatsAppFlutuante.tsx",
+        "productionBlobSha": "d83ff03138e5d49f0c55bde38e25777b552b8a27",
+        "reviewedLabBlobSha": "0e405ea445c8704580dd2e21fcdac76cc893c378",
+        "gitCommit": "fefea1652f730eb880de4fed67de263b6d8dbed7",
+        "justification": "O fallback anterior tratava qualquer URL /inscricao sem data-inscricao-step como 'inscricao-confirmacao', mesmo quando a faixa etária impedia a ficha. O fallback agora é 'generico' e a confirmação só vale para etapa real 3.",
+        "tests": [
+          "apps/web/scripts/testar-r02-whatsapp.mjs",
+          "apps/web/scripts/testar-whatsapp-contextual.mjs"
+        ],
+        "publicSiteAffected": false
+      },
+      {
+        "workOrder": "AUDITORIA_A11Y_PRE_R03",
+        "authorizedBy": "Pedido explícito da direção em 04/11/2026: 'antes das r03, cheque a ferramenta de acessibilidade em todas as paginas (SEMPRE incluir o Painel Administrativo)' e posterior 'prossiga entao'.",
+        "scope": "Reposicionar componente original de acessibilidade antes de <main> no RootLayout para corrigir a ordem do link de salto, mantendo os demais componentes intactos.",
+        "path": "apps/web/src/app/layout.tsx",
+        "productionBlobSha": "2c445769a98bb700850491141474442855eb89d3",
+        "reviewedLabBlobSha": "0a7336098f7a454516c13a31ec5870a2a1eac6bc",
+        "gitCommit": "1686cf01be9174476e1c7cc25f171e71c11d1a6e",
+        "justification": "O link Pular para o conteúdo principal era inserido depois da área principal; agora é o primeiro link por teclado em todas as rotas, incluindo /admin e /admin/login.",
+        "tests": [
+          "apps/web/scripts/testar-acessibilidade-global-admin.mjs"
+        ],
+        "publicSiteAffected": false
+      },
+      {
+        "workOrder": "R18_CONTRATO_MINUTA_POS_INSCRICAO",
+        "path": "apps/web/src/components/InscricaoForm.tsx",
+        "productionBlobSha": "5ee23f958901ecf15cea87157f85bad37509cd14",
+        "reviewedLabBlobSha": "17cc72e5ec8b94c4ad6944010e6307eeac0bc50c",
+        "gitCommit": "candidata-PR19",
+        "authorizedBy": "Decisão expressa da direção em 07/11/2026: download do contrato após inscrição; Pix/QR Code depois.",
+        "scope": "Só no sucesso da inscrição: PDF de minuta original, sem cobrança nem assinatura. Demais campos, validação e envio preservados.",
+        "justification": "Exceção mínima LIPE para novo requisito no formulário público, sem alteração de produção.",
+        "tests": [
+          "apps/web/scripts/testar-r01-baseline.mjs",
+          "apps/web/scripts/testar-contrato-inscricao-r18.mjs"
+        ],
+        "publicSiteAffected": false
+      },
+      {
+        "workOrder": "R19_VITRINE_OFICINA_INDISPONIVEL",
+        "authorizedBy": "Direção autorizou expressamente em 07/11/2026 a construção do segundo cartão não comercial no catálogo da candidata EducART 1.1, após pareceres Dai/Sílvio na PR #19.",
+        "scope": "Retificar somente cartão editorial da oficina: cartaz de referência (recorte fiel do Instagram 709x990), DEV apenas; título ATIVIDADE EXCLUSIVA DO CURSO LIVRE, selo Indisponível, inscrições avulsas indisponíveis. Primeiro cartão byte a byte intocado; zero CTA comercial e sem uso da ficha privada do docente.",
+        "path": "apps/web/src/app/formacao/page.tsx",
+        "productionBlobSha": "e568ce8c4ed45f3912bdd02c343a3932c644a67e",
+        "reviewedLabBlobSha": "f1d133cb7166d4ea7064550e37bcd3f43767572c",
+        "gitCommit": "candidata-PR19",
+        "justification": "Ordem explícita da Direção para execução do ofício Sílvio/Dai na PR #19; recorte da peça institucional para prévia DEV sem transformação, não é arquivo original nem autorização para produção. Preservada linha 1.0 e hashes de produção. Após aprovação visual, direitos e arte final exigem decisão específica.",
+        "tests": [
+          "apps/web/scripts/testar-r01-baseline.mjs",
+          "apps/web/scripts/testar-unificacao-dia-07-11.mjs"
+        ],
+        "publicSiteAffected": false,
+        "referencePosterPath": "apps/web/public/images/fernando-santana-cartaz-referencia-dev.png",
+        "referencePosterBlobSha": "ba8c8dc0c31dea0e04b469d4b47095915557b65f",
+        "referencePosterSha256": "f66506c5ccd4562b8c226a5d39418639fae639ca014613e985c89bce9b508073",
+        "referencePosterDimensions": "709x990",
+        "referencePosterDevOnly": true
+      },
+      {
+        "workOrder": "R32_CARTAZES_CLICAVEIS_CONHECER",
+        "authorizedBy": "Direção, em 14/11/2026: 'corte a parte de baixo da imagem maior pra que fique tudo alinhado' e 'a peça dos cartazes tem que ser inteiramente clicaveis. clicando, abre a popup com CONHECER'.",
+        "scope": "Somente a candidata EducART 1.1 em /formacao: recortar visualmente a parte inferior do cartaz alto via CSS sem alterar o PNG; tornar os dois cartões integralmente acionáveis, abrir a janela Conhecer, manter inscrição independente apenas na Formação de Atores e vedar inscrição avulsa na oficina exclusiva.",
+        "path": "apps/web/src/app/formacao/page.tsx",
+        "productionBlobSha": "e568ce8c4ed45f3912bdd02c343a3932c644a67e",
+        "reviewedLabBlobSha": "5c7c86da6a84e2e5013264634625e59b399a85cd",
+        "gitCommit": "3aa315845707cfaa3321ec70905ee14e3d3cc8d0",
+        "justification": "Nova ordem expressa da Direção sobre cartões R19. Preservar registro R19 original e baseline de produção; novo hash é revisão auditável da mesma rota, sem alteração do arquivo de cartaz ou publicação em produção. Conferência visual real da nova build continua pendente.",
+        "tests": [
+          "apps/web/scripts/testar-r01-baseline.mjs",
+          "apps/web/scripts/testar-catalogo-cartazes-conhecer-r32.mjs"
+        ],
+        "publicSiteAffected": false
+      }
+    ],
+    "currentPublicFileStatus": {
+      "exactlyEqualToProduction": 10,
+      "reviewedR02Variation": 1,
+      "reviewedA11YVariation": 1,
+      "totalProtected": 14,
+      "reviewedR18Variation": 1,
+      "reviewedR19Variation": 1,
+      "reviewedR32RevisionOfR19": 1
+    },
+    "approvedComponents": [
+      {
+        "workOrder": "AUDITORIA_A11Y_PRE_R03",
+        "path": "apps/web/src/components/AccessibilityWidget.tsx",
+        "productionBlobSha": "782481420b3c9456fe19bc70810a8db64d30014c",
+        "reviewedLabBlobSha": "fa247e1f7485b995216cfdfe2e9a0701ef10e5f8",
+        "gitCommit": "9c5941d2e8b828bd41e79997f011a8ac9931dedb",
+        "justification": "Adiciona foco inicial, ciclo Tab/Shift+Tab, ESC e retorno de foco ao gatilho; substitui afirmação de conformidade WCAG não verificada por declaração de recursos oferecidos.",
+        "tests": [
+          "apps/web/scripts/testar-acessibilidade-global-admin.mjs"
+        ],
+        "publicSiteAffected": false
+      }
+    ]
+  },
+  "defaultBranch": {
+    "branch": "main",
+    "commit": "5b8c0aa6487bc36265833aa81071dfc1043df32f",
+    "warning": "base antiga de outubro, NÃO substitui prova de versão publicada"
+  },
+  "production": {
+    "host": "https://educart.pro",
+    "workerCandidate": "educart-production",
+    "exactDeployedCommitVerified": true,
+    "accessToCloudflareDeploymentMetadata": false,
+    "publicEvidence": [
+      "entrada com marca oficial, título 'Seu lugar na arte começa aqui.' e Toque para começar",
+      "formacao disponível em /formacao",
+      "inscricao para 14 anos ou mais, com três etapas",
+      "WhatsApp com link contextual presente no HTML público"
+    ],
+    "gate": "Identificação R01 de origem de produção atendida. Ainda requer homologação de funções da 1.1, segurança, testes reais, rollback e aprovação expressa de release antes de qualquer deploy.",
+    "gitCommit": "5844b0408a8e53c4c283916ef1a1310b753350c9",
+    "worker": "educart-production",
+    "account": "Educartsuporte",
+    "cloudflareAccountId": "8fe5407b4d31f20e19a1388527e365ad",
+    "versionIdDisplayed": "beff347e",
+    "versionIdMayBeShort": true,
+    "trafficPercent": 100,
+    "deploymentStatus": "Ready",
+    "pipelineName": "autodev-producao-cloudflare-educart-2026-11-02",
+    "sourceType": "Build",
+    "commitMessage": "AutoDEV: Casa Gameleira 15h às 17h e WhatsApp contextual persistente\n\nRelease aprovado após validação e prévia Cloudflare. Não altera dados nem DNS.",
+    "deploymentDateExactUtc": null,
+    "commitTimestampUtc": "2026-11-03T10:18:56Z",
+    "verifiedAtDate": "2026-11-04",
+    "verificationMethod": "TinyFish autenticado no Cloudflare Dashboard da conta Educartsuporte, consulta somente leitura da tela Deployments e Domains; confirmação cruzada da referência GitHub de commit e git trees.",
+    "routePatterns": [
+      "educart.pro/*",
+      "www.educart.pro/*"
+    ],
+    "workerDeploymentsUrl": "https://dash.cloudflare.com/8fe5407b4d31f20e19a1388527e365ad/workers/services/view/educart-production/production/deployments",
+    "workerDomainsUrl": "https://dash.cloudflare.com/8fe5407b4d31f20e19a1388527e365ad/workers/services/view/educart-production/production/domains",
+    "gitBlobEquivalenceVerified": true,
+    "publicFilesMatchProduction": 14,
+    "publicFilesCompared": 14
+  },
+  "protectedPublicFiles": [
+    {
+      "path": "apps/web/src/app/page.tsx",
+      "gitBlobSha": "4ac449dca7df0a82db32b1b3bfe0dedd9f93b89a"
+    },
+    {
+      "path": "apps/web/src/components/EntradaEducart.tsx",
+      "gitBlobSha": "98f2f17d6d7bef9c54e3c7acb6250fc9d90878dc"
+    },
+    {
+      "path": "apps/web/src/components/WhatsAppFlutuante.tsx",
+      "gitBlobSha": "d83ff03138e5d49f0c55bde38e25777b552b8a27"
+    },
+    {
+      "path": "apps/web/src/lib/contato-whatsapp-contextual.ts",
+      "gitBlobSha": "1c1be0d693a51e357e95f468c8aa4eb7f05d01d3"
+    },
+    {
+      "path": "apps/web/src/app/globals.css",
+      "gitBlobSha": "359721792d7f5fdb06b345ed2aafbf7dce1a82fc"
+    },
+    {
+      "path": "apps/web/src/app/layout.tsx",
+      "gitBlobSha": "2c445769a98bb700850491141474442855eb89d3"
+    },
+    {
+      "path": "apps/web/src/app/formacao/page.tsx",
+      "gitBlobSha": "e568ce8c4ed45f3912bdd02c343a3932c644a67e"
+    },
+    {
+      "path": "apps/web/src/app/inscricao/page.tsx",
+      "gitBlobSha": "38e61070b33b2e37afa05b4fe85ea99a4005e14c"
+    },
+    {
+      "path": "apps/web/src/components/InscricaoForm.tsx",
+      "gitBlobSha": "5ee23f958901ecf15cea87157f85bad37509cd14"
+    },
+    {
+      "path": "apps/web/src/components/InscricaoElegibilidade.tsx",
+      "gitBlobSha": "219281a96dab8357a7802e0a5545a775eb0fa2de"
+    },
+    {
+      "path": "apps/web/src/components/EducartLogo.tsx",
+      "gitBlobSha": "e638104471f4ffd8e40b2446e6b0fad49ff4aee7"
+    },
+    {
+      "path": "apps/web/src/components/CasaGameleiraLink.tsx",
+      "gitBlobSha": "30635d62693073ea9afec6e83693c7109782f036"
+    },
+    {
+      "path": "apps/web/src/lib/idade-formacao.ts",
+      "gitBlobSha": "652118c5b53df7fc67e95c0298cff7640059c3de"
+    },
+    {
+      "path": "apps/web/src/app/portal.css",
+      "gitBlobSha": "db97e2b18fba33ccd1e017f328cf8b946e346aba"
+    }
+  ],
+  "intentionalChangesToReview": [
+    {
+      "path": "apps/web/src/app/admin/page.tsx",
+      "releaseBlobSha": "222e4bfa49ddc83beca51060292a3a62e89e7c8e",
+      "labBlobSha": "8bb762d4b5387d0e083ce1a2612b4ec0effa3492"
+    },
+    {
+      "path": "apps/web/src/app/admin/admin.css",
+      "releaseBlobSha": "c36a7e50bfa4c279b44862849570bd1faa11b02a",
+      "labBlobSha": "ebc00dc5a901f67f0c4011056c858505d126268a"
+    },
+    {
+      "path": "apps/web/src/app/admin/login/page.tsx",
+      "releaseBlobSha": "7642e63ac63760cee515dd602a3267b9e84e61ba",
+      "labBlobSha": "ee464eadfcbead3c69729bb17fb2b0d067580ff3"
+    },
+    {
+      "path": "apps/web/src/lib/inscricao-validation.ts",
+      "releaseBlobSha": "75281bd68bf811f4fc72b20aa62534e5344b6283",
+      "labBlobSha": "6e9bf4a63896f2e5ae6ea64521ee7712aff87032"
+    }
+  ],
+  "ciRules": {
+    "requiresExplicitAuthorizationToChangeHash": true,
+    "notes": "o teste da baseline verifica integridade exata dos 14 blobs públicos. Atualizar o manifesto exige autorização específica, comparação de código, testes automatizados e registro das justificativas",
+    "allowlistedChangePolicy": "Permitidos exclusivamente hashes revisados nas ordens específicas R02, AUDITORIA_A11Y_PRE_R03, R18, R19 e R32; preservar todos os hashes originais da produção e as revisões anteriores como histórico imutável. Para cada nova exceção, exigir autorização, diff e testes."
+  },
+  "noDeploy": true,
+  "previousReleaseReference": {
+    "repository": "educartsuporte-netizen/educart-portal",
+    "branch": "autodev-lipe-r01-referencia-release-20261104",
+    "commit": "935edce461971499023354530e0d4108186922b5",
+    "assertion": "release de 2026-11-03 com correcoes Casa Gameleira e WhatsApp; ainda NAO confirmada como commit implantado na Cloudflare"
+  }
+}

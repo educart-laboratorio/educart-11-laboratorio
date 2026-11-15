@@ -1,0 +1,135 @@
+================================================================================
+                    PLANO MESTRE - PROJETO PORTAL EDUCART
+================================================================================
+Domínio Principal: portaleducart.pro (adquirido) / educart.pro
+Empresa Central: EducART
+Serviço/Campanha Inicial (Fase 0): Oficina de Atores Salvador (Franquia)
+
+DIRETRIZES TÉCNICAS E DE INFRAESTRUTURA
+--------------------------------------------------------------------------------
+[x] Front-end: Next.js hospedado na Vercel (CI/CD remoto sem build pesado local)
+[ ] Back-end: NestJS hospedado no Google Cloud (GCloud / Cloud Run)
+[x] Banco de Dados: Supabase (sempre remoto, inclusive em desenvolvimento para poupar recursos locais)
+[x] Acessibilidade e Inclusão:
+    [x] Conformidade estrita com diretrizes WCAG 2.1 AA e Section 508
+    [x] Botão/Widget de acessibilidade na interface (bola azul e branca flutuante com alto contraste, controle de zoom/fonte e aviso institucional)
+    [x] Modo Noturno (visão noturna / tema escuro) com alternador na barra de navegação e persistência
+[ ] Identidade Visual e Arquitetura de Marca:
+    [x] Portal EducART: Identidade institucional (amarelo, azul, vermelho e os 9 pontos da logo com layout estável e claro)
+    [x] Oficina de Atores Salvador: Preservar identidade própria (azul e branco nos destaques e na página de produto)
+[ ] Ambientes:
+    [x] Configurar .env.development (desenvolvimento com Supabase remoto)
+    [x] Configurar .env.example (modelo de variáveis para o repositório)
+    [x] Configurar variáveis de produção no painel da Vercel
+[ ] Pipeline & Deploy:
+    [x] Versionamento central no GitHub
+    [x] Front-end com CI/CD na Vercel (build 100% remoto gerenciado)
+    [ ] Back-end compilado no Container Registry / Cloud Build remoto
+    [ ] Script de deploy automatizado
+
+================================================================================
+FASE 0: MVP ULTRA-RÁPIDO (LANÇAMENTO IMEDIATO - HOJE)
+Objetivo: Colocar no ar a Landing Page da campanha da Oficina de Atores Salvador
+apontando para o WhatsApp no domínio portaleducart.pro / educart.pro na Vercel.
+================================================================================
+[x] Setup inicial do projeto Next.js (apenas front-end leve com TypeScript)
+[x] Integração Supabase SSR com chave padrão (NEXT_PUBLIC_SUPABASE_ANON_KEY)
+[x] Landing Page da Campanha Oficina de Atores Salvador (sob chancela EducART):
+    [x] Header simples com identidade EducART
+    [x] Seção de apresentação da Oficina (textos, foco em TV/Câmera, Palco e Desinibição)
+    [x] 4 Pilares da metodologia de formação de atores
+    [x] Chamadas para ação (CTAs) em destaque com links formatados
+    [x] Botões com link direto para WhatsApp com mensagem pré-formatada
+    [x] Telefones e canais de contato visíveis (DDD 71 Salvador)
+    [x] Box de informações da turma Salvador (local, vagas limitadas, certificado)
+    [x] Seção de FAQ (perguntas frequentes sobre o curso)
+    [x] Botão flutuante de WhatsApp responsivo (mobile e desktop)
+[x] Ajustes Imediatos de SEO & Contato da Campanha:
+    [x] Atualizar SEO e textos para Turma de Outubro com vagas limitadas
+    [x] Atualizar número oficial do WhatsApp para (71) 99143-5490 (71991435490) com coordenação Aline Nepomuceno
+    [x] Promoção Especial de Outubro: Isenção da taxa de matrícula até 10/10/2026 (R$ 0) e mensalidade de R$ 320,00
+    [x] Adequação legal estrita para "Curso Livre" e "Certificado de Conclusão de Curso Livre"
+    [x] Implementar botão de acessibilidade WCAG 2.1 AA / Section 508 (alto contraste refinado, zoom de fonte com ESC/clique fora)
+    [x] Implementar Modo Noturno / Visão Noturna integrado e persistente
+    [x] Destaque dinâmico e pulsante no menu e no Hero ("Turma de Outubro") apontando para o formulário
+    [x] Hero Section do Topo e do Rodapé em Full-Screen com centro nítido (rostos em destaque) e fade nas bordas
+    [x] Efeito artístico de manchas/pontos da marca EducART (amarelo, azul e vermelho) cobrindo fundos claros atrás dos cards
+[x] Deploy inicial na Vercel via GitHub:
+    [x] Inicializar repositório Git local e criar primeiro commit
+    [x] Conectar repositório remoto no GitHub e fazer push (main)
+    [x] Configurar projeto na Vercel apontando para o repositório e Root Directory `apps/web`
+    [x] Configurar variáveis de ambiente na Vercel (NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY)
+[x] Configuração e apontamento do domínio (educart.pro na Vercel via Nameservers ns1/ns2.vercel-dns.com na Hostinger)
+[ ] Teste e validação em produção da conversão via WhatsApp
+
+================================================================================
+FASE 1: MVP ESTRUTURADO (CAPTAÇÃO & ADMIN BÁSICO)
+Objetivo: Migrar captação para sistema próprio e estruturar o backend.
+================================================================================
+[ ] Infraestrutura Inicial do Backend & Banco:
+    [ ] Setup da API NestJS
+    [x] Conexão e migrations no banco de dados Supabase remoto via CLI (npm run migrate:up)
+    [x] Tabela `inscricoes_oficina` no Supabase com campos do formulário (migration SQL com restrição unique e RLS)
+    [ ] Pipeline de deploy no Google Cloud (GCloud / Cloud Run)
+[ ] Sistema Próprio de Inscrição da Oficina:
+    [x] Formulário dinâmico de cadastro (migração definitiva do Google Forms com multi-etapas):
+        - Objetivo (Ator profissional, Comunicação, Desenvolvimento pessoal, Outro)
+        - Data de Nascimento
+        - Nome Completo
+        - Endereço com bairro
+        - Cidade e Estado (Salvador/BA, Lauro de Freitas/BA, Camaçari/BA, Simões Filho/BA, Outro)
+        - Telefone (preferencialmente WhatsApp)
+        - Email
+        - Experiência prévia em Teatro, TV ou Cinema (Sim/Não e quais)
+        - Como ficou sabendo da EducART
+    [x] Informações de Investimento transparentes: Matrícula R$ 50 / Mensalidade R$ 320
+    [DESATIVADO] Exibição de dados bancários/PIX pessoais de pessoa física na página
+    [x] Armazenamento dos leads/inscritos diretamente no Supabase
+    [ ] Disparo de cópia dos dados da inscrição para lista de e-mails configurada
+    [x] Tela de confirmação / sucesso após o envio da inscrição
+    [x] Botão opcional pós-envio para falar no WhatsApp (71 99682-4505) e confirmar a vaga
+[x] Painel Administrativo Básico (V1):
+    [x] Autenticação simples de usuário (Admin com Supabase Auth em /admin/login)
+    [x] Dashboard para visualização das fichas e candidatos inscritos (/admin)
+    [x] Filtros de busca simples, alteração de status e exportação de dados (CSV)
+    [x] Integração oficial de métricas e tráfego com Google Analytics 4 (G-TXHZZG9RHB) via next/script
+[ ] Domínios Adicionais e Roteamento:
+    [ ] Configuração do domínio portaleducart.com.br
+    [ ] Redirecionamento de oficinadeatoressalvador.com.br
+    [ ] Ajustes de DNS/Cloudflare
+
+================================================================================
+FASE 2: ESTRUTURA DO PORTAL & VITRINE DE TALENTOS
+Objetivo: Transformar o site no portal EducART e inaugurar a Agência de Atores.
+================================================================================
+[ ] Arquitetura da Home EducART (Menu Dinâmico):
+    [ ] Navegação principal: Oficinas, Agência, Radar Cultural, Correio
+    [ ] Carrossel/Banners de destaques (campanhas e matrículas ativas)
+[ ] Agência (Elenco Digital V1):
+    [ ] Catálogo visual dos 40 alunos cadastrados
+    [ ] Perfil individual do Ator (foto de perfil, dados artísticos, galeria, monólogos/vídeos, portfólio)
+    [ ] Filtros de busca no elenco (idade, gênero, características)
+[ ] Radar Cultural (Vitrine V1):
+    [ ] Agenda de eventos e espetáculos culturais
+    [ ] Links externos para compra/informações e contatos
+[ ] Correio EducART:
+    [ ] Formulário público de envio de cartas/mensagens para a equipe
+    [ ] Seção no painel administrativo para leitura e gestão das mensagens
+
+================================================================================
+FASE 3: MONETIZAÇÃO, CURSOS & GESTÃO
+Objetivo: Automação financeira, área restrita e escala do negócio.
+================================================================================
+[ ] Módulo de Assinaturas & Pagamentos:
+    [ ] Integração com Gateway de Pagamento (Mercado Pago, Asaas ou Stripe)
+    [ ] Cobrança recorrente (R$ 25 / R$ 50)
+    [ ] Controle de inadimplência e identificação de participantes anteriores
+[ ] Área do Aluno / Acesso Restrito:
+    [ ] Autenticação de alunos
+    [ ] Acesso a materiais didáticos dos professores, capacitações e gravações
+[ ] Gestão de Oficinas (Marketplace V1):
+    [ ] Cadastro de oficinas de parceiros/terceiros
+    [ ] Cobrança automática de taxa de manutenção (R$ 25/mês)
+[ ] Radar Cultural V2:
+    [ ] Checkout próprio para venda de ingressos de peças e eventos no portal
+================================================================================
