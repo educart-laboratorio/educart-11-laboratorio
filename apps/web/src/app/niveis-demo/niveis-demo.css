@@ -1,0 +1,98 @@
+/* EducART: quatro níveis do artista — branco/preto e cores oficiais da logo */
+.lv-page{--lv-bg:#fff;--lv-fg:#15171d;--lv-muted:#5a6573;--lv-border:#dce1e8;--lv-card:#fff;--lv-alt:#f5f7f9;--lv-accent-text:#0b4dac;min-height:100vh;background:var(--lv-bg);color:var(--lv-fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+html.dark .lv-page{--lv-bg:#07080b;--lv-fg:#f9fafb;--lv-muted:#b3bfcc;--lv-border:#343d4b;--lv-card:#15191f;--lv-alt:#10141c;--lv-accent-text:#91bbff}
+.lv-page *{box-sizing:border-box}.lv-container{max-width:1180px;width:calc(100% - 36px);margin-inline:auto}
+.lv-header{background:var(--lv-card);border-bottom:1px solid var(--lv-border)}
+.lv-header-inner{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.lv-actions{display:flex;align-items:center;gap:20px}.lv-preview{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--lv-muted);font-weight:850}
+.lv-hero{position:relative;max-width:1000px;padding:86px 0 56px}
+.lv-eyebrow,.lv-overline{font-size:11px;letter-spacing:.16em;font-weight:850;color:var(--lv-accent-text);text-transform:uppercase}
+.lv-eyebrow{display:flex;align-items:center;gap:11px}.lv-eyebrow-dot{height:9px;width:9px;border-radius:50%;background:#f52b35;box-shadow:0 0 0 4px rgba(245,43,53,.15)}
+.lv-hero h1{font-size:clamp(2.5rem,6.4vw,5.5rem);line-height:1.05;letter-spacing:-.07em;margin:20px 0 22px;font-weight:900;max-width:930px}
+.lv-hero h1 em{font-style:normal;color:#0b4dac}
+html.dark .lv-hero h1 em{color:#f4bc5a}
+.lv-hero>p{font-size:clamp(1.02rem,1.8vw,1.2rem);color:var(--lv-muted);line-height:1.75;max-width:680px}
+.lv-colorbar{display:flex;width:160px;height:5px;gap:5px;margin-top:32px}
+.lv-colorbar i{height:100%;flex:1;border-radius:30px}.lv-colorbar i:first-child{background:#0b4dac}.lv-colorbar i:nth-child(2){background:#f4bc5a}.lv-colorbar i:last-child{background:#f52b35}
+.lv-notice{border:1px solid rgba(244,188,90,.53);background:rgba(244,188,90,.11);padding:16px 20px;border-radius:12px;color:var(--lv-fg);font-size:13px;line-height:1.6}
+.lv-notice strong{color:var(--lv-fg)}
+.lv-section{padding:66px 0 24px}.lv-section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:25px}
+.lv-section h2{font-size:clamp(1.55rem,3.3vw,2.45rem);font-weight:850;letter-spacing:-.045em;margin-top:8px}
+.lv-legend{color:var(--lv-muted);font-size:12px}
+.lv-tier-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.lv-tier-card{text-align:left;display:flex;flex-direction:column;min-width:0;min-height:320px;border-radius:17px;padding:24px 20px 21px;border:1px solid var(--lv-border);border-top:4px solid var(--lv-accent);background:var(--lv-card);color:var(--lv-fg);cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;box-shadow:0 10px 30px rgba(0,0,0,.03)}
+.lv-tier-card:hover{transform:translateY(-4px);border-color:var(--lv-accent)}
+.lv-tier-card:focus-visible{outline:3px solid var(--lv-accent);outline-offset:3px}
+.lv-tier-selected{box-shadow:0 0 0 1px var(--lv-accent),0 14px 40px rgba(0,0,0,.13);border-color:var(--lv-accent)}
+.lv-tier-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:27px}
+.lv-tier-number{font-size:12px;letter-spacing:.07em;font-weight:900;color:var(--lv-accent)}
+.lv-tier-tag{font-size:9px;line-height:1.4;letter-spacing:.05em;color:var(--lv-muted);font-weight:800;text-align:right}
+.lv-tier-name{font-size:clamp(1.2rem,2vw,1.5rem);font-weight:850;letter-spacing:-.05em;line-height:1.22}
+.lv-tier-sub{font-size:13px;line-height:1.55;color:var(--lv-muted);margin-top:13px;min-height:64px}
+.lv-tier-price{margin-top:auto;padding-top:20px;font-size:19px;font-weight:850;letter-spacing:-.035em}
+.lv-tier-price small{display:block;font-size:11px;color:var(--lv-muted);font-weight:500;margin-top:5px;letter-spacing:0}
+.lv-tier-more{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--lv-border);padding-top:15px;margin-top:18px;font-size:12px;font-weight:850;color:var(--lv-accent-text)}
+.lv-tier-more>span{font-size:18px}
+.lv-progression{display:flex;gap:6px;margin-top:20px}.lv-progression span{height:5px;flex:1;background:var(--lv-border);border-radius:30px}
+.lv-progression span.lv-on{background:linear-gradient(90deg,#0b4dac,#f4bc5a,#f52b35)}
+.lv-detail{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;padding:28px;margin-top:24px;border:1px solid var(--lv-border);border-radius:20px;background:var(--lv-alt);border-left:4px solid var(--lv-accent)}
+.lv-detail-main{padding:10px 12px 10px 6px}.lv-detail-main h3{font-size:clamp(1.7rem,3vw,2.5rem);letter-spacing:-.06em;margin:10px 0 9px}.lv-detail-main>p{color:var(--lv-muted);font-size:14px;line-height:1.65;max-width:570px}
+.lv-detail-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 18px;margin-top:28px}
+.lv-benefit{display:flex;align-items:flex-start;gap:9px;font-size:13px;font-weight:650;line-height:1.45}.lv-benefit>span:first-child{display:grid;place-items:center;flex:none;width:20px;height:20px;border:1px solid var(--lv-accent);border-radius:100%;color:var(--lv-accent);font-size:12px;font-weight:900}
+.lv-future{background:var(--lv-card);border:1px solid var(--lv-border);border-radius:15px;padding:25px}
+.lv-lock{display:flex;align-items:center;justify-content:center;font-size:28px;width:46px;height:46px;background:rgba(11,77,172,.12);color:var(--lv-accent-text);border-radius:12px}
+.lv-future h4{font-size:20px;letter-spacing:-.03em;margin:15px 0 10px}.lv-future p{color:var(--lv-muted);font-size:13px;line-height:1.6;margin-bottom:12px}
+.lv-future-foot{border-top:1px solid var(--lv-border);padding-top:15px;margin-top:18px;font-size:12px;font-weight:750;color:var(--lv-fg)}
+.lv-matrix-scroller{overflow-x:auto;border:1px solid var(--lv-border);border-radius:15px;background:var(--lv-card)}
+.lv-matrix{width:100%;border-collapse:collapse;table-layout:fixed;min-width:670px;font-size:13px}
+.lv-matrix th,.lv-matrix td{padding:17px 15px;text-align:center;border-bottom:1px solid var(--lv-border)}
+.lv-matrix th:first-child{width:32%;text-align:left}
+.lv-matrix thead th{background:var(--lv-alt);font-size:12px;font-weight:900}
+.lv-matrix tbody th{font-weight:670}
+.lv-matrix tbody tr:last-child th,.lv-matrix tbody tr:last-child td{border-bottom:0}
+.lv-matrix tbody td{color:var(--lv-muted)}
+.lv-fineprint{color:var(--lv-muted);font-size:12px;line-height:1.7;margin-top:16px}
+.lv-bottom{display:flex;justify-content:space-between;align-items:center;gap:25px;background:var(--lv-alt);border:1px solid var(--lv-border);padding:26px 30px;border-radius:17px;margin-top:46px}
+.lv-bottom p{font-size:20px;font-weight:850;margin:9px 0 5px}.lv-bottom small{font-size:12px;color:var(--lv-muted)}
+.lv-back{display:inline-flex;gap:16px;align-items:center;justify-content:center;color:#fff;background:#0b4dac;border-radius:11px;font-size:13px;font-weight:850;text-decoration:none;padding:14px 18px;white-space:nowrap}
+.lv-back:hover{background:#083a82}.lv-back:focus-visible{outline:3px solid #f4bc5a;outline-offset:3px}
+.lv-footer{margin:30px 0 0;padding:23px 0 38px;border-top:1px solid var(--lv-border);display:flex;justify-content:space-between;gap:15px;color:var(--lv-muted);font-size:12px}
+@media(max-width:980px){.lv-tier-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lv-tier-card{min-height:300px}.lv-detail{grid-template-columns:1fr}.lv-bottom{align-items:flex-start;flex-direction:column}}
+@media(max-width:580px){.lv-header-inner{min-height:75px}.lv-preview{display:none}.lv-hero{padding:55px 0 40px}.lv-tier-grid{gap:10px}.lv-tier-card{min-height:300px;padding:18px 14px}.lv-tier-name{font-size:1.13rem}.lv-tier-sub{font-size:12px}.lv-tier-price{font-size:16px}.lv-tier-tag{font-size:8px}.lv-detail{padding:20px}.lv-detail-list{grid-template-columns:1fr}.lv-section{padding:51px 0 10px}.lv-section-head{align-items:start;flex-direction:column}.lv-bottom{padding:22px}.lv-bottom p{font-size:17px}.lv-back{width:100%}.lv-footer{flex-direction:column}}
+html.high-contrast .lv-tier-card,html.high-contrast .lv-detail,html.high-contrast .lv-matrix-scroller{border-color:#ffff00!important}
+
+
+/* Modelo de remuneração responsável da Agência EducART: 10% por intermediação. */
+.lv-agency {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 220px;
+  gap: 24px;
+  align-items: center;
+  margin-top: 48px;
+  border: 1px solid var(--lv-border);
+  border-left: 5px solid #f52b35;
+  background: var(--lv-card);
+  border-radius: 18px;
+  padding: 32px;
+}
+.lv-agency h2 { font-size: clamp(1.5rem,2.7vw,2.5rem);line-height:1.15;letter-spacing:-.045em;max-width:730px;margin:12px 0 17px; }
+.lv-agency p { color: var(--lv-muted);font-size:14px;line-height:1.7;max-width:700px; }
+.lv-agency small { display:block;color:var(--lv-muted);font-size:12px;line-height:1.6;margin-top:14px; }
+.lv-agency-mark { display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:190px;background:var(--lv-alt);border:1px solid var(--lv-border);border-radius:16px;gap:7px;text-align:center; }
+.lv-agency-mark strong { color:var(--lv-fg);font-size:74px;font-weight:900;letter-spacing:-.085em;line-height:1; }
+.lv-agency-mark strong span { color:#f52b35;font-size:39px;letter-spacing:-.04em; }
+.lv-agency-mark > span { color:var(--lv-muted);font-size:10px;letter-spacing:.14em;font-weight:900; }
+@media(max-width:650px) { .lv-agency { grid-template-columns:1fr;padding:24px; }.lv-agency-mark {min-height:125px}.lv-agency-mark strong {font-size:53px}.lv-agency-mark strong span{font-size:30px}.lv-bottom p { overflow-wrap:anywhere; } }
+
+
+/* Linha do tempo: nascimento e continuidade do Perfil de Ator. */
+.lv-lifecycle { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:28px 0 4px; }
+.lv-lifecycle>div { display:flex;flex-direction:column;gap:12px;border:1px solid var(--lv-border);border-radius:14px;background:var(--lv-card);padding:20px 22px; }
+.lv-lifecycle strong { font-size:11px;letter-spacing:.08em;color:var(--lv-accent-text);font-weight:900; }
+.lv-lifecycle span { font-size:14px;font-weight:650;color:var(--lv-fg);line-height:1.5; }
+@media(max-width:680px) {.lv-lifecycle {grid-template-columns:1fr}.lv-lifecycle>div{gap:7px;padding:16px 18px}}
+
+/* Retorno direto ao novo menu da EducART. */
+.lv-back-home{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--lv-border);padding:9px 14px;border-radius:999px;color:var(--lv-fg);font-size:12px;line-height:1;font-weight:850;text-decoration:none;white-space:nowrap}
+.lv-back-home:hover,.lv-back-home:focus-visible{border-color:#f4bc5a;color:var(--lv-accent-text)}
+@media(max-width:580px){.lv-actions{gap:8px}.lv-back-home{font-size:11px;padding:9px 11px}}

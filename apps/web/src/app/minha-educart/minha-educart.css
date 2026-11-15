@@ -1,0 +1,50 @@
+/* Minha EducART · extensão visual da vitrine 1.0, sem alterar arquivos protegidos. */
+.me-root{--me-gold:#f4bc5a;--me-blue:#2563eb;--me-bg:#080d18;--me-panel:#141c2b;--me-muted:#b8c3d3;min-height:100svh;color:#f9fbff;background:radial-gradient(ellipse at top,#12376d55,transparent 58%),var(--me-bg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:84px}
+.me-root *{box-sizing:border-box}
+.me-header{border-bottom:1px solid #ffffff26;background:#0b111ebf;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(16px,4vw,56px)}
+.me-header a{color:#e8f2ff;text-decoration:none}
+.me-header a:hover{text-decoration:underline}
+.me-wrap{width:min(960px,100%);padding:42px 20px;margin:0 auto}
+.me-kicker{display:block;letter-spacing:.16em;font-size:11px;font-weight:850;color:var(--me-gold);text-transform:uppercase;margin:0 0 12px}
+.me-title{font-size:clamp(30px,5vw,51px);line-height:1.11;letter-spacing:-.05em;margin:4px 0 16px;color:#fff}
+.me-lead{color:var(--me-muted);line-height:1.65;max-width:650px;font-size:15px}
+.me-card{background:linear-gradient(150deg,#16233a,#101827);border:1px solid #ffffff2b;border-radius:22px;padding:clamp(19px,4vw,32px);margin:22px 0;box-shadow:0 16px 46px #0004}
+.me-card h2{font-size:22px;line-height:1.25;margin:0 0 12px;color:#fff}
+.me-card p{color:#cfdaed;line-height:1.55}
+.me-stack{display:grid;gap:14px}
+.me-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.me-label{font-size:13px;font-weight:750;display:block;margin:0 0 7px;color:#e9f0ff}
+.me-input{width:100%;min-height:46px;background:#090f1c;color:#fff;border:1px solid #61728e;border-radius:10px;padding:11px 13px;font:inherit}
+.me-input::placeholder{color:#9ba8bb}
+.me-button{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:46px;border:1px solid transparent;border-radius:10px;background:var(--me-gold);color:#111725;font-size:14px;font-weight:850;padding:10px 19px;text-decoration:none;cursor:pointer}
+.me-button:hover{background:#ffda8c}
+.me-button-secondary{background:transparent;border:1px solid #8597b7;color:#f9fbff}
+.me-button-secondary:hover{background:#ffffff1a}
+.me-button:disabled{opacity:.55;cursor:not-allowed}
+.me-root a:focus-visible,.me-root button:focus-visible,.me-root input:focus-visible{outline:3px solid var(--me-gold);outline-offset:4px}
+.me-state{border:1px solid #94abcc55;border-radius:12px;padding:12px 15px;margin:14px 0;color:#e5eefb;background:#11203a}
+.me-error{border-color:#ef9e9e;background:#401d29;color:#ffe1e1}
+.me-note{font-size:12px;color:#aebdd2}
+.me-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px}
+.me-meta div{border-radius:12px;background:#0c1629;padding:15px;border:1px solid #ffffff23}
+.me-meta dt{font-size:11px;color:#9fb0c7;text-transform:uppercase;letter-spacing:.04em}
+.me-meta dd{margin:7px 0 0;font-weight:750;font-size:15px;overflow-wrap:anywhere}
+.me-photo{max-width:260px;width:100%;aspect-ratio:3/4;border-radius:16px;background:#0b182c;border:1px dashed #a1b1cb;display:grid;place-items:center;overflow:hidden;color:#bbcae1;cursor:pointer}
+.me-photo img{height:100%;width:100%;object-fit:cover}
+.me-photo-line{display:flex;flex-wrap:wrap;align-items:start;gap:22px}
+.me-photo-panel{flex:1;min-width:min(250px,100%)}
+.me-photo-modal{position:fixed;inset:0;z-index:120;background:#050913ef;display:flex;align-items:center;justify-content:center;padding:22px}
+.me-photo-dialog{border:1px solid #5d728c;border-radius:18px;background:#0b1526;max-width:min(650px,100%);width:100%;padding:16px}
+.me-photo-dialog img{max-width:100%;max-height:68vh;object-fit:contain;display:block;margin:12px auto;border-radius:8px}
+.me-checkbox{display:flex;gap:10px;align-items:flex-start;color:#cdd9ec;font-size:13px;line-height:1.55}
+.me-checkbox input{width:19px;height:19px;flex:none;margin-top:2px}
+@media(max-width:620px){.me-grid{grid-template-columns:1fr}.me-header{align-items:flex-start}.me-wrap{padding-top:27px}.me-photo-line{display:block}}
+
+/* R12 — grade individual de 24 parcelas da Minha EducART, sem acesso de terceiros. */
+.me-parcelas{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;margin:12px 0}
+.me-parcela{display:grid;place-items:center;min-height:29px;border:1px solid #677b93;border-radius:6px;font-size:11px;font-weight:750;background:#304158;color:#f0f4f8}
+.me-parcela-paga{background:#17673d;border-color:#2f9c70}
+.me-parcela-vencida{background:#8b2d36;border-color:#d45e68}
+.me-parcela-pendente{background:#765b22;border-color:#b58c38}
+.me-parcela-futura,.me-parcela-sem_lancamento,.me-parcela-sem_plano,.me-parcela-cancelada{background:#304158;color:#d1ddec}
+@media(max-width:620px){.me-parcelas{gap:3px}.me-parcela{min-height:26px;font-size:10px}}
