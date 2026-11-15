@@ -63,7 +63,7 @@ function assertPrivate(res){
 }
 try{
   processChild=spawn('npx',[
-    '--yes','wrangler@4.149.0','dev','--local',
+    '--yes','wrangler@4.162.0','dev','--local',
     '--config',configFile,'--ip','127.0.0.1',
     '--port',String(port),'--inspector-port','9349',
   ],{
