@@ -1,0 +1,35 @@
+# GSI-R59: troca de domínio expressamente autorizada pela Direção em 15/11/2026.
+# Não altera Supabase, código do Worker production, Workers DNS ou a aplicação 1.1.
+# Somente atualiza a associação de Custom Domain existente e testa; rollback em falha.
+name: "EducART 1.1 | Trocar dominio oficial para candidata"
+on:
+  push:
+    branches:
+      - secretaria-11-candidate-online-20261115
+    paths:
+      - .github/workflows/educart-11-dominio-oficial-cutover.yml
+permissions:
+  contents: read
+concurrency:
+  group: educart-domain-cutover
+  cancel-in-progress: false
+jobs:
+  trocar-dominio:
+    if: github.repository == 'educart-laboratorio/educart-11-laboratorio' && contains(github.event.head_commit.message, '[domain-cutover-authorized]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: educart-11-candidate
+    env:
+      CLOUDFLARE_ACCOUNT_ID: '8fe5407b4d31f20e19a1388527e365ad'
+      CLOUDFLARE_API_TOKEN: ${{ secrets.EDUCART_CLOUDFLARE_CANDIDATE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar script de corte
+        run: node --check apps/web/scripts/cutover-educart-pro.mjs
+      - name: Executar corte reversivel, testar HTTP e recuperar se falhar
+        run: node apps/web/scripts/cutover-educart-pro.mjs
