@@ -1,0 +1,25 @@
+name: "EducART | Inspecao somente leitura do dominio"
+on:
+  push:
+    branches:
+      - secretaria-11-candidate-online-20261115
+    paths:
+      - .github/workflows/educart-11-probe-rota-prod.yml
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    environment: educart-11-candidate
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.EDUCART_CLOUDFLARE_CANDIDATE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check apps/web/scripts/probe-educart-pro-route.mjs
+      - run: node apps/web/scripts/probe-educart-pro-route.mjs
