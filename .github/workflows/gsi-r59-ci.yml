@@ -41,3 +41,5 @@ jobs:
         run: npm run build:vinext
       - name: Conferir artefato local
         run: test -s .cloudflare/output/v0/workers/default/bundle/index.js
+      - name: Empacotar Worker candidato em dry-run sem rede de deploy
+        run: node scripts/deploy-11-candidate.mjs --dry-run
