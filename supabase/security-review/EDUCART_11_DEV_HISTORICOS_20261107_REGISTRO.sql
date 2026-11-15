@@ -1,0 +1,24 @@
+-- EducART 1.1 / Build 19 NF — histórico de inscrições no Supabase DEV.
+-- REGISTRO DO ESTADO APLICADO EM 07/11/2026. NÃO REEXECUTAR SEM RECONCILIAR.
+-- Projeto DEV: esjrjzyvyhtzwgihcbsc. Produção não foi alterada.
+-- A tabela educart_contatos_historicos_dev foi criada e populada previamente:
+-- 539 inscrições, 537 vinculadas a pessoas, 89 identidades provisórias,
+-- 2 sem pessoa_id. Este arquivo documenta as alterações de segurança
+-- realizadas para o painel, não recria nem repopula a tabela.
+--
+-- RLS habilitado; grants anon inexistentes. Authenticated recebe SELECT
+-- apenas sob política de portal_admins + equipe_papeis (secretaria/coordenacao).
+-- UPDATE é restrito às colunas classificacao_legado/evidencia_legado e
+-- à Coordenação autenticada via RLS. Nenhum INSERT/DELETE concedido.
+--
+-- Políticas efetivamente aplicadas:
+-- educart_historicos_select_gestao_dev (SELECT authenticated)
+-- educart_historicos_update_coordenacao_dev (UPDATE authenticated)
+-- Constraints efetivamente aplicadas:
+-- educart_historicos_legado_confirmado_identidade_dev
+-- educart_historicos_evidencia_classificacao_dev
+--
+-- Nunca tratar formulário histórico como matrícula. Para classificar
+-- legado confirmado, pessoa_id deve existir, identidade não pode estar
+-- provisória e referência documental deve conter >=12 caracteres.
+-- Validar RLS e esquema DEV antes de uma futura migração.
