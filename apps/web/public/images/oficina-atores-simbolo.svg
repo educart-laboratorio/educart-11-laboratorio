@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="titulo desc">
+  <title id="titulo">Oficina de Atores Salvador</title>
+  <desc id="desc">Dois olhares estilizados em azul, símbolo da Oficina de Atores Salvador</desc>
+  <defs>
+    <linearGradient id="azul" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#28b7ff"/><stop offset=".52" stop-color="#0068ea"/><stop offset="1" stop-color="#1340b5"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#azul)" d="M20 88 C46 39 104 18 163 30 C209 39 240 74 251 111 L236 107 L217 110 C201 79 188 73 167 74 C118 80 76 107 20 88 Z"/>
+  <path fill="#061949" d="M20 88 C45 45 95 28 154 29 C177 30 198 38 212 50 C193 64 172 72 155 88 C107 127 54 115 20 88 Z"/>
+  <path fill="#fff" d="M107 28 L126 28 C122 43 128 50 119 60 C110 50 106 43 107 28 Z"/>
+  <circle fill="#fff" cx="76" cy="69" r="10"/>
+  <path fill="url(#azul)" d="M20 150 L46 150 C62 181 82 187 103 174 C138 151 176 134 234 153 C216 199 167 226 113 225 C64 222 36 197 20 150 Z"/>
+  <path fill="#061949" d="M53 199 C86 190 108 157 151 146 C181 138 211 144 235 154 C208 209 157 230 113 225 C84 222 65 213 53 199 Z"/>
+  <path fill="#fff" d="M126 224 L146 224 C145 208 138 203 134 198 C130 208 125 214 126 224 Z"/>
+  <circle fill="#fff" cx="184" cy="184" r="10"/>
+</svg>

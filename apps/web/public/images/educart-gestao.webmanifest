@@ -1,0 +1,25 @@
+{
+  "name": "EducART | Gestão",
+  "short_name": "EducART",
+  "description": "Gestão privada da EducART: cadastros, matrículas, turmas e mensalidades.",
+  "id": "/admin",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "background_color": "#0b1424",
+  "theme_color": "#0b1424",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/images/oficina-atores-simbolo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
