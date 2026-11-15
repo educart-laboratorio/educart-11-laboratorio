@@ -101,6 +101,22 @@ try{
   ];
   for(const c of cases){
     const res=await hit(c.route,c);
+    if(c.rsc&&res.status===307){
+      // Next/Vinext canonicalizes malformed RSC URLs with a 307 to add _rsc.
+      // This first response carries no private content: follow the canonical URL.
+      const location=res.headers.get('location');
+      assert(location,'Redirect RSC sem Location');
+      const nextURL=new URL(location,origin);
+      assert.equal(nextURL.origin,origin,'RSC redirecionou para outra origem');
+      assert.equal(nextURL.pathname,c.route,'RSC redirecionou para outra rota');
+      assert(nextURL.searchParams.has('_rsc'),'RSC 307 nao apresentou _rsc canonicalizado');
+      assert(!res.headers.has('set-cookie'),'RSC 307 alterou cookie sem autenticacao');
+      const next=await hit(nextURL.pathname+nextURL.search,c);
+      assert.equal(next.status,401,'RSC canonicalizado precisa negar acesso privado');
+      assertPrivate(next);
+      console.log('GSI-R59 WORKERD LOCAL PASS: rsc sem sessao HTTP 307 (_rsc) -> HTTP 401 privado');
+      continue;
+    }
     if(c.rsc){
       const loc=res.headers.get('location');
       const locPath=loc?new URL(loc,origin).pathname:'none';
