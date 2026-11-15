@@ -1,0 +1,39 @@
+name: "GSI-R59 | Worker Cloudflare local"
+on:
+  push:
+    branches:
+      - gsi-r59-ci-isolada-20261115
+    paths:
+      - .github/workflows/gsi-r59-workerd-local.yml
+permissions:
+  contents: read
+concurrency:
+  group: gsi-r59-workerd-local
+  cancel-in-progress: true
+jobs:
+  workerd-r50:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_SUPABASE_URL: https://esjrjzyvyhtzwgihcbsc.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_r59_chave_ficticia_sem_validade
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar dependencias sem scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verificar sintaxe do teste workerd
+        run: node --check scripts/testar-r59-worker-workerd-local.mjs
+      - name: Compilar R50 para Workers
+        run: npm run build:vinext
+      - name: Exercer Cloudflare workerd em 127.0.0.1 sem publicar
+        run: node scripts/testar-r59-worker-workerd-local.mjs
