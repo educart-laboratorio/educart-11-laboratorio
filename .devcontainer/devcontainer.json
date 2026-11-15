@@ -1,0 +1,21 @@
+{
+  "name": "EducART 1.1 — Homologação R07.4 | Navegador privado",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22-bookworm",
+  "workspaceFolder": "/workspaces/educart-portal",
+  "postCreateCommand": "cd apps/web && npm ci --ignore-scripts --no-audit --no-fund",
+  "postStartCommand": "node .devcontainer/start-r074.mjs",
+  "forwardPorts": [
+    3000
+  ],
+  "portsAttributes": {
+    "3000": {
+      "label": "EducART 1.1 — privado (não compartilhar)",
+      "onAutoForward": "openBrowser",
+      "protocol": "http"
+    }
+  },
+  "containerEnv": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://esjrjzyvyhtzwgihcbsc.supabase.co",
+    "EDUCART_PRIVATE_PREVIEW_MODE": "codespaces-private"
+  }
+}
