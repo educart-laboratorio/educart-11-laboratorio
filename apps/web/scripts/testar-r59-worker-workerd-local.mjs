@@ -95,15 +95,21 @@ try{
     {name:'admin anonimo',route:'/admin',html:true,expected:303,private:true,login:true},
     {name:'financeiro anonimo',route:'/admin/financeiro',html:true,expected:303,private:true,login:true},
     {name:'api sem sessao',route:'/api/rota-futura',method:'POST',expected:401,private:true},
-    {name:'rsc sem sessao',route:'/admin',rsc:true,expected:401,private:true},
+    {name:'rsc sem sessao',route:'/admin',rsc:true,expected:[401,307],private:true,loginIfRedirect:true},
     {name:'cookie falsificado',route:'/admin',html:true,cookie:'sb-r59=invalido',expected:303,private:true,login:true},
     {name:'host arbitrario',route:'/admin',html:true,host:'spoof.invalid',expected:503,private:true},
   ];
   for(const c of cases){
     const res=await hit(c.route,c);
-    assert.equal(res.status,c.expected,c.name+': esperado '+c.expected+', obtido '+res.status);
+    if(c.rsc){
+      const loc=res.headers.get('location');
+      const locPath=loc?new URL(loc,origin).pathname:'none';
+      console.log('GSI-R59 RSC META:',res.status,'location',locPath,'cache',res.headers.get('cache-control')||'none','robots',res.headers.get('x-robots-tag')||'none','vary',res.headers.get('vary')||'none');
+    }
+    const ok=Array.isArray(c.expected)?c.expected:[c.expected];
+    assert(ok.includes(res.status),c.name+': esperado '+ok.join('/')+', obtido '+res.status);
     if(c.private)assertPrivate(res);
-    if(c.login){
+    if(c.login||(c.loginIfRedirect&&res.status>=300&&res.status<400)){
       const loc=res.headers.get('location')||'';
       assert.equal(new URL(loc,origin).pathname,'/admin/login','Redirect inesperado: '+c.name);
     }

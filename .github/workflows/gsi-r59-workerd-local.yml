@@ -42,3 +42,4 @@ jobs:
       - name: Exercer Cloudflare workerd em 127.0.0.1 sem publicar
         run: node scripts/testar-r59-worker-workerd-local.mjs
 # rerun: Wrangler 4.162.0 para compatibilidade 2026-10-31
+# run: assert RSC 307 is safe and private; retain strict 401 alternative
