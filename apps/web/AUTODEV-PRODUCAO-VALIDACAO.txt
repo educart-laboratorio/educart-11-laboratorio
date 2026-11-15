@@ -1,0 +1,1 @@
+Nova compilacao do candidato funcional EducART para o Worker isolado educart-production. Sem publicacao no dominio oficial ate validacao.

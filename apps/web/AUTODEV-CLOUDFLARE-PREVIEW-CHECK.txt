@@ -1,0 +1,181 @@
+AutoDEV Cloudflare isolated preview build trigger, 2026-11-02.
+Source: EducART release candidate, sanitized for no user enrollments and no production admin credentials.
+Build: npm run build:vinext from apps/web.
+Target: educart-autodev-preview only, never educart.pro.
+
+Lockfile generated and validated by GitHub Actions on 2026-11-02; new isolated Cloudflare build requested.
+
+
+================================================================================
+12/11/2026 — PUBLICAÇÃO REAL DA CANDIDATA EDUCART 1.1 / REGISTRO DE RETOMADA
+================================================================================
+
+ESTADO: PUBLICADA NA CLOUDFLARE; FUNCIONAMENTO VISUAL E SEGURANÇA AINDA NÃO
+HOMOLOGADOS. NÃO CONFUNDIR COM O REGISTRO HISTÓRICO DE 02/11/2026 ACIMA.
+
+OBJETIVO E ISOLAMENTO
+- Repositório: educartsuporte-netizen/educart-portal (privado)
+- Branch autorizada: autodev-r07-estudantes-codespaces-private-20261106
+- PR #19: mantida sem merge na main.
+- Worker alvo EXCLUSIVO: educart-11-candidate.
+- Conta Cloudflare: 8fe5407b4d31f20e19a1388527e365ad.
+- URL publicada: https://educart-11-candidate.educartsuporte.workers.dev
+- Supabase DEV exclusivo: https://esjrjzyvyhtzwgihcbsc.supabase.co
+- Produção preservada: Worker educart-production; domínio educart.pro;
+  banco Supabase PROD doygnsubiitencoyzjzk. Nenhuma migração aplicada.
+
+CAMINHO QUE FUNCIONOU, SEM VERCEL E SEM MERGE
+1) O script apps/web/scripts/deploy-11-candidate.mjs já foi construído na
+   branch autorizada para recusar publicação fora do ambiente staging, fora da
+   conta Cloudflare permitida ou fora da URL Supabase DEV. O Wrangler temporário
+   usa nome educart-11-candidate, workers_dev=true, nunca educart-production.
+2) Um diagnóstico de GitHub Actions identificou que
+   CLOUDFLARE_API_TOKEN_HOMOLOG não tinha formato válido para a API. O token
+   CLOUDFLARE_API_TOKEN_ACCESS_HOMOLOG era ativo (verify HTTP 200), mas consultas
+   específicas a Worker/Access retornaram 403: não presumir permissão de deploy.
+3) A direção criou no painel da conta Cloudflare EducART um token específico
+   EducART-11-Candidate-Deploy (Account policy, Workers Scripts: Edit,
+   expiração em 11/12/2026). A direção o armazenou SOMENTE como GitHub Actions
+   Repository secret EDUCART_CLOUDFLARE_CANDIDATE_TOKEN. Nunca registrar seu
+   conteúdo em arquivo, commit, captura, chat ou log. Não conceder Admin.
+4) A conexão Supabase EducART permitiu consultar database-dev, confirmar
+   estado ACTIVE_HEALTHY e obter chave moderna publishable habilitada.
+   A chave é pública e foi usada com o URL do DEV no workflow; nenhuma chave
+   service_role nem credencial do PROD foi usada.
+5) O workflow .github/workflows/publicar-educart-11-candidate-cloudflare.yml
+   estava apenas na branch candidata. Como main não continha os workflows,
+   o comando workflow_dispatch não apareceu como opção manual na lista Actions.
+   A solução que funcionou foi acrescentar trigger push limitado:
+   - branch exata autodev-r07-estudantes-codespaces-private-20261106
+   - caminho do próprio workflow
+   - condição adicional no job: commit.message inclui [deploy-candidate-once].
+   Assim um push comum em arquivos da aplicação NÃO republica automaticamente.
+   Para repetir a publicação, verificar autorização vigente e CI; provocar
+   deliberadamente o gatilho apenas no caminho e branch autorizados.
+6) A primeira execução 43142686951 (commit d80d3b55) FALHOU:
+   working-directory apps/web foi aplicado antes do checkout e a pasta
+   ainda não existia no runner. Corrigido com actions/checkout@v4 ANTES de
+   qualquer run, no commit 0e542d13c82cf455083543c84077d1795a6c7c6b
+   (mensagem com o marcador [deploy-candidate-once]).
+7) EXECUÇÃO REAL DE SUCESSO: GitHub Actions 43142764533, commit 0e542d13,
+   conclusão success:
+   - npm ci --ignore-scripts --no-audit --no-fund (apps/web)
+   - node --check / guardas do script isolado
+   - npm run build:vinext com URL e chave publishable do Supabase DEV
+   - node scripts/deploy-11-candidate.mjs
+   - Wrangler 4.149.0 gerado via npx; configuração temporária apagada
+   - 46 arquivos enviados; logs: "Uploaded educart-11-candidate",
+     "Deployed educart-11-candidate triggers".
+   Link: https://github.com/educartsuporte-netizen/educart-portal/actions/runs/43142764533
+8) CI de preservação e build no mesmo SHA 0e542d13: run 43142764554,
+   conclusão success, sem substituir a necessidade de teste visual autenticado.
+   Link: https://github.com/educartsuporte-netizen/educart-portal/actions/runs/43142764554
+
+VERIFICAÇÃO POSTERIOR (NÃO OCULTAR A FALHA)
+- Commit 3747a809 incluiu verificação HTTP na CI 43143041776.
+- HTTP público observado:
+    /                    200
+    /admin/login         200
+    /minha-educart/login 200
+    /minha-educart       200 sem sessão
+- Job verificar-preview-isolada: FAILURE. O status HTTP 200 na rota estudantil
+  não prova leitura de dados privados: o componente usa Auth no cliente e as
+  consultas dependem de RLS. Contudo também NÃO comprova bloqueio no servidor.
+- A política de acesso atual de src/lib/security/preview-native-policy.ts
+  menciona o hostname historicamente protegido educart-11-homologacao, e
+  não o hostname novo educart-11-candidate. A proteção por Cloudflare Access
+  para o hostname novo NÃO foi demonstrada. O Worker está em workers.dev
+  público. Classificar como PENDÊNCIA DE SEGURANÇA antes da homologação.
+- A Fuzzy Zebra (Codespaces privado) e a prévia Cloudflare são ambientes
+  DIFERENTES; commit, HTTP 200 e CI não provam interface autenticada validada.
+
+CONTINUIDADE / LIPE / LEI DA ESCALADA
+- Preservar produção, banco, branches e manuais; não realizar merge cego.
+- Antes de novo deploy, reconciliar HEAD, CI e efeito no Worker candidato.
+- Prioridade: examinar acesso privado/Cloudflare Access e o comportamento
+  /minha-educart sem sessão; verificar Auth/RLS e interface em navegador.
+- Não usar o token antigo com 403 como se tivesse privilégio de escrita.
+- Token dedicado expira 11/12/2026; fazer renovação/revisão antes dessa data,
+  sem conceder privilégios de produção por conveniência.
+- Não declarar homologação nem liberar EducART 1.2 apenas com esta publicação.
+- Registro é um aditamento operacional ao arquivo existente, não substitui
+  LIPE, AGENTS.md, ABRACADABRA.md ou documentos normativos.
+================================================================================
+
+
+ATUALIZAÇÃO DE SEGURANÇA — 12/11/2026 (POSTERIOR À PUBLICAÇÃO INICIAL)
+- O hostname candidato foi incluído explicitamente na portaria existente
+  src/lib/security/preview-native-policy.ts, preservando a proteção
+  histórica do hostname educart-11-homologacao e dos demais ambientes.
+- O publicador isolado recebeu as variáveis de runtime exigidas pela portaria:
+  EDUCART_PRIVATE_PREVIEW_MODE=required e credenciais publishable DEV.
+  Essas variáveis se aplicam apenas a educart-11-candidate.
+- Testes sintéticos da portaria e proteção LIPE foram ajustados para a mudança
+  explicitamente autorizada e passaram no job de validação.
+- Re-deploy do Worker candidato: execução GitHub Actions 43144573711,
+  commit 055302dd, SUCCESS. Nenhuma mudança em producao.
+- Teste HTTP após re-deploy: GitHub Actions 43145172300,
+  commit b4817f34, TODOS OS JOBS SUCCESS. Respostas anônimas observadas:
+    /                    -> HTTP 303 (login)
+    /admin/login         -> HTTP 200 (formulário público)
+    /minha-educart/login -> HTTP 303 (login administrativo da candidata)
+    /minha-educart       -> HTTP 303 (login, sem página privada)
+    /admin com header RSC: 1 -> HTTP 307 normalizador, sequência
+      /admin?_rsc -> /admin/login -> /admin/login?_rsc,
+      resposta final HTTP 200 SOMENTE NA TELA PÚBLICA DE LOGIN.
+  A falha intermediária na verificação RSC decorria da suposição incorreta
+  de que o status final deveria ser 401, mesmo quando havia redirecionamento
+  para o formulário público. A asserção foi corrigida PARA EXIGIR cadeia
+  exata até o login, sem flexibilizar acesso ao painel privado.
+- Evidência: https://github.com/educartsuporte-netizen/educart-portal/actions/runs/43145172300
+- PENDENTE: validação em navegador autenticado e fluxos E2E, revisão de RLS
+  no Supabase DEV e confirmação de Access adicional se requerido.
+  CI+HTTP não equivalem a homologação formal.
+================================================================================
+
+
+AVANÇO DE 12/11/2026 — SUPABASE DEV REAL E ANTI-INDEXAÇÃO
+- Supabase DEV database-dev (esjrjzyvyhtzwgihcbsc), conta EducART:
+  leitura real de pg_class, pg_policies, privilégio de tabelas e funções;
+  nenhuma DDL, alteração de política, dado, conta ou migração realizada.
+- RLS ativo nas tabelas críticas examinadas: pessoas, matriculas,
+  portal_admins, equipe_papeis, mensalidades_formacao, educart_chamadas_dev,
+  educart_docentes_dev, turmas e formacoes; função e política reais revisadas.
+- Em todos os sete alvos de leitura sensível, anon não possui SELECT.
+  Execução SQL controlada sob role anon confirmou ERROR 42501 (pessoas).
+  Teste HTTP automatizado read-only diretamente no Supabase DEV registrou
+  HTTP 401 para pessoas, matriculas, portal_admins, equipe_papeis,
+  mensalidades_formacao, educart_chamadas_dev e educart_docentes_dev.
+  Nenhuma linha pessoal foi baixada ou registrada em log. Script:
+  apps/web/scripts/testar-rls-anonima-supabase-dev-11.mjs. Job:
+  validar-rls-anonima-dev no workflow existente.
+- RPC de perfil docente com token UUID inexistente retornou HTTP 200 + [],
+  sem revelar perfil. Função SECURITY DEFINER examinada: exige token ativo,
+  docente ativo, consentimento explícito e apresentação pública; devolve
+  apenas nome profissional, áreas, formação e apresentação pública.
+  A tabela educart_docente_links_dev mantém RLS sem policy de acesso direto.
+  Outras quatro funções SECURITY DEFINER apontadas pelo advisor contêm
+  guardas auth.uid(), portal_admins e papel coordenacao. Isso é inspeção
+  de código SQL, NÃO homologação de todos os ataques ou sessões autenticadas.
+- Advisor de segurança DEV em 12/11: alertas INFO RLS sem policy na tabela
+  de links, WARN funções SECURITY DEFINER acessíveis por roles permitidos,
+  e WARN "Leaked Password Protection Disabled" no Auth DEV. O último
+  alerta segue pendente de avaliação administrativa; não foi alterado.
+  Fonte: Supabase get_advisors security no projeto DEV.
+- O login público da candidata agora envia X-Robots-Tag noindex,
+  nofollow, noarchive e Cache-Control private, no-store, max-age=0,
+  sem mudar headers do domínio de produção. Patch mínimo em
+  apps/web/src/proxy.ts, teste sintético e guarda de hash LIPE aprovados.
+- Re-publicação ISOLADA comprovada: GitHub Actions run 43146669680,
+  commit b08deade, SUCCESS; Worker educart-11-candidate e mesma URL.
+  A verificação pós-deploy dentro do próprio job confirmou login HTTP 200,
+  anti-indexação e no-store, e /minha-educart anônimo HTTP 303.
+  Link: https://github.com/educartsuporte-netizen/educart-portal/actions/runs/43146669680
+- CI completo no SHA publicado b08deade: run 43146669654, TODOS OS JOBS
+  SUCCESS (incluindo conservação LIPE, tipos, build, HTTP e RLS anon DEV).
+  Link: https://github.com/educartsuporte-netizen/educart-portal/actions/runs/43146669654
+- PENDÊNCIAS: teste visual autenticado real da gestao, revisão do Auth DEV
+  (leaked-password protection), validação dos papéis autenticados em E2E,
+  revisão adicional de funções privilegiadas e decisão de homologação.
+  Não confundir com produção, Fuzzy Zebra sincronizada ou versão 1.2 liberada.
+================================================================================

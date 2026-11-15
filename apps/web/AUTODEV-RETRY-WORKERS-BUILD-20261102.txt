@@ -1,0 +1,1 @@
+Retentativa de compilacao apos falha de infraestrutura Cloudflare. Nenhuma alteracao funcional ou de producao.

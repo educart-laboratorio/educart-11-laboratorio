@@ -1,0 +1,10 @@
+{
+  "name": "@educart/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'NestJS API será inicializada na Fase 1'",
+    "build": "echo 'Build remoto da API'",
+    "start": "echo 'Start da API'"
+  }
+}
