@@ -72,7 +72,7 @@ try{
     '--config',configFile,'--ip','127.0.0.1',
     '--port',String(port),'--inspector-port','9349',
   ],{
-    cwd:process.cwd(),stdio:['ignore','pipe','pipe'],
+    cwd:process.cwd(),detached:true,stdio:['ignore','pipe','pipe'],
     env:{...process.env,CLOUDFLARE_ACCOUNT_ID:'',CLOUDFLARE_API_TOKEN:'',WRANGLER_SEND_METRICS:'false'},
   });
   processChild.on('error',err=>{spawnError=err;exited=true;capture(String(err));});
@@ -135,10 +135,20 @@ try{
   }
   console.log('GSI-R59: 10/10 HTTP reais em workerd local, sem deploy e sem credenciais reais.');
 } finally {
-  if(processChild&&!exited){
-    processChild.kill('SIGTERM');
-    await Promise.race([new Promise(resolve=>processChild.once('exit',resolve)),sleep(2000)]);
-    if(!exited)processChild.kill('SIGKILL');
+  if(processChild){
+    try { if(processChild.pid)process.kill(-processChild.pid,'SIGTERM'); }
+    catch (_error) { processChild.kill('SIGTERM'); }
+    processChild.stdout?.destroy();
+    processChild.stderr?.destroy();
+    await Promise.race([
+      new Promise(resolve=>exited?resolve():processChild.once('exit',resolve)),
+      sleep(1400),
+    ]);
+    if(!exited){
+      try { if(processChild.pid)process.kill(-processChild.pid,'SIGKILL'); }
+      catch (_error) { processChild.kill('SIGKILL'); }
+    }
+    processChild.unref();
   }
   fs.rmSync(configFile,{force:true});
 }
