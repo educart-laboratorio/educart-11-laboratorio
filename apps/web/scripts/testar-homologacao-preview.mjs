@@ -1,0 +1,51 @@
+/**
+ * EducART 1.1 — LIPE: pipeline de homologação sem publicação acidental.
+ * Os testes E2E são etapa externa com contas reais, não simulados aqui.
+ */
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const read=p=>readFileSync(p,'utf8');
+const runner=read('scripts/preparar-homologacao-cloudflare.mjs');
+const workflow=read('../../.github/workflows/homologacao-educart-11-isolada.yml');
+const root=read('src/app/layout.tsx');
+const admin=read('src/app/admin/page.tsx');
+const login=read('src/app/admin/login/page.tsx');
+const academic=read('src/components/AdminRotinaAcademicaLab.tsx');
+const original=read('scripts/deploy-worker.mjs');
+const name='educart-11-homologacao';
+const dev='esjrjzyvyhtzwgihcbsc';
+assert(runner.includes("const target='"+name+"'"),'Preview deve ter Worker próprio');
+assert(runner.includes("const project='"+dev+"'"),'Somente Supabase DEV');
+assert(!runner.includes("name:'educart-production'"),'Worker de produção proibido na prévia');
+assert(runner.includes("['educart-production','educart-autodev-preview']"),'Bloquear Workers existentes');
+assert(runner.includes("if(deploy){"),'Deploy é opt-in, não implícito');
+assert(runner.includes("EDUCART_HOMOLOG_ACCESS_CONFIRMED"),'Bloquear publicação sem Access');
+assert(runner.includes('verificar-access-homologacao.mjs'),'Deve comprovar Access por resposta HTTP real, não apenas variável');
+assert(runner.includes("EDUCART_HOMOLOG_DEPLOY_CONFIRMATION"),'Exigir confirmação de homologação');
+assert(runner.includes("sb_publishable_"),'Chave pública separada do DEV');
+assert(runner.includes("CLOUDFLARE_ACCOUNT_ID"),'Conta deve ser verificada');
+assert(runner.includes("['--dry-run']"),'Dry-run por padrão obrigatório');
+assert(!/routes:\s*\[|route:\s*['"]educart\.pro/.test(runner),'Nenhuma rota de produção');
+assert(workflow.includes("workflow_dispatch:"),'Não publicar em push automático');
+assert(!workflow.includes("  push:"),'Deploy de homologação não pode iniciar por push');
+assert(workflow.includes("github.ref_name == 'autodev-laboratorio-editavel-2026-11-03'"),'Só branch da 1.1');
+assert(workflow.includes("vars.EDUCART_DEV_SUPABASE_PUBLISHABLE_KEY"),'Credencial DEV só em variável do GitHub');
+assert(workflow.includes("gerenciar-access-homologacao.mjs --audit"),'Auditoria real da API Cloudflare Access obrigatoria');
+assert(workflow.includes("gerenciar-access-homologacao.mjs --ensure"),'Criacao de Access por API somente em modo manual');
+assert(workflow.includes("CLOUDFLARE_API_TOKEN_ACCESS_HOMOLOG"),'Token independente de Access, nunca segredo de deploy');
+assert(workflow.includes("secrets.CLOUDFLARE_API_TOKEN_HOMOLOG"),'Token específico de homologação');
+assert(!workflow.includes("secrets.CLOUDFLARE_API_TOKEN }}"),'Não usar token genérico de produção');
+assert(workflow.includes("scripts/testar-acessibilidade-global-admin.mjs"),'Acessibilidade do admin obrigatória');
+assert(workflow.includes("scripts/testar-r03-rbac-academico.mjs"),'RLS acadêmico obrigatório');
+assert(workflow.includes("scripts/testar-r03-rbac-dev.mjs"),'RLS de inscrições obrigatório');
+assert(workflow.includes("scripts/testar-r02-whatsapp.mjs"),'WhatsApp original obrigatório');
+assert(workflow.includes("scripts/testar-r01-baseline.mjs"),'LIPE obrigatória');
+assert(workflow.includes("npm run build:vinext"),'Build do aplicativo real obrigatório');
+assert(workflow.includes("inputs.etapa == 'deploy'"),'Publicação apenas via comando manual');
+assert(original.includes("name:'educart-production'"),'Referência produtiva deve permanecer preservada sem reuso');
+assert(root.includes('<AccessibilityWidget />')&&root.includes('<WhatsAppFlutuante />'),'Ferramentas globais 1.0 preservadas');
+assert(login.includes('obterPapeisGestao'),'Login por papel obrigatório');
+assert(admin.includes('<AdminRotinaAcademicaLab />')&&admin.includes("podeAlterarStatus"),'Painel Administrativo integralmente incluído');
+assert(academic.includes('Nenhum acesso a Supabase, pagamentos ou inscrições reais é efetuado aqui.'),'Acadêmico continua sintético');
+console.log('HOMOLOGAÇÃO PREPARADA — nome isolado, DEV, token específico, Cloudflare Access obrigatório, deploy manual, LIPE, WhatsApp e Painel Admin.');
+console.log('STATUS: apenas segurança/configuração do pipeline testadas; SEM prévia publicada e SEM login E2E.');
