@@ -1,0 +1,48 @@
+name: "AutoDEV | validar release funcional EducART sem deploy"
+on:
+  push:
+    branches: [autodev-producao-cloudflare-educart-2026-11-02, autodev-hotfix-mensagens-whatsapp-20261102]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Instalar dependencias deterministicas
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Testar elegibilidade da turma adulta (13 e 14 anos)
+        run: node --experimental-strip-types scripts/testar-idade-minima.mjs
+      - name: Conferir mensagens pré-preenchidas do WhatsApp
+        run: node --experimental-strip-types scripts/testar-mensagens-whatsapp.mjs
+      - name: Compilar Worker de producao sem publicar
+        run: npm run build:vinext
+      - name: Verificar bundle
+        run: test -f .cloudflare/output/v0/workers/default/bundle/index.js
+
+      - name: Diagnóstico do formato de saída Cloudflare (sem credenciais)
+        working-directory: apps/web
+        run: |
+          echo "### Build Output paths ###"
+          find .cloudflare/output -maxdepth 6 -type f | head -80
+          echo "### Cloudflare output config keys ###"
+          node -e "const fs=require('fs');for(const p of ['.cloudflare/output/v0/config.json','.cloudflare/output/v0/workers/default/worker.config.json']){if(fs.existsSync(p)){const o=JSON.parse(fs.readFileSync(p,'utf8'));console.log(p,JSON.stringify(Object.keys(o)));if(p.endsWith('worker.config.json')) console.log('worker fields:',JSON.stringify({name:o.name,compatibilityDate:o.compatibilityDate,assets:o.assets&&Object.keys(o.assets),env:o.env&&Object.keys(o.env)}));}}"
+          echo "### Manifest and config names ###"
+          find .cloudflare/output -maxdepth 7 -type f \( -name '*config*' -o -name '*manifest*' -o -name 'wrangler.json*' \) | head -60
+
+      - name: Testar empacotamento Wrangler sem publicar
+        working-directory: apps/web
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_dry_run_placeholder
+        run: npm run deploy:vinext -- --dry-run

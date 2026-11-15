@@ -1,0 +1,317 @@
+name: "AutoDEV | RG-01 - ensaio sintetico de backup e recuperacao"
+
+# Acionamento restrito: so quando ESTE arquivo mudar na branch autorizada.
+# Nao usa workflow_dispatch (indisponivel sem arquivo na branch padrao).
+on:
+  push:
+    branches:
+      - autodev-r07-estudantes-codespaces-private-20261106
+    paths:
+      - .github/workflows/educart-rg01-backup-restore-sintetico.yml
+
+permissions: {}
+
+concurrency:
+  group: autodev-rg01-ensaio-sintetico
+  cancel-in-progress: false
+
+jobs:
+  ensaio:
+    # Segundo limite: apenas commit deliberado com essa mensagem exata.
+    if: "github.event.head_commit.message == 'test(recovery): ensaio sintetico RG-01'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Preparar age validado no runner de teste
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends age
+          command -v age >/dev/null
+          command -v age-keygen >/dev/null
+          age --version
+
+      - name: Gerar exportar cifrar recuperar restaurar e comparar dados sinteticos
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          umask 077
+
+          LAB="$(mktemp -d "$RUNNER_TEMP/rg01.XXXXXXXX")"
+          CTR="rg01-ensaio-$$"
+          limpar() {
+            docker rm -f "$CTR" >/dev/null 2>&1 || true
+            rm -rf "$LAB"
+          }
+          trap limpar EXIT
+
+          # Sem checkout, secrets, Supabase, portas expostas, rede no container ou artefatos.
+          docker run --detach --rm --network none --name "$CTR" \
+            --env POSTGRES_PASSWORD=apenas-sintetico-rg01 postgres:16 >/dev/null
+          # pg_isready pode responder durante o servidor TEMPORARIO de initdb.
+          # Exigir que a inicializacao definitiva termine antes do primeiro SQL.
+          pronto=0
+          for tentativa in $(seq 1 60); do
+            if docker logs "$CTR" 2>&1 | grep -Fq 'PostgreSQL init process complete; ready for start up.'; then
+              if docker exec "$CTR" psql -U postgres -d postgres -XAtq \
+                -v ON_ERROR_STOP=1 -c 'SELECT 1' 2>/dev/null | grep -Fxq '1'; then
+                pronto=1
+                break
+              fi
+            fi
+            sleep 1
+          done
+          test "$pronto" = 1 || { echo "::error::PostgreSQL isolado nao concluiu inicializacao"; exit 1; }
+          docker exec "$CTR" pg_isready -U postgres -h /var/run/postgresql >/dev/null
+          docker exec "$CTR" psql -U postgres -d postgres -X -q -v ON_ERROR_STOP=1 \
+            -c 'CREATE ROLE rg01_leitor NOLOGIN;'
+          docker exec "$CTR" psql -U postgres -d postgres -X -q -v ON_ERROR_STOP=1 \
+            -c 'CREATE DATABASE rg01_origem;'
+          docker exec "$CTR" psql -U postgres -d postgres -X -q -v ON_ERROR_STOP=1 \
+            -c 'CREATE DATABASE rg01_restaurado;'
+
+          docker exec -i "$CTR" psql -U postgres -d rg01_origem -X -q -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE SCHEMA escola;
+          CREATE TABLE escola.turmas (
+            id integer PRIMARY KEY, codigo text NOT NULL UNIQUE
+          );
+          CREATE TABLE escola.pessoas (
+            id integer PRIMARY KEY, marcador text NOT NULL UNIQUE
+          );
+          CREATE TABLE escola.matriculas (
+            id integer PRIMARY KEY,
+            pessoa_id integer NOT NULL REFERENCES escola.pessoas(id),
+            turma_id integer NOT NULL REFERENCES escola.turmas(id),
+            situacao text NOT NULL CHECK (situacao IN ('pendente','ativa'))
+          );
+          INSERT INTO escola.turmas VALUES (101,'T-SINT-A'),(102,'T-SINT-B');
+          INSERT INTO escola.pessoas VALUES (1,'SINT-0001'),(2,'SINT-0002');
+          INSERT INTO escola.matriculas VALUES (501,1,101,'pendente'),(502,2,102,'ativa');
+          ALTER TABLE escola.pessoas ENABLE ROW LEVEL SECURITY;
+          CREATE POLICY leitura_sintetica ON escola.pessoas
+            FOR SELECT TO rg01_leitor USING (id = 1);
+          GRANT USAGE ON SCHEMA escola TO rg01_leitor;
+          GRANT SELECT ON escola.pessoas TO rg01_leitor;
+          CREATE FUNCTION escola.total_matriculas() RETURNS integer
+            LANGUAGE sql STABLE AS $$
+              SELECT COUNT(*)::integer FROM escola.matriculas;
+            $$;
+          SQL
+          echo "ETAPA 1/5: PostgreSQL e dados exclusivamente sinteticos criados."
+
+          # Formato customizado: inclui esquema, dados, grants, policy RLS e funcao.
+          docker exec "$CTR" pg_dump -U postgres --format=custom \
+            --dbname=rg01_origem > "$LAB/origem.dump"
+          test -s "$LAB/origem.dump"
+          HASH_ORIGINAL="$(sha256sum "$LAB/origem.dump" | cut -d' ' -f1)"
+          echo "ETAPA 2/5: pg_dump custom gerado."
+
+          # Chave efemera somente na memoria deste passo; nunca impressa.
+          export RG01_CHAVE
+          RG01_CHAVE="$(openssl rand -hex 32)"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -md sha256 \
+            -in "$LAB/origem.dump" -out "$LAB/cifrado.bin" -pass env:RG01_CHAVE
+          test -s "$LAB/cifrado.bin"
+          rm -f "$LAB/origem.dump"
+          test ! -e "$LAB/origem.dump"
+          echo "ETAPA 3/5: dump cifrado e original temporario descartado."
+
+          openssl enc -d -aes-256-cbc -salt -pbkdf2 -iter 200000 -md sha256 \
+            -in "$LAB/cifrado.bin" -out "$LAB/recuperado.dump" -pass env:RG01_CHAVE
+          unset RG01_CHAVE
+          HASH_RECUPERADO="$(sha256sum "$LAB/recuperado.dump" | cut -d' ' -f1)"
+          test "$HASH_ORIGINAL" = "$HASH_RECUPERADO"
+          echo "ETAPA 4/5: decifragem e hash SHA-256 identicos."
+
+          # Extensao isolada do ensaio: par assimetrico descartavel, ficticio.
+          # A etapa de CIFRAGEM usa apenas o destinatario PUBLICO.
+          age-keygen -o "$LAB/test.identity" 2>/dev/null
+          chmod 600 "$LAB/test.identity"
+          destinatario="$(age-keygen -y "$LAB/test.identity")"
+          test -n "$destinatario"
+          age -r "$destinatario" -o "$LAB/cifrado-age.age" "$LAB/recuperado.dump"
+          unset destinatario
+          test -s "$LAB/cifrado-age.age"
+          echo "AGE 1/3: dump sintetico cifrado apenas com chave PUBLICA; identidade privada de teste mantida separada."
+
+          docker exec -i "$CTR" pg_restore -U postgres --dbname=rg01_restaurado \
+            --exit-on-error < "$LAB/recuperado.dump"
+
+          CONSULTA="$(cat <<'SQL'
+          SELECT concat_ws('|',
+            (SELECT COUNT(*) FROM escola.pessoas),
+            (SELECT COUNT(*) FROM escola.turmas),
+            (SELECT COUNT(*) FROM escola.matriculas),
+            (SELECT md5(string_agg(id::text || ':' || marcador, ',' ORDER BY id))
+               FROM escola.pessoas),
+            (SELECT md5(string_agg(id::text || ':' || pessoa_id::text ||
+                ':' || turma_id::text || ':' || situacao, ',' ORDER BY id))
+               FROM escola.matriculas),
+            (SELECT relrowsecurity FROM pg_class
+               WHERE oid='escola.pessoas'::regclass),
+            (SELECT COUNT(*) FROM pg_policies
+               WHERE schemaname='escola' AND tablename='pessoas'),
+            (SELECT has_table_privilege('rg01_leitor','escola.pessoas','SELECT')),
+            (SELECT escola.total_matriculas())
+          );
+          SQL
+          )"
+          ORIGEM="$(docker exec "$CTR" psql -U postgres -d rg01_origem -XAtq \
+            -v ON_ERROR_STOP=1 -c "$CONSULTA")"
+          RESTAURADO="$(docker exec "$CTR" psql -U postgres -d rg01_restaurado -XAtq \
+            -v ON_ERROR_STOP=1 -c "$CONSULTA")"
+          test "$ORIGEM" = "$RESTAURADO"
+          [[ "$RESTAURADO" == 2\|2\|2\|* ]]
+          VISIVEIS="$(docker exec "$CTR" psql -U postgres -d rg01_restaurado -XAtq \
+            -v ON_ERROR_STOP=1 -c 'SET ROLE rg01_leitor; SELECT COUNT(*) FROM escola.pessoas;')"
+          test "$VISIVEIS" = "1"
+          echo "ETAPA 5/5: restauracao isolada e comparacao OK (2 pessoas, 2 turmas, 2 matriculas, FK, policy RLS, grants, funcao)."
+          echo "RG-01 sintetico APROVADO; nenhuma base da EducART foi acessada."
+          # Apenas o ARQUIVO CIFRADO passa para a etapa de retenção.
+          # A chave efemera e os dumps abertos já foram descartados.
+          install -m 600 "$LAB/cifrado.bin" "$RUNNER_TEMP/rg01-cifrado-sintetico.bin"
+          # Materiais de prova para outra VM. SOMENTE teste sintetico.
+          install -m 600 "$LAB/cifrado-age.age" "$RUNNER_TEMP/rg01-cifrado-age.age"
+          install -m 600 "$LAB/test.identity" "$RUNNER_TEMP/rg01-identidade-TESTE.txt"
+          printf '%s\n' "$HASH_RECUPERADO" > "$RUNNER_TEMP/rg01-origem.sha256"
+
+      - name: Custodia temporaria do CIPHERTEXT sintetico (sem chave)
+        uses: actions/upload-artifact@v4
+        with:
+          name: rg01-cifrado-sintetico
+          path: ${{ runner.temp }}/rg01-cifrado-sintetico.bin
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
+      - name: Reter somente ciphertext age e SHA sinteticamente verificavel
+        uses: actions/upload-artifact@v4
+        with:
+          name: rg01-age-ciphertext-teste
+          path: |
+            ${{ runner.temp }}/rg01-cifrado-age.age
+            ${{ runner.temp }}/rg01-origem.sha256
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
+      - name: Transferir identidade descartavel exclusivamente sintetica em artefato SEPARADO
+        uses: actions/upload-artifact@v4
+        with:
+          name: rg01-age-identidade-TESTE
+          path: ${{ runner.temp }}/rg01-identidade-TESTE.txt
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Limpar copias temporarias apos a transferencia
+        if: always()
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/rg01-cifrado-sintetico.bin"
+          rm -f "$RUNNER_TEMP/rg01-cifrado-age.age"
+          rm -f "$RUNNER_TEMP/rg01-identidade-TESTE.txt"
+          rm -f "$RUNNER_TEMP/rg01-origem.sha256"
+
+  recuperar_independente:
+    needs: ensaio
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Runner distinto, sem heranca de memoria, disco ou chaves do produtor.
+    # Identidade TESTE passa por artefato separado; isso seria PROIBIDO para chave real.
+    steps:
+      - name: Recuperar somente arquivo cifrado e hash do produtor
+        uses: actions/download-artifact@v4
+        with:
+          name: rg01-age-ciphertext-teste
+          path: ${{ runner.temp }}/rg01-cipher
+
+      - name: Recuperar somente identidade privada sintetica descartavel
+        uses: actions/download-artifact@v4
+        with:
+          name: rg01-age-identidade-TESTE
+          path: ${{ runner.temp }}/rg01-key-test
+
+      - name: Preparar age no segundo runner
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends age
+          age --version
+
+      - name: Decifrar restaurar e comparar sem contato com EducART
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          umask 077
+          LAB="$(mktemp -d "$RUNNER_TEMP/rg01-novo.XXXXXXXX")"
+          CTR="rg01-restaurar-$$"
+          cleanup() {
+            docker rm -f "$CTR" >/dev/null 2>&1 || true
+            rm -rf "$LAB" "$RUNNER_TEMP/rg01-cipher" "$RUNNER_TEMP/rg01-key-test"
+          }
+          trap cleanup EXIT
+          CIPHER="$RUNNER_TEMP/rg01-cipher/rg01-cifrado-age.age"
+          IDENTITY="$RUNNER_TEMP/rg01-key-test/rg01-identidade-TESTE.txt"
+          test -s "$CIPHER" && test -s "$IDENTITY"
+          chmod 600 "$IDENTITY"
+
+          age -d -i "$IDENTITY" -o "$LAB/recuperado.dump" "$CIPHER"
+          HASH="$(sha256sum "$LAB/recuperado.dump" | cut -d' ' -f1)"
+          EXPECTED="$(cat "$RUNNER_TEMP/rg01-cipher/rg01-origem.sha256")"
+          test "$HASH" = "$EXPECTED"
+          echo "AGE 2/3: novo runner decifrou com identidade TESTE; SHA-256 do dump coincide."
+
+          # Prova de autenticidade: adulterar um byte do ciphertext invalida a decifragem.
+          cp "$CIPHER" "$LAB/adulterado.age"
+          python3 - "$LAB/adulterado.age" <<'PY'
+          import pathlib,sys
+          path=pathlib.Path(sys.argv[1])
+          data=bytearray(path.read_bytes())
+          assert len(data)>50
+          data[-1]^=1
+          path.write_bytes(data)
+          PY
+          if age -d -i "$IDENTITY" -o "$LAB/nao-validado.dump" "$LAB/adulterado.age" >/dev/null 2>&1; then
+            echo "::error::Arquivo adulterado foi aceito indevidamente"
+            exit 1
+          fi
+
+          docker run -d --rm --network none --name "$CTR" \
+            -e POSTGRES_PASSWORD=apenas-sintetico-rg01 postgres:16 >/dev/null
+          pronto=0
+          for tentativa in $(seq 1 60); do
+            if docker logs "$CTR" 2>&1 | grep -Fq 'PostgreSQL init process complete; ready for start up.'; then
+              if docker exec "$CTR" psql -U postgres -d postgres -XAtq \
+                -v ON_ERROR_STOP=1 -c 'SELECT 1' 2>/dev/null | grep -Fxq '1'; then
+                pronto=1
+                break
+              fi
+            fi
+            sleep 1
+          done
+          test "$pronto" = 1
+          docker exec "$CTR" psql -U postgres -d postgres -Xq -v ON_ERROR_STOP=1 \
+            -c 'CREATE ROLE rg01_leitor NOLOGIN;'
+          docker exec "$CTR" psql -U postgres -d postgres -Xq -v ON_ERROR_STOP=1 \
+            -c 'CREATE DATABASE rg01_recuperacao;'
+          docker exec -i "$CTR" pg_restore -U postgres -d rg01_recuperacao \
+            --exit-on-error < "$LAB/recuperado.dump"
+          RESULT="$(docker exec "$CTR" psql -U postgres -d rg01_recuperacao -XAtq \
+            -v ON_ERROR_STOP=1 -c "SELECT concat_ws('|',
+              (SELECT count(*) FROM escola.pessoas),
+              (SELECT count(*) FROM escola.turmas),
+              (SELECT count(*) FROM escola.matriculas),
+              (SELECT count(*) FROM pg_constraint WHERE conrelid='escola.matriculas'::regclass AND contype='f'),
+              (SELECT relrowsecurity FROM pg_class WHERE oid='escola.pessoas'::regclass),
+              (SELECT count(*) FROM pg_policies WHERE schemaname='escola' AND tablename='pessoas'),
+              (SELECT has_table_privilege('rg01_leitor','escola.pessoas','SELECT')),
+              (SELECT escola.total_matriculas())
+            );")"
+          test "$RESULT" = '2|2|2|2|t|1|t|2'
+          VISIVEIS="$(docker exec "$CTR" psql -U postgres -d rg01_recuperacao -XAtq \
+            -v ON_ERROR_STOP=1 -c 'SET ROLE rg01_leitor; SELECT count(*) FROM escola.pessoas;')"
+          test "$VISIVEIS" = '1'
+          echo "AGE 3/3: restauração independente OK — 2 pessoas, 2 turmas, 2 matriculas, 2 FKs, RLS, GRANT, funcao e leitura filtrada."
+          echo "RG-01: dois runners independentes no MESMO workflow run; nenhum segredo real utilizado."

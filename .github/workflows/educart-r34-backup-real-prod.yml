@@ -1,0 +1,231 @@
+# Solicitacao da Direcao em 2026-11-14: executar backup real somente leitura antes de qualquer publicacao PROD.
+# Disparo controlado apos CI 43658707099 SUCCESS; normalizacao segura de senha testada.
+name: "AutoDEV | RG34 - backup real PROD cifrado e restauracao isolada"
+
+# Apenas na branch candidata e mediante gatilho deliberado. NUNCA implanta ou altera PROD.
+on:
+  push:
+    branches:
+      - autodev-r07-estudantes-codespaces-private-20261106
+    paths:
+      - .github/workflows/educart-r34-backup-real-prod.yml
+  workflow_dispatch:
+    inputs:
+      confirmacao:
+        description: "Digite BACKUP-REAL-RG34, sem colar senhas"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: educart-rg34-backup-real-prod
+  cancel-in-progress: false
+
+jobs:
+  backup-e-restauracao:
+    if: >-
+      github.ref_name == 'autodev-r07-estudantes-codespaces-private-20261106' &&
+      ((github.event_name == 'push' && github.event.head_commit.message == 'backup(r34): executar backup real controlado') ||
+      (github.event_name == 'workflow_dispatch' && inputs.confirmacao == 'BACKUP-REAL-RG34'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      PROD_DB_URL: ${{ secrets.EDUCART_PROD_BACKUP_DB_URL }}
+      BACKUP_PASSPHRASE: ${{ secrets.EDUCART_PROD_BACKUP_PASSPHRASE }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Portao de credenciais e destino exato (sem revelar segredos)
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          # Validar a identidade real do projeto no usuario do Session pooler,
+          # e nao uma simples substring na URI (que poderia estar no password/query).
+          python3 - <<'PY'
+          import os, re
+          from urllib.parse import quote, unquote, urlsplit
+          raw = os.environ.get("PROD_DB_URL", "").strip()
+          # A senha colada pode conter caracteres reservados; normalizar apenas
+          # quando a URI possuir a identidade exata do Session pooler PROD.
+          match = re.fullmatch(
+              r"(postgres(?:ql)?://postgres\.doygnsubiitencoyzjzk:)(.+)"
+              r"(@[a-z0-9.-]+\.pooler\.supabase\.com:5432/postgres)", raw,
+              flags=re.IGNORECASE | re.DOTALL)
+          if match and "\n" not in raw and "\r" not in raw:
+              password = unquote(match.group(2))
+              raw = match.group(1) + quote(password, safe="") + match.group(3)
+              with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as envfile:
+                  envfile.write("PROD_DB_URL=" + raw + "\n")
+          try:
+              u = urlsplit(raw)
+              pw = unquote(u.password or "")
+              assert u.scheme in ("postgres", "postgresql"), "Nao e uma URI postgresql://"
+              assert u.hostname and u.hostname.endswith(".pooler.supabase.com"), "Host nao e Session pooler do Supabase"
+              assert u.username == "postgres.doygnsubiitencoyzjzk", "Usuario nao corresponde ao projeto PROD"
+              assert u.port == 5432 and u.path == "/postgres", "Porta ou database divergente do Session pooler"
+              assert pw and pw != "[YOUR-PASSWORD]", "Senha real ausente; URI contem placeholder"
+          except AssertionError as e:
+              raise SystemExit("::error::" + str(e))
+          except ValueError:
+              raise SystemExit("::error::URI PostgreSQL malformada, com porta/encoding invalido")
+          PY
+          if test "${#BACKUP_PASSPHRASE}" -lt 32; then
+            echo "::error::Frase secreta de cifragem ausente ou com menos de 32 caracteres"
+            exit 1
+          fi
+          echo "Destino PROD validado, nenhuma credencial exibida. Nenhuma escrita no banco."
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 3.1.0
+
+      - name: Cliente PostgreSQL e area efemera privada
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          command -v psql >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client; }
+          install -d -m 700 "$RUNNER_TEMP/educart-rg34"
+          install -d -m 700 "$RUNNER_TEMP/educart-rg34-restauracao"
+          supabase --version
+          docker info --format '{{.ServerVersion}}' >/dev/null || {
+            echo "::error::Docker indisponivel para exportacao/restauracao local"; exit 1;
+          }
+
+      - name: Inventario somente leitura do PROD antes do dump
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          out="$RUNNER_TEMP/educart-rg34"
+          inventario=$(psql "$PROD_DB_URL" -X -A -t -q -v ON_ERROR_STOP=1 \
+            -c "SELECT (SELECT count(*) FROM auth.users), (SELECT count(*) FROM storage.objects), (SELECT count(*) FROM storage.buckets)" \
+            2>"$out/inventario.log") || {
+              echo "::error::Falha de conexao/autorizacao de leitura PROD"; exit 1;
+            }
+          IFS='|' read -r n_auth n_storage n_buckets <<< "$inventario"
+          [[ "$n_auth" =~ ^[0-9]+$ && "$n_storage" =~ ^[0-9]+$ && "$n_buckets" =~ ^[0-9]+$ ]] || {
+            echo "::error::Inventario PROD inconsistente"; exit 1;
+          }
+          test "$n_auth" -ge 1 || { echo "::error::Inventario Auth sem a conta esperada"; exit 1; }
+          # Backup SQL nao contem os bytes dos arquivos Storage; abortar em vez de prometer recuperacao.
+          test "$n_storage" -eq 0 || {
+            echo "::error::Storage possui arquivos; transferencia binaria e restore ainda nao implementados"; exit 1;
+          }
+          echo "Inventario PROD aprovado: Auth presente; nenhum arquivo binario Storage para transferir."
+
+      - name: Copia logica real de papeis, esquema e dados (somente leitura)
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          umask 077
+          out="$RUNNER_TEMP/educart-rg34"
+          if ! supabase db dump --db-url="$PROD_DB_URL" --role-only -f "$out/roles.sql" >"$out/roles.log" 2>&1; then
+            echo "::error::Copia de papeis falhou; consultar credencial e permissao sem imprimir logs sensiveis"; exit 1
+          fi
+          if ! supabase db dump --db-url="$PROD_DB_URL" -f "$out/schema.sql" >"$out/schema.log" 2>&1; then
+            echo "::error::Copia do esquema falhou"; exit 1
+          fi
+          if ! supabase db dump --db-url="$PROD_DB_URL" --data-only --use-copy -x "storage.buckets_vectors" -x "storage.vector_indexes" -f "$out/data.sql" >"$out/data.log" 2>&1; then
+            echo "::error::Copia dos dados falhou"; exit 1
+          fi
+          test -s "$out/roles.sql" && test -s "$out/schema.sql" && test -s "$out/data.sql"
+          # Em CLI v3 o dump de ESQUEMA omite auth/storage gerenciados, mas o dump
+          # --data-only deve conter auth.users; exigir prova antes de aceitar a copia.
+          grep -Eq '^COPY[[:space:]]+auth[.]users[[:space:]]' "$out/data.sql" || {
+            echo "::error::Dump nao inclui os dados do usuario Auth; copia incompleta"; exit 1;
+          }
+          rm -f "$out/"*.log
+          echo "Tres arquivos logicos reais criados; bloco Auth no dump confirmado."
+
+      - name: Restauracao independente de PROD em Supabase local descartavel
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          out="$RUNNER_TEMP/educart-rg34"
+          restauracao="$RUNNER_TEMP/educart-rg34-restauracao"
+          supabase init --workdir "$restauracao" >"$out/restore-init.log" 2>&1 || {
+            echo "::error::Inicializacao de restauracao local falhou"; exit 1;
+          }
+          (cd "$restauracao" && supabase start) >"$out/restore-start.log" 2>&1 || {
+            echo "::error::Supabase local nao iniciou"; exit 1;
+          }
+          if ! psql --single-transaction --variable ON_ERROR_STOP=1 \
+            --file "$out/roles.sql" --file "$out/schema.sql" \
+            --command 'SET session_replication_role = replica' --file "$out/data.sql" \
+            --dbname 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' \
+            >"$out/restore-psql.log" 2>&1; then
+              echo "::error::Restauração da cópia real falhou no banco descartavel. NENHUMA alteracao em PROD."
+              exit 1
+          fi
+          # Contar apenas registros e papeis; nao imprimir qualquer dado pessoal.
+          # Comparar contagens e identidade Auth por digest em memoria, sem imprimir UUIDs ou dados.
+          consulta="SELECT
+             (SELECT count(*) FROM public.inscricoes_oficina),
+             (SELECT count(*) FROM public.portal_admins),
+             (SELECT count(*) FROM public.perfis_administrativos_oficina),
+             (SELECT count(*) FROM auth.users),
+             (SELECT count(*) FROM auth.identities),
+             (SELECT count(*) FROM storage.buckets),
+             (SELECT count(*) FROM storage.objects),
+             (SELECT md5(coalesce(string_agg(id::text, ',' ORDER BY id),'')) FROM auth.users)"
+          original=$(psql "$PROD_DB_URL" -Atq -v ON_ERROR_STOP=1 -c "$consulta" 2>"$out/consulta-prod.log") || {
+            echo "::error::Verificacao read-only do PROD falhou"; exit 1;
+          }
+          restaurado=$(psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' \
+            -Atq -v ON_ERROR_STOP=1 -c "$consulta" 2>"$out/consulta-local.log") || {
+            echo "::error::Contagem da restauracao isolada falhou"; exit 1;
+          }
+          test "$original" = "$restaurado" || {
+            echo "::error::Contagens diferentes entre copia PROD e restauracao isolada"; exit 1;
+          }
+          auth_restored=$(printf '%s' "$restaurado" | cut -d'|' -f4)
+          test "$auth_restored" -ge 1 || {
+            echo "::error::Restauracao sem usuario Auth"; exit 1;
+          }
+          echo "RG34 RESTAURADO: inscricoes, administradores, Auth (identidades) e metadados Storage coincidem."
+          # Testar permanencia das protecoes da aplicacao.
+          rls=$(psql 'postgresql://postgres:postgres@127.0.0.1:54322/postgres' -Atq -v ON_ERROR_STOP=1 \
+            -c "select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relname in ('inscricoes_oficina','portal_admins','perfis_administrativos_oficina') and c.relrowsecurity" 2>"$out/rls.log")
+          test "$rls" = 3 || { echo "::error::RLS do legado nao foi preservado"; exit 1; }
+          rm -f "$out/"*.log
+          echo "RLS dos tres objetos do legado comprovado em banco descartavel."
+
+      - name: Cifrar e verificar arquivo de recuperacao antes de qualquer transferencia
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          umask 077
+          out="$RUNNER_TEMP/educart-rg34"
+          tar -C "$out" -czf "$out/arquivo-aberto.tar.gz" roles.sql schema.sql data.sql
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 400000 -md sha256 \
+            -in "$out/arquivo-aberto.tar.gz" -out "$out/educart-prod-rg34.tar.gz.enc" \
+            -pass env:BACKUP_PASSPHRASE
+          openssl enc -d -aes-256-cbc -salt -pbkdf2 -iter 400000 -md sha256 \
+            -in "$out/educart-prod-rg34.tar.gz.enc" -out "$out/verificado.tar.gz" \
+            -pass env:BACKUP_PASSPHRASE
+          cmp -s "$out/arquivo-aberto.tar.gz" "$out/verificado.tar.gz"
+          (cd "$out" && sha256sum educart-prod-rg34.tar.gz.enc > educart-prod-rg34.sha256)
+          rm -f "$out/roles.sql" "$out/schema.sql" "$out/data.sql" \
+                "$out/arquivo-aberto.tar.gz" "$out/verificado.tar.gz"
+          echo "Arquivo cifrado, decifrado e comparado; nenhuma versao aberta sera publicada."
+
+      - name: Guardar SOMENTE o backup cifrado e hash privado por 7 dias
+        uses: actions/upload-artifact@v4
+        with:
+          name: educart-prod-rg34-backup-cifrado
+          path: |
+            ${{ runner.temp }}/educart-rg34/educart-prod-rg34.tar.gz.enc
+            ${{ runner.temp }}/educart-rg34/educart-prod-rg34.sha256
+          retention-days: 7
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Limpeza de arquivos e containers descartaveis
+        if: always()
+        shell: bash
+        run: |
+          rm -rf "$RUNNER_TEMP/educart-rg34" "$RUNNER_TEMP/educart-rg34-restauracao"
+          echo "Ambiente efemero de backup removido."

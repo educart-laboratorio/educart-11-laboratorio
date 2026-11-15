@@ -1,0 +1,351 @@
+name: "AutoDEV | EducART 1.1 consolidacao interna (sem deploy)"
+on:
+  push:
+    branches:
+      - autodev-r07-estudantes-codespaces-private-20261106
+  workflow_dispatch:
+
+# Evitar consumir minutos repetindo uma validacao substituida por novo push.
+# Execucoes manuais ficam independentes e nao sao canceladas automaticamente.
+concurrency:
+  group: educart-11-ci-${{ github.ref }}-${{ github.event_name == 'push' && 'push' || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
+permissions:
+  contents: read
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Dependencias travadas
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Validar publicador isolado Cloudflare sem publicar
+        run: |
+          node --check scripts/deploy-worker.mjs
+          node --check scripts/deploy-11-candidate.mjs
+          node --input-type=module -e "import fs from 'node:fs'; import assert from 'node:assert/strict'; const s=fs.readFileSync('scripts/deploy-11-candidate.mjs','utf8'); assert.match(s,/educart-11-candidate/); assert.match(s,/EDUCART_DEPLOY_TARGET/); assert.match(s,/esjrjzyvyhtzwgihcbsc/); assert.doesNotMatch(s,/name:'educart-production'/); assert.doesNotMatch(s,/keep_vars\\s*:\\s*true/); assert.match(s,/account_id:'8fe5407b4d31f20e19a1388527e365ad'/);"
+      - name: LIPE, integracao, seguranca e funcoes
+        run: |
+          node scripts/testar-r01-baseline.mjs
+          # Testes de preservacao/RBAC trazidos da esteira de laboratorio historica.
+          node scripts/testar-lei-preservacao.mjs
+          node scripts/testar-contrato-inscricao-r18.mjs
+          node --experimental-strip-types scripts/testar-idade-minima.mjs
+          node --experimental-strip-types scripts/testar-mensagens-whatsapp.mjs
+          node --experimental-strip-types scripts/testar-whatsapp-contextual.mjs
+          node scripts/testar-acessibilidade-global-admin.mjs
+          node --experimental-strip-types scripts/testar-r03-seguranca-admin.mjs
+          # Testes R03 de proposta/módulo acadêmico sintético foram superados
+          # pelo esquema DEV e testes de R07/R11/R13 da candidata abaixo.
+          # Permanecem versionados; não rodar invariantes pré-migração em CI vigente.
+          node --experimental-strip-types scripts/testar-r02-whatsapp.mjs
+          node --experimental-strip-types scripts/testar-r05-adimplencia-dev.mjs
+          node --experimental-strip-types scripts/testar-r07-portaria-nativa.mjs
+          node --experimental-strip-types scripts/testar-candidate-formularios-r41.mjs
+          node --experimental-strip-types scripts/testar-r42-complemento-propostas.mjs
+          node --experimental-strip-types scripts/testar-r43-portaria-oficial.mjs
+          node --experimental-vm-modules scripts/testar-r07-proxy-execucao.mjs
+          node scripts/testar-consolidacao-interna-11.mjs
+          node scripts/testar-planejamento-formacao-turma-11.mjs
+          node --experimental-strip-types scripts/testar-percursos-cadastro-turma-r19.mjs
+          node --experimental-strip-types scripts/testar-protecao-cadastro-a1.mjs
+          node scripts/testar-academico-seis-areas-r15.mjs
+          node scripts/testar-r26-busca-tarefa-desktop.mjs
+          node scripts/testar-ingresso-simples-r27.mjs
+          node scripts/testar-educart-popups-r28.mjs
+          node --experimental-strip-types scripts/testar-educart-ciclo-r31.mjs
+          node scripts/testar-homologacao-gate-r29.mjs
+          node scripts/testar-r34-backup-real.mjs
+          node scripts/testar-educart-app-chrome-r30.mjs
+          node scripts/testar-unificacao-dia-07-11.mjs
+          node --experimental-strip-types scripts/testar-visualizacao-perfis-r16.mjs
+          node scripts/testar-vinculo-estudante-turma-r12.mjs
+          node scripts/testar-turma-historica-r12.mjs
+          node scripts/testar-integridade-matriculas-r12.mjs
+          node scripts/testar-minha-educart-agenda-financeiro-r12.mjs
+          node --experimental-strip-types scripts/testar-extrato-individual-r123.mjs
+          node scripts/testar-atendimento-r12.mjs
+          node --experimental-strip-types scripts/testar-gestao-inscricoes-r14.mjs
+          node scripts/testar-ajustes-aulas-r12.mjs
+          node --experimental-strip-types scripts/testar-horarios-aulas-turma-r122.mjs
+          node scripts/testar-recuperacao-minha-educart-r12.mjs
+          node scripts/testar-r13-contrato-lab.mjs
+          node scripts/testar-r13-provisionamento-auth.mjs
+          node scripts/testar-r13-autenticacao-sem-vinculo.mjs
+          node scripts/testar-r13-planos-ativos-rle.mjs
+          node --experimental-strip-types scripts/testar-r08-acesso-unificado.mjs
+          node scripts/testar-fuzzy-autosync-r17.mjs
+          node scripts/testar-ajuda-contextual-admin-11.mjs
+          node scripts/testar-acessos-home-11.mjs
+          node scripts/testar-catalogo-cartazes-conhecer-r32.mjs
+          node --experimental-strip-types scripts/testar-r11-modelo-financeiro-24.mjs
+          node --experimental-strip-types scripts/testar-resumo-financeiro-r115.mjs
+          node scripts/testar-r11-financeiro-essencial.mjs
+          node --experimental-strip-types scripts/testar-integracao-educart-11.mjs
+          node --experimental-strip-types scripts/testar-matricula-unificada-12.mjs
+          node --experimental-strip-types scripts/testar-blindagem-pix-legado-12.mjs
+          node --experimental-strip-types scripts/testar-email-minha-educart-12.mjs
+          node --experimental-strip-types scripts/testar-portal-legado-11.mjs
+          node --experimental-strip-types scripts/testar-pre-matriculas-11.mjs
+          node --experimental-strip-types scripts/testar-financeiro-11.mjs
+          node --experimental-strip-types scripts/testar-ressalvas-11.mjs
+      - name: Tipos
+        run: npx tsc --noEmit
+      - name: R07.4 Codespaces - inicializador completo na branch consolidada (HTTP 200 privado)
+        # Pull requests usam checkout detached de merge sintético, incompatível com a allowlist do inicializador.
+        # Teste real da branch permitida ocorre em push/workflow_dispatch; em PR, a portaria é validada pelos testes puros.
+        if: github.event_name != 'pull_request' && github.ref_name == 'autodev-r07-estudantes-codespaces-private-20261106'
+        env:
+          CODESPACES: "true"
+          CODESPACE_NAME: educart-r074-consolidado-ci
+          GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN: app.github.dev
+          NEXT_PUBLIC_SUPABASE_URL: https://esjrjzyvyhtzwgihcbsc.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_educart_ci_synthetic_only_20261105
+        run: |
+          cd ../..
+          trap 'fuser -k 3000/tcp >/dev/null 2>&1 || true' EXIT
+          timeout 150s node .devcontainer/start-r074.mjs
+          codigo=$(curl --max-time 8 -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://127.0.0.1:3000/admin/login)
+          test "$codigo" = "200" || { echo "::error::Login Codespaces sintetico retornou HTTP $codigo"; exit 1; }
+          if test "${{ github.ref_name }}" = "autodev-r07-estudantes-codespaces-private-20261106"; then
+            estudante=$(curl --max-time 8 -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://127.0.0.1:3000/minha-educart/login)
+            convite=$(curl --max-time 8 -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' 'http://127.0.0.1:3000/minha-educart/ativar?convite=01234567-89ab-4cde-8f01-234567890abc')
+            historico=$(curl --max-time 8 -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://127.0.0.1:3000/minha-educart)
+            test "$estudante" = "200" || { echo "::error::Login estudantil HTTP $estudante"; exit 1; }
+            test "$convite" = "200" || { echo "::error::Convite antes do login HTTP $convite"; exit 1; }
+            test "$historico" = "303" || { echo "::error::Historico sem sessao HTTP $historico"; exit 1; }
+            echo "R07.6 HTTP OK: login e convite 200, historico sem sessao 303. Sem contas reais, sem deploy."
+          fi
+          echo "R07.4 OK: inicializador real, login institucional HTTP 200, sem deploy."
+      - name: Build real sem publicacao
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://esjrjzyvyhtzwgihcbsc.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_placeholder
+        run: npm run build:vinext
+      - name: Verificar bundle DEV
+        run: test -s .cloudflare/output/v0/workers/default/bundle/index.js
+      - name: Build em modo PROD protegido sem deploy
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://doygnsubiitencoyzjzk.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_placeholder
+        run: |
+          npm run build:vinext
+          test -s .cloudflare/output/v0/workers/default/bundle/index.js
+          echo "Build PROD-mode compilada sem autenticar usuários ou publicar."
+      - name: Garantir bloqueio de publicadores
+        run: |
+          if node scripts/deploy-preview-publico.mjs --deploy; then exit 1; fi
+          if node scripts/preparar-homologacao-cloudflare.mjs --deploy; then exit 1; fi
+          if node scripts/deploy-worker.mjs; then exit 1; fi
+          echo "OK: todos os publicadores negados; nenhum deploy."
+  preparar-publicacao-cloudflare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verificar prerequisitos sem publicar
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_ACCESS_HOMOLOG }}
+          DEV_KEY: ${{ secrets.EDUCART_DEV_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if test -n "$CF_TOKEN"; then echo "Cloudflare: credencial disponivel"; else echo "::error::Credencial Cloudflare ausente"; exit 1; fi
+          case "$DEV_KEY" in
+            sb_publishable_*) echo "Supabase DEV: chave publicavel disponivel" ;;
+            *) echo "::notice::Supabase DEV: chave publicavel nao configurada neste nome de segredo" ;;
+          esac
+  auditar-permissoes-candidata-r29:
+    name: Verificar permissões e Access antes de publicar V4 (GET, sem deploy)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Ler somente metadados do Worker e Access sem segredos
+        env:
+          CF_CANDIDATE_TOKEN: ${{ secrets.EDUCART_CLOUDFLARE_CANDIDATE_TOKEN }}
+          CF_ACCESS_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_ACCESS_HOMOLOG }}
+        run: node apps/web/scripts/auditar-cloudflare-candidate-r29.mjs
+
+  auditar-exposicao-candidata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspecionar Worker candidato e controles de acesso sem alterar nada
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_ACCESS_HOMOLOG }}
+        run: |
+          set -euo pipefail
+          account=8fe5407b4d31f20e19a1388527e365ad
+          for endpoint in "workers/scripts/educart-11-candidate" "access/apps"; do
+            code=$(curl --silent --show-error --max-time 20 -o /tmp/cf-audit.json -w '%{http_code}' -H "Authorization: Bearer $CF_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$account/$endpoint") || code=network_error
+            echo "$endpoint: HTTP $code"
+            if test "$endpoint" = access/apps && test "$code" = 200; then
+              node -e "const j=require('/tmp/cf-audit.json'); const a=Array.isArray(j.result)?j.result:[];console.log('Access apps: '+a.length);for(const x of a){const d=String(x.domain||'');if(d.includes('educart')||d.includes('candidate'))console.log('Access app: '+String(x.name||'')+' domain='+d)}"
+            fi
+          done
+          rm -f /tmp/cf-audit.json
+  diagnosticar-cloudflare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verificar ambos os segredos de homologacao sem deploy
+        env:
+          CF_HOMOLOG: ${{ secrets.CLOUDFLARE_API_TOKEN_HOMOLOG }}
+          CF_ACCESS: ${{ secrets.CLOUDFLARE_API_TOKEN_ACCESS_HOMOLOG }}
+        run: |
+          set -euo pipefail
+          for candidate in HOMOLOG ACCESS; do
+            if test "$candidate" = HOMOLOG; then token="$CF_HOMOLOG"; else token="$CF_ACCESS"; fi
+            if test -z "$token"; then
+              echo "$candidate: segredo ausente"
+              continue
+            fi
+            token=$(printf '%s' "$token" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+            if ! printf '%s' "$token" | grep -Eq '^[A-Za-z0-9_-]{20,}$'; then
+              echo "$candidate: formato nao reconhecido como token API"
+              continue
+            fi
+            status=$(curl --silent --show-error --max-time 20 --output /tmp/cf-verify.json --write-out '%{http_code}' -H "Authorization: Bearer $token" https://api.cloudflare.com/client/v4/user/tokens/verify) || { echo "$candidate: falha de conexao"; continue; }
+            RESULT_FILE=/tmp/cf-verify.json CANDIDATE="$candidate" HTTP_STATUS="$status" node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync(process.env.RESULT_FILE,'utf8'));console.log(process.env.CANDIDATE+': HTTP '+process.env.HTTP_STATUS+', success='+Boolean(j.success)+', status='+(j.result?.status||'unknown'));"
+            rm -f /tmp/cf-verify.json
+            if test "$candidate" = ACCESS && test "$status" = 200; then
+              worker_http=$(curl --silent --show-error --max-time 20 --output /tmp/cf-workers.json --write-out '%{http_code}' -H "Authorization: Bearer $token" "https://api.cloudflare.com/client/v4/accounts/8fe5407b4d31f20e19a1388527e365ad/workers/scripts") || worker_http=network_error
+              if test "$worker_http" = 200; then
+                echo "ACCESS: conta Workers consultavel (HTTP 200); nenhuma publicacao executada"
+              else
+                echo "ACCESS: consulta Workers HTTP $worker_http; acesso a conta nao confirmado"
+              fi
+              rm -f /tmp/cf-workers.json
+            fi
+          done
+  verificar-preview-isolada:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checar portaria HTTP do Worker candidato sem sessao
+        run: |
+          set -euo pipefail
+          host=https://educart-11-candidate.educartsuporte.workers.dev
+          falhas=0
+          # Diagnosticar TODAS as rotas; não aliviar nenhuma exigência de segurança.
+          for spec in '/:200' '/admin/login:200' '/admin:303' '/formacao:200' '/inscricao:200' '/minha-educart/login:303' '/minha-educart:303'; do
+            route=${spec%:*}
+            esperado=${spec##*:}
+            status=$(curl --silent --show-error --max-time 20 --retry 2 --retry-delay 3 --output /dev/null --write-out '%{http_code}' -H 'Accept: text/html' "$host$route")
+            echo "$route: HTTP $status (esperado $esperado)"
+            if test "$status" != "$esperado"; then
+              echo "::error::Portaria candidata nao comprovada em $route ($status != $esperado)"
+              falhas=$((falhas+1))
+            fi
+          done
+          headers=$(mktemp)
+          status=$(curl --silent --show-error --max-time 20 --dump-header "$headers" --output /dev/null --write-out '%{http_code}' -H 'Accept: text/html' -H 'RSC: 1' "$host/admin")
+          location=$(awk 'tolower($1)=="location:" { print $2 }' "$headers" | tail -n 1 | tr -d '\r')
+          rm -f "$headers"
+          echo "/admin RSC sem sessao: HTTP $status; Location: ${location:-ausente}"
+          if test "$status" != 401; then
+            echo "::notice::RSC nao devolveu 401 direto; confirmar o encadeamento para proteger dados"
+            test "$status" = 307 && test "$location" = "/admin?_rsc" || { echo "::error::RSC nao foi normalizado para rota local esperada"; exit 1; }
+            follow_headers=$(mktemp)
+            follow_info=$(curl --silent --show-error --location --max-redirs 4 --max-time 20 --dump-header "$follow_headers" --output /dev/null --write-out '%{http_code} %{url_effective} %{num_redirects}' -H 'Accept: text/html' -H 'RSC: 1' "$host/admin")
+            read -r follow_status follow_url follow_redirects <<< "$follow_info"
+            echo "RSC follow: status=$follow_status; redirecionamentos=$follow_redirects"
+            echo "Destinos HTTP Location:"
+            awk 'tolower($1)=="location:" { print $2 }' "$follow_headers" | tr -d '\r' | head -n 6
+            # So aceitar HTTP 200 se for o formulario PUBLICO de login, nunca
+            # a pagina protegida /admin. O 307 inicial normaliza ?_rsc.
+            test "$follow_status" = 200 &&
+              test "$follow_url" = "$host/admin/login?_rsc" &&
+              test "$follow_redirects" = 3 || {
+                echo "::error::RSC anonimo nao terminou exatamente no login publico"
+                rm -f "$follow_headers"
+                exit 1
+              }
+            for route in $(awk 'tolower($1)=="location:" { print $2 }' "$follow_headers" | tr -d '\r'); do
+              case "$route" in
+                '/admin?_rsc'|'/admin/login'|'/admin/login?_rsc') ;;
+                *) echo "::error::Redirecionamento RSC inesperado"; rm -f "$follow_headers"; exit 1 ;;
+              esac
+            done
+            rm -f "$follow_headers"
+          fi
+          test "$falhas" = 0 || { echo "::error::$falhas rota(s) anônima(s) divergentes"; exit 1; }
+          echo "Portaria da candidata nega rotas privadas sem JWT no servidor"
+  validar-rls-anonima-dev:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Provar leitura anonima bloqueada no Supabase DEV sem extrair linhas
+        run: node scripts/testar-rls-anonima-supabase-dev-11.mjs
+
+  montar-apk-particular:
+    # Fluxo Chrome: o APK fica disponível apenas por disparo manual, nunca por push da PR.
+    if: github.event_name == 'workflow_dispatch'
+    name: APK Android particular (artefato privado, sem publicacao)
+    needs: [validar, validar-rls-anonima-dev]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Usar SDK Android do runner sem instalar pacote tools obsoleto
+        run: |
+          set -e
+          test -n "${ANDROID_HOME:-}" || { echo "ANDROID_HOME ausente"; exit 1; }
+          sdk=$(find "$ANDROID_HOME/cmdline-tools" -path '*/bin/sdkmanager' -type f | sort -V | tail -1)
+          test -n "$sdk" && test -x "$sdk"
+          yes | "$sdk" --licenses >/dev/null 2>&1 || true
+          "$sdk" "platforms;android-35" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Contratos do modulo Android local-first
+        run: node apps/android-app/scripts/testar-local-first.mjs
+      - name: Compilar APK candidato sem distribuir
+        run: gradle -p apps/android-app :app:assembleDebug --no-daemon --console=plain
+      - name: Validar artefato sem dados privados
+        run: |
+          test -s apps/android-app/app/build/outputs/apk/debug/app-debug.apk
+          test ! -d apps/android-app/app/src/main/assets
+          echo "APK compilado. Requer internet e backend homologado; não comprova acesso privado ou integração Drive."
+      - uses: actions/upload-artifact@v4
+        with:
+          name: educart-gestao-11-apk-candidato
+          path: apps/android-app/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
