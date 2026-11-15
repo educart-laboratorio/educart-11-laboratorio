@@ -1,0 +1,135 @@
+/* EducART AutoDEV · Entrada guiada + vitrine premium. Escopo isolado. */
+.eg-root,.eg-catalog,.eg-enroll{--eg-yellow:#f4bc5a;--eg-blue:#0b4dac;--eg-red:#f52b35;--eg-dark:#080d18;--eg-panel:#141c2b;--eg-ink:#f9fbff;--eg-muted:#b8c3d3;color:var(--eg-ink);background:var(--eg-dark);min-height:100svh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.eg-root *,.eg-catalog *,.eg-enroll *{box-sizing:border-box}
+.eg-root button,.eg-catalog button,.eg-enroll button,.eg-enroll input,.eg-enroll select{font:inherit}
+.eg-root button:focus-visible,.eg-catalog a:focus-visible,.eg-enroll input:focus-visible,.eg-enroll button:focus-visible{outline:3px solid var(--eg-yellow);outline-offset:4px}
+.eg-root{position:relative;isolation:isolate;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}
+.eg-backdrop{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,10,20,.85),rgba(6,10,20,.82)),url('/images/hero-topo.jpg') center 40%/cover no-repeat}
+.eg-stage{flex:1;max-width:930px;width:100%;margin:auto;display:flex;flex-direction:column;justify-content:center;padding:25px 22px}
+.eg-opening{text-align:center;margin:auto;padding:35px 0;max-width:700px}
+.eg-halo{display:grid;place-items:center;padding:55px 28px;min-height:220px;min-width:min(100%,360px);border-radius:38px;background:radial-gradient(ellipse at center,rgba(24,56,101,.46),transparent 72%);box-shadow:0 0 65px #115ab01c;animation:eg-breathe 3.8s ease-in-out infinite}
+.eg-start{border:0;background:none;color:#fff;cursor:pointer;padding:0}
+.eg-logo{display:block;transform:scale(1.18);transform-origin:center}
+.eg-logo .educart-brand-block{color:white}
+.eg-logo .educart-brand-block>div:last-child{align-items:flex-start}
+.eg-kicker,.eg-counter{color:var(--eg-yellow);font-size:11px;letter-spacing:.18em;font-weight:850;text-transform:uppercase}
+.eg-kicker{margin:12px 0 10px}
+.eg-opening h1,.eg-dialog h1{font-size:clamp(31px,7vw,62px);line-height:1.08;letter-spacing:-.05em;font-weight:850;margin:12px 0 23px;color:white}
+.eg-opening h1{max-width:620px}
+.eg-tap{margin:11px auto 0;padding:15px 23px;border:1px solid #f4bc5a66;background:var(--eg-yellow);color:#111727;border-radius:999px;font-weight:850!important;cursor:pointer}
+.eg-tap span{margin-left:8px}
+.eg-top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 0 22px}
+.eg-plain{background:transparent;border:1px solid #75849a55;border-radius:999px;color:white;padding:10px 15px;cursor:pointer}
+.eg-mini{font-size:11px;letter-spacing:.12em;color:#becbdc}
+.eg-dialog{width:min(100%,780px);margin:auto}
+.eg-dialog>p{color:var(--eg-muted);font-size:15px;margin:0 0 22px;max-width:540px}
+.eg-dialog h1{font-size:clamp(30px,5.5vw,51px);margin-bottom:12px}
+.eg-areas,.eg-options{display:grid;gap:11px;margin:21px 0}
+.eg-areas{grid-template-columns:repeat(2,minmax(0,1fr))}
+.eg-area,.eg-choice{text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:86px;padding:18px;background:#152033dc;border:1px solid #ffffff30;border-radius:17px;color:white;transition:border-color .15s,transform .15s}
+.eg-area strong,.eg-choice strong{font-size:17px;display:block;line-height:1.25}
+.eg-area small,.eg-choice small{display:block;color:#afbbcf;font-size:12px;line-height:1.45;margin-top:4px}
+.eg-area em{font-style:normal;font-size:11px;white-space:nowrap;color:#dfd4b5}
+.eg-area-on,.eg-choice{cursor:pointer}
+.eg-area-on{border-color:#f4bc5a88;background:linear-gradient(130deg,#2a3545,#172237)}
+.eg-area-on:hover,.eg-choice:hover{border-color:var(--eg-yellow);transform:translateY(-1px)}
+.eg-area-off{opacity:.43;cursor:not-allowed}
+.eg-choice{width:100%;min-height:67px}
+.eg-choice>span{font-size:22px;color:var(--eg-yellow)}
+.eg-progress{margin:26px 0 8px;height:4px;border-radius:10px;background:#ffffff23;overflow:hidden}
+.eg-progress span{display:block;height:100%;background:var(--eg-yellow);transition:width .2s}
+.eg-foot{display:flex;justify-content:space-between;gap:10px;padding:17px 25px;border-top:1px solid #ffffff1b;color:#aab4c3;font-size:11px}
+@keyframes eg-breathe{0%,100%{box-shadow:0 0 26px #1974f013;transform:scale(1)}50%{box-shadow:0 0 75px #1974f039;transform:scale(1.035)}}
+.eg-catalog{background:#080d18;overflow:hidden}
+.eg-catalog-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:21px clamp(19px,5vw,54px);border-bottom:1px solid #ffffff20;background:#0b111e}
+.eg-brand-link{color:white;text-decoration:none;display:inline-flex;align-items:center}
+.eg-brand-link .educart-brand-block{color:white}
+.eg-return{border:1px solid #ffffff30;border-radius:999px;color:#dce7f8;text-decoration:none;padding:10px 14px;white-space:nowrap;font-size:12px}
+.eg-catalog-body{max-width:1220px;margin:0 auto;padding:44px 23px 75px}
+.eg-catalog-lead{max-width:770px}
+.eg-eyebrow{font-size:11px;letter-spacing:.18em;color:var(--eg-yellow);text-transform:uppercase;font-weight:900}
+.eg-catalog h1{font-size:clamp(33px,6vw,65px);letter-spacing:-.055em;line-height:1.08;margin:10px 0 17px;color:white;font-weight:850}
+.eg-catalog-lead p{font-size:clamp(14px,1.7vw,18px);line-height:1.55;color:var(--eg-muted);max-width:680px}
+.eg-recommended{border-left:3px solid var(--eg-yellow);padding:5px 12px;color:#dfebfc;font-size:13px;margin:24px 0 34px;background:linear-gradient(90deg,#f4bc5a18,transparent)}
+.eg-shelf-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin:18px 0}
+.eg-shelf-head h2{font-size:24px;letter-spacing:-.025em;margin:0;color:white}
+.eg-shelf-head span{font-size:12px;color:#b7c1d0}
+.eg-shelf{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 4px 25px;scrollbar-width:thin}
+.eg-course{position:relative;flex:0 0 min(84vw,440px);scroll-snap-align:start;background:linear-gradient(160deg,#213957,#0d1526 75%);border:1px solid #50627e;border-radius:24px;overflow:hidden;min-height:480px;box-shadow:0 16px 48px #0005}
+.eg-course-open{position:absolute;inset:0;width:100%;height:100%;z-index:2;cursor:pointer;background:transparent;border:0;padding:0}
+.eg-course-open:focus-visible{outline:3px solid var(--eg-yellow);outline-offset:-4px;border-radius:24px}
+.eg-course:has(.eg-course-open:hover){border-color:var(--eg-yellow)}
+.eg-course .eg-course-info{z-index:3;pointer-events:none}
+.eg-course .eg-course-info a,.eg-course .eg-course-info button{pointer-events:auto;position:relative}
+.eg-cover{position:relative;height:270px;background:url('/images/hero-rodape.jpg') center/cover no-repeat}
+.eg-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 15%,#0d1526 100%)}
+.eg-course-info{position:relative;padding:0 22px 25px;margin-top:-39px;z-index:1}
+.eg-course-heading{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.eg-oficina-logo{width:62px;height:62px;flex:none;border-radius:50%;object-fit:contain;padding:5px;background:white;border:2px solid #fff;box-shadow:0 4px 15px #0007}
+.eg-course-heading small{display:block;font-size:11px;letter-spacing:.11em;color:var(--eg-yellow);font-weight:850}
+.eg-course-heading strong{display:block;color:white;font-size:22px;line-height:1.12}
+.eg-course-info p{font-size:14px;line-height:1.5;color:#d3e0ed}
+.eg-tags{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 21px}
+.eg-tags span{border:1px solid #ffffff38;border-radius:999px;font-size:11px;padding:6px 10px;color:#dbe8f6}
+.eg-button{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:45px;border-radius:11px;background:var(--eg-yellow);color:#0c1423;padding:12px 18px;text-decoration:none;font-size:14px;font-weight:900;border:0;cursor:pointer}
+.eg-button:hover{background:#ffda8c;color:#0c1423}
+.eg-secondary{background:transparent;color:white;border:1px solid #6a7b8d}
+.eg-empty{border:1px dashed #68768b55;flex:0 0 130px;min-height:480px;border-radius:23px;display:grid;place-items:center;text-align:center;padding:13px;color:#718099;font-size:13px}
+/* Candidata DEV 1.1: cartaz de referência, não original, apenas no segundo cartão. */
+.eg-course-unavailable{border-color:#806e4e}
+/* Cartaz da atividade: limitar a altura e cortar somente a parte inferior
+   da imagem de referência para equilibrar ambos os cartões no catálogo. */
+.eg-course-unavailable .eg-cover-poster{height:350px;background:none;overflow:hidden}
+.eg-course-unavailable .eg-cover-poster::after{display:none;content:none}
+.eg-course-unavailable .eg-cover-poster img{
+  display:block;width:100%;height:100%;object-fit:cover;object-position:center top;
+}
+.eg-course-unavailable .eg-course-info{margin-top:0;padding-top:19px}
+.eg-course-unavailable .eg-course-heading strong{font-size:clamp(19px,2.4vw,22px)}
+.eg-course-unavailable .eg-tags .eg-unavailable-tag{
+  border-color:#d1a85e;background:#4d341d;color:#ffdfab;font-weight:800;
+}
+/* Detalhes acionados por todo o cartão, sem retirar os links e CTAs existentes. */
+.eg-catalog .eg-conhecer-dialog{width:min(92vw,700px);max-height:min(88dvh,850px);padding:0;border-radius:20px;border:1px solid #526684;background:#142136;color:#f9fbff;box-shadow:0 26px 90px #000a;overflow-y:auto;overscroll-behavior:contain}
+.eg-catalog .eg-conhecer-dialog::backdrop{background:#030813d9;backdrop-filter:blur(4px)}
+.eg-conhecer-header{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;background:#1b2c46;border-bottom:1px solid #3d526e}
+.eg-conhecer-fechar{border:1px solid #5b6e87;background:#22344f;color:#f9fbff;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:700;white-space:nowrap}
+.eg-conhecer-fechar:focus-visible{outline:3px solid var(--eg-yellow);outline-offset:2px}
+.eg-conhecer-conteudo{padding:22px 24px 26px}
+.eg-conhecer-conteudo h2{color:#fff;font-size:clamp(23px,4vw,31px);line-height:1.2;margin:0 0 16px}
+.eg-conhecer-conteudo p{font-size:14px;line-height:1.65;color:#d4e1f0;max-width:65ch}
+.eg-conhecer-conteudo a:not(.eg-button){color:#94caff}
+.eg-conhecer-acoes{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.eg-conhecer-cartaz{margin:16px 0;text-align:center}
+.eg-conhecer-cartaz img{display:block;max-width:100%;width:auto;height:auto;max-height:380px;object-fit:contain;margin:0 auto;border-radius:10px}
+.eg-conhecer-indisponivel{padding:13px 15px;border-radius:12px;border:1px solid #8a6941;background:#352818;color:#ffe2ad!important}
+@media(max-width:620px){.eg-conhecer-header{padding:13px 14px}.eg-conhecer-conteudo{padding:18px 16px}.eg-conhecer-acoes .eg-button{width:100%}}
+.eg-nextline{font-size:12px;color:#a6b4c9;padding-top:13px}
+.eg-enroll{min-height:100svh}
+.eg-enroll-body{max-width:790px;margin:auto;padding:38px 22px 90px}
+.eg-enroll h1{color:white;font-size:clamp(28px,5vw,50px);letter-spacing:-.045em;line-height:1.12;margin:13px 0}
+.eg-enroll .eg-description{color:#b8c3d3;margin:0 0 24px;line-height:1.5}
+.eg-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;background:var(--eg-panel);border:1px solid #ffffff21;padding:clamp(17px,4vw,29px);border-radius:19px}
+.eg-field{display:flex;flex-direction:column;gap:8px}
+.eg-field-full{grid-column:1/-1}
+.eg-field label{font-size:12px;font-weight:850;color:#ecf2fa}
+.eg-field input,.eg-field select{width:100%;background:#101827;border:1px solid #52617b;border-radius:10px;color:white;padding:13px;min-height:48px}
+.eg-field select option{background:#101827}
+.eg-field small{color:#a5b1c3;font-size:11px}
+.eg-alert{grid-column:1/-1;border:1px solid #f2b98060;background:#3b2a27;color:#ffe0ad;padding:12px;border-radius:10px;font-size:13px}
+.eg-success{padding:30px;border-radius:20px;border:1px solid #65897b;background:#17312a}
+.eg-success h2{color:white;font-size:28px}
+.eg-success p{color:#dae9e4}
+.eg-consent{grid-column:1/-1;display:flex;gap:12px;align-items:start;color:#cdd8e7;font-size:12px}
+.eg-consent input{margin-top:4px}
+.eg-form>button{grid-column:1/-1}
+@media(max-width:620px){.eg-logo{transform:scale(1)}.eg-halo{min-width:280px;padding:33px 8px;min-height:180px}.eg-areas{grid-template-columns:1fr}.eg-area{min-height:72px}.eg-dialog h1{font-size:32px}.eg-catalog-body{padding:35px 17px 60px}.eg-course{flex-basis:min(88vw,425px)}.eg-empty{display:none}.eg-form{grid-template-columns:1fr}.eg-field-full{grid-column:1}}
+@media(prefers-reduced-motion:reduce){.eg-halo{animation:none}.eg-area,.eg-choice,.eg-progress span{transition:none}}
+
+/* Ajuste visual da vitrine mobile: titulo e instrucao devem usar a largura inteira. */
+@media (max-width: 620px) {
+  .eg-shelf-head { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .eg-shelf-head h2 { font-size: 23px; line-height: 1.2; }
+  .eg-shelf-head span { display: block; max-width: 100%; line-height: 1.45; }
+  .eg-return, .eg-brand-link { min-height: 44px; display: inline-flex; align-items: center; }
+}
