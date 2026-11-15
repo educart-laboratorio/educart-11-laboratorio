@@ -35,6 +35,10 @@ jobs:
         run: node --check scripts/testar-r59-worker-workerd-local.mjs
       - name: Compilar R50 para Workers
         run: npm run build:vinext
+      - name: Mapear host candidato ao loopback somente neste runner
+        run: |
+          echo '127.0.0.1 educart-11-candidate.educartsuporte.workers.dev' | sudo tee -a /etc/hosts
+          getent ahostsv4 educart-11-candidate.educartsuporte.workers.dev | head -n 1
       - name: Exercer Cloudflare workerd em 127.0.0.1 sem publicar
         run: node scripts/testar-r59-worker-workerd-local.mjs
 # rerun: Wrangler 4.162.0 para compatibilidade 2026-10-31

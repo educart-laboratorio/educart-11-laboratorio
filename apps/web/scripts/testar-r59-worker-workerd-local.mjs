@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
+import { lookup } from 'node:dns/promises';
 
 const output='.cloudflare/output/v0/workers/default';
 assert(fs.statSync(path.join(output,'bundle/index.js')).size>0,'Bundle Vinext ausente');
@@ -15,7 +16,9 @@ assert(fs.statSync(path.join(output,'assets')).isDirectory(),'Assets Vinext ause
 const configFile='.gsi-r59-workerd-local.generated.json';
 const host='educart-11-candidate.educartsuporte.workers.dev';
 const port=8787;
-const origin='http://127.0.0.1:'+port;
+const origin='http://'+host+':'+port;
+const dns=await lookup(host,{family:4});
+assert.equal(dns.address,'127.0.0.1','Host candidato fora do loopback; abortar');
 const config={
   name:'gsi-r59-worker-somente-local',
   main:'./'+output+'/bundle/index.js',
