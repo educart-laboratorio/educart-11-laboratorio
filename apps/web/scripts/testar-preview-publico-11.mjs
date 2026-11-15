@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+
+const script=readFileSync('scripts/deploy-preview-publico.mjs','utf8');
+const prod=readFileSync('scripts/deploy-worker.mjs','utf8');
+const panel=readFileSync('src/app/admin/page.tsx','utf8');
+const login=readFileSync('src/app/admin/login/page.tsx','utf8');
+const academic=readFileSync('src/components/AdminRotinaAcademicaLab.tsx','utf8');
+const layout=readFileSync('src/app/layout.tsx','utf8');
+
+assert(script.includes("const target='educart-11-public-preview'"));
+assert(script.includes("const dev='esjrjzyvyhtzwgihcbsc'"));
+assert(script.includes("const deploy=process.argv.includes('--deploy')"));
+assert(script.includes("if(deploy){"));
+assert(script.includes("EDUCART_PREVIEW_PUBLICA"));
+assert(script.includes("NEXT_PUBLIC_SUPABASE_URL"));
+assert(script.includes("NEXT_PUBLIC_SUPABASE_ANON_KEY"));
+assert(script.includes("CLOUDFLARE_ACCOUNT_ID"));
+assert(script.includes("if(!deploy)args.push('--dry-run')"));
+assert(!/name:\s*['"]educart-production['"]/.test(script));
+assert(!/\broutes:/.test(script));
+assert(!/\bdomain:/.test(script));
+assert(prod.includes("name:'educart-production'"),'Script de produção deve permanecer original');
+assert(panel.includes('<AdminRotinaAcademicaLab />'),'Painel administrativo completo obrigatório');
+assert(panel.includes("obterPapeisGestao(supabase, user.id)"));
+assert(login.includes('obterPapeisGestao'));
+assert(academic.includes('Nenhum acesso a Supabase, pagamentos ou inscrições reais é efetuado aqui.'));
+assert(layout.includes('<AccessibilityWidget />'));
+assert(layout.includes('<WhatsAppFlutuante />'));
+console.log('R03: script de prévia pública isolada validado, default dry-run, banco DEV, /admin, acessibilidade e WhatsApp preservados.');
+console.log('R03: não confundir com deploy público realizado ou homologação visual autenticada.');

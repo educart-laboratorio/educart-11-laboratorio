@@ -1,0 +1,21 @@
+/** Integração acadêmica atual, sem conservar o resumo paralelo antigo. */
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const ler=p=>readFileSync(p,'utf8');
+const admin=ler('src/app/admin/page.tsx');
+const academia=ler('src/components/AdminRotinaAcademicaLab.tsx');
+const guiado=ler('src/components/AdminPlanejamentoFormacaoTurmaDev.tsx');
+const chamadas=ler('src/components/AdminChamadasDev.tsx');
+const layout=ler('src/app/layout.tsx');
+assert.match(admin, /<AdminRotinaAcademicaLab/);
+assert.match(admin, /papeisGestao/);
+assert.match(academia, /<AdminPlanejamentoFormacaoTurmaDev/);
+assert.match(academia, /<AdminChamadasDev/);
+for(const tabela of ['formacoes','turmas','matriculas','educart_aulas_dev','educart_chamadas_dev'])assert(academia.includes("'"+tabela+"'"));
+assert.match(guiado, /supabase\.auth\.getUser\(\)/);
+assert.match(guiado, /obterPapeisGestao/);
+assert.match(chamadas, /obterPapeisGestao/);
+assert.doesNotMatch(academia, /NOMES_DEMONSTRACAO|FICTICIOS/);
+assert.match(layout, /<AccessibilityWidget \/>/);
+assert.match(layout, /<WhatsAppFlutuante \/>/);
+console.log('LIPE: acad. real DEV, formulário guiado, chamadas e painel original integrados.');
