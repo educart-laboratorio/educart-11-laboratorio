@@ -19,6 +19,8 @@ const port=8787;
 const origin='http://'+host+':'+port;
 const dns=await lookup(host,{family:4});
 assert.equal(dns.address,'127.0.0.1','Host candidato fora do loopback; abortar');
+const spoofDns=await lookup('spoof.invalid',{family:4});
+assert.equal(spoofDns.address,'127.0.0.1','Host arbitrario fora do loopback; abortar');
 const config={
   name:'gsi-r59-worker-somente-local',
   main:'./'+output+'/bundle/index.js',
@@ -53,7 +55,7 @@ async function hit(route,opts={}){
   const headers={'Host':opts.host||host,'Accept':opts.html?'text/html':'application/json'};
   if(opts.rsc)headers.RSC='1';
   if(opts.cookie)headers.Cookie=opts.cookie;
-  const response=await fetch(origin+route,{
+  const response=await fetch((opts.originOverride||origin)+route,{
     method:opts.method||'GET',headers,redirect:'manual',signal:AbortSignal.timeout(6000),
   });
   const body=await response.text();
@@ -97,7 +99,7 @@ try{
     {name:'api sem sessao',route:'/api/rota-futura',method:'POST',expected:401,private:true},
     {name:'rsc sem sessao',route:'/admin',rsc:true,expected:[401,307],private:true,loginIfRedirect:true},
     {name:'cookie falsificado',route:'/admin',html:true,cookie:'sb-r59=invalido',expected:303,private:true,login:true},
-    {name:'host arbitrario',route:'/admin',html:true,host:'spoof.invalid',expected:503,private:true},
+    {name:'host arbitrario',route:'/admin',html:true,host:'spoof.invalid',originOverride:'http://spoof.invalid:'+port,expected:503,private:true},
   ];
   for(const c of cases){
     const res=await hit(c.route,c);
