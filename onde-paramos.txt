@@ -1,0 +1,48 @@
+================================================================================
+                    REGISTRO DE STATUS: ONDE PARAMOS
+================================================================================
+Data: Domingo, 11 de outubro de 2026
+Projeto: Portal EducART (educart.pro)
+Responsável: Helder (alagbadev)
+================================================================================
+
+1. O QUE FOI CONCLUÍDO HOJE:
+--------------------------------------------------------------------------------
+✓ Remoção da Promoção Expirada (10/10/2026):
+  - Retiradas todas as referências de isenção de taxa de matrícula.
+  - Valores padronizados e transparentes: Matrícula R$ 50,00 e Mensalidade R$ 320,00.
+  - Comunicação atualizada para "Turma de Outubro em Andamento • Vagas Limitadas".
+  - Mensagens e CTAs padronizados para contato com a "equipe do curso / Oficina de Atores" no WhatsApp (71 99682-4505).
+
+✓ Google Analytics 4 (GA4) Implementado Corretamente:
+  - Integração via componente oficial `Script` de `next/script` com `strategy="afterInteractive"` em `apps/web/src/app/layout.tsx`.
+  - ID de medição oficial: `G-TXHZZG9RHB`.
+  - Fechamento estrito de todas as tags `<script>` e `</Script>`, prevenindo qualquer erro de renderização ou quebra de DOM.
+
+✓ Painel Administrativo Completo com Login Seguro (/admin):
+  - Autenticação com Supabase Auth em `/admin/login` (sessão persistente via cookies com `@supabase/ssr`).
+  - Proteção de rota e logout seguro (`signOut`).
+  - Dashboard em `/admin`:
+    * 4 Cartões de KPI: Total de inscritos, Pendentes de contato, Em negociação/confirmados, Matriculados.
+    * Card de métricas de tráfego apontando para o Google Analytics 4.
+    * Barra de busca rápida (por nome, e-mail, telefone e bairro) e filtro por status.
+    * Tabela responsiva com dados dos candidatos e link direto para WhatsApp pré-formatado ("Somos da equipe do curso...").
+    * Atualização de status em tempo real via RLS do Supabase (`pendente_confirmacao`, `confirmado`, `matriculado`, `cancelado`).
+    * Modal para visualização completa da ficha individual.
+    * Exportação dos dados para planilha CSV em 1 clique.
+
+--------------------------------------------------------------------------------
+2. ONDE PARAMOS EXATAMENTE (PONTO DE RETOMADA):
+--------------------------------------------------------------------------------
+1. Criação do projeto `educart-dev` no Supabase (pelo usuário).
+2. Atualização das variáveis no arquivo `.env.development` com as credenciais do banco dev e execução de `npm run migrate:up`.
+3. Criação do primeiro usuário de acesso Admin no Supabase Auth (Dashboard -> Authentication -> Add User).
+4. Commit e push para o GitHub para deploy automático na Vercel.
+
+--------------------------------------------------------------------------------
+3. LEMBRETES CRÍTICOS DE AMBIENTE:
+--------------------------------------------------------------------------------
+⚠️ NUNCA rodar `npm run build` localmente (o computador trava com build pesado).
+⚠️ Os builds devem ser executados apenas remotamente pela Vercel.
+⚠️ O banco de dados Supabase é sempre remoto.
+================================================================================
