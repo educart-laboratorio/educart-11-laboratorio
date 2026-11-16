@@ -1,0 +1,36 @@
+name: "SUPER GSI TC17 | HTTP publico real somente leitura"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - ".github/workflows/gsi-tc17-http-oficial-readonly.yml"
+      - "apps/web/scripts/testar-tc17-http-oficial-readonly.mjs"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validar sintaxe sem credenciais
+        run: node --check scripts/testar-tc17-http-oficial-readonly.mjs
+      - name: Verificar domínio real com GET anônimo e registrar HTTP
+        run: node scripts/testar-tc17-http-oficial-readonly.mjs
+      - name: Guardar provas de leitura HTTP para revisão
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: super-gsi-tc17-http-oficial-readonly
+          path: apps/web/tc17-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
