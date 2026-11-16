@@ -62,6 +62,53 @@ try {
             await panel.waitFor({state:'visible',timeout:6500});
           }
           await scan('modal-acessibilidade');
+          // Verificação funcional: Escape devolve o foco ao acionador e fecha
+          // a janela. A auditoria por contraste não comprova isso sozinha.
+          await page.keyboard.press('Escape');
+          await panel.waitFor({state:'hidden',timeout:5000});
+          assert.equal(await btn.evaluate(el=>document.activeElement===el),true,
+            'Escape não devolveu foco ao botão de acessibilidade em '+rota);
+        }
+        if(rota==='/'){
+          await page.getByRole('button',{name:/Toque para começar/}).click();
+          await page.locator('[data-educart-etapa="interesses"]').waitFor({state:'visible'});
+          await scan('triagem-interesses');
+          await page.locator('.eg-area-on').click();
+          await page.locator('[data-educart-etapa="objetivo"]').waitFor({state:'visible'});
+          await scan('triagem-objetivo');
+          await page.locator('.eg-choice').filter({hasText:'Atuação profissional'}).click();
+          await page.locator('[data-educart-etapa="idade"]').waitFor({state:'visible'});
+          await scan('triagem-idade');
+          await page.locator('.eg-choice').filter({hasText:'14 a 17 anos'}).click();
+          await page.locator('[data-educart-etapa="experiencia"]').waitFor({state:'visible'});
+          await scan('triagem-experiencia');
+        }
+        if(rota==='/formacao'){
+          await page.locator('.eg-course-open').first().click();
+          const dialogo=page.locator('.eg-conhecer-dialog');
+          await dialogo.waitFor({state:'visible'});
+          await scan('dialogo-formacao');
+          await page.keyboard.press('Escape');
+          await dialogo.waitFor({state:'hidden'});
+        }
+        if(rota==='/inscricao'){
+          await page.getByRole('button',{name:/Avançar para Dados Pessoais/}).click();
+          await page.locator('[data-inscricao-step="2"]').waitFor({state:'visible'});
+          await scan('inscricao-dados');
+          // Somente dados fictícios locais; NÃO enviar o formulário.
+          await page.locator('#nomeCompleto').fill('Pessoa Ficticia de Teste');
+          await page.locator('#dataNascimento').fill('2000-01-01');
+          await page.locator('#telefone').fill('71999999999');
+          await page.locator('#email').fill('teste@example.invalid');
+          await page.getByRole('button',{name:/Avançar para Endereço/}).click();
+          await page.locator('[data-inscricao-step="3"]').waitFor({state:'visible'});
+          await scan('inscricao-revisao');
+        }
+        if(rota==='/niveis-demo'){
+          await page.locator('.lv-tier-card').last().click();
+          await scan('perfil-pro');
+          await page.locator('.theme-toggle-btn').click();
+          await scan('tema-alternativo');
         }
       } catch (error) {
         erros.push({ caseName: rota+' '+largura+'px', error: String(error) });
