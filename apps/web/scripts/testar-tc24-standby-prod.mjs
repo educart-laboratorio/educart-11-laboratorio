@@ -15,6 +15,7 @@ for(const route of ['/admin','/admin/financeiro','/api/admin/exportar']){
 }
 assert.equal(destinoPublicoInscricaoSeguro(HOST_PROD_READY,dev),false);
 assert.equal(destinoPublicoInscricaoSeguro(HOST_PROD_READY,prod),false,'Standby nao coleta nem com banco PROD');
+assert.equal(destinoPublicoInscricaoSeguro(HOST_PROD_READY,prod,'approved'),false,'Standby nao coleta nem com flag');
 const p=readFileSync('src/proxy.ts','utf8');
 assert(p.includes('const avisoStandby = standby && rotaInscricao'));
 assert(p.includes("request.method !== 'GET' && request.method !== 'HEAD'"));
@@ -32,6 +33,7 @@ const env={...process.env,
  NEXT_PUBLIC_SUPABASE_ANON_KEY:'sb_publishable_test_synthetic_tc24',
  EDUCART_OFFICIAL_11_MODE:'required',
  EDUCART_PRIVATE_PREVIEW_MODE:'off',
+ NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS:'off',
 };
 function deny(name,extra,pattern,argv=[]){
  const r=spawnSync(process.execPath,['scripts/preparar-worker-oficial-prod-triple-core.mjs',...argv],
@@ -45,4 +47,5 @@ deny('banco DEV',{NEXT_PUBLIC_SUPABASE_URL:dev},'URL Supabase nao PROD',['--dry-
 deny('chave service role',{NEXT_PUBLIC_SUPABASE_ANON_KEY:'sb_secret_fake_tc24'},'chave publishable',['--dry-run']);
 deny('sem modo oficial',{EDUCART_OFFICIAL_11_MODE:'off'},'portaria oficial',['--dry-run']);
 deny('portaria DEV herdada',{EDUCART_PRIVATE_PREVIEW_MODE:'required'},'portaria DEV',['--dry-run']);
-console.log('TC24 PREPARACAO PASS: allowlist, 5 negativas, standby sem coleta, 0 deploy.');
+deny('captacao ligada no standby',{NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS:'approved'},'captacao deve estar desabilitada',['--dry-run']);
+console.log('TC24 PREPARACAO PASS: allowlist, 6 negativas, standby sem coleta, 0 deploy.');

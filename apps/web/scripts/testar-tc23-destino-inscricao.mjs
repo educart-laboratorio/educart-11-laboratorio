@@ -7,7 +7,9 @@ for(const host of ['educart.pro','www.educart.pro','EDUCART.PRO','educart.pro.']
  assert.equal(destinoPublicoInscricaoSeguro(host,DEV),false,host+' deve bloquear DEV');
  assert.equal(destinoPublicoInscricaoSeguro(host,'https://attacker.example'),false);
  assert.equal(destinoPublicoInscricaoSeguro(host,undefined),false);
- assert.equal(destinoPublicoInscricaoSeguro(host,URL_PROD_INSCRICOES),true);
+ assert.equal(destinoPublicoInscricaoSeguro(host,URL_PROD_INSCRICOES),false,'PROD sem liberacao permanece fechado');
+ assert.equal(destinoPublicoInscricaoSeguro(host,URL_PROD_INSCRICOES,'off'),false);
+ assert.equal(destinoPublicoInscricaoSeguro(host,URL_PROD_INSCRICOES,'approved'),true);
 }
 for(const host of ['localhost','127.0.0.1','educart-11-candidate.educartsuporte.workers.dev']){
  assert.equal(destinoPublicoInscricaoSeguro(host,DEV),true,'Laboratorio DEV deve seguir isolado: '+host);
@@ -24,4 +26,4 @@ assert(form.indexOf('if (!destinoPublicoInscricaoSeguro(')<form.indexOf("const s
 const page=readFileSync('src/app/inscricao-indisponivel/page.tsx','utf8');
 assert(page.includes('robots:{index:false,follow:false}'));
 assert(!['createClient','buildInscricaoPayload','.insert('].some(x=>page.includes(x)),'Aviso sem coleta');
-console.log('TC23 PASS: hosts oficiais DEV bloqueados, PROD permitido, DEV isolado e aviso sem coleta.');
+console.log('TC23 PASS: DEV negado, PROD exige liberacao explicita, DEV local preservado.');

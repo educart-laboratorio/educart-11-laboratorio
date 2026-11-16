@@ -126,11 +126,17 @@ assert(r.headers.get('x-middleware-rewrite')?.endsWith('/inscricao-indisponivel'
 env.NEXT_PUBLIC_SUPABASE_URL='https://doygnsubiitencoyzjzk.supabase.co';
 reset();
 r=await proxy(makeRequest('/inscricao',{host:'educart.pro'}));
+assert(r.headers.get('x-middleware-rewrite')?.endsWith('/inscricao-indisponivel'),
+  'PROD sem portao de inscricoes deve ficar em aviso');
+env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS='approved';
+reset();
+r=await proxy(makeRequest('/inscricao',{host:'educart.pro'}));
 assert.equal(r.status,200);
 assert.equal(r.headers.get('x-middleware-rewrite'),null,
   'Somente configuração oficialmente aprovada permite servir formulário real');
 assert.deepEqual(calls,[],'formulário não consulta banco na portaria');
 env.NEXT_PUBLIC_SUPABASE_URL=DEV;
+delete env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS;
 delete env.EDUCART_OFFICIAL_11_MODE;
 env.EDUCART_PRIVATE_PREVIEW_MODE='required';
 r=await proxy(makeRequest('/admin',{host:'preview-alias.example.org'}));
@@ -296,6 +302,7 @@ const prodReady='educart-11-prod-ready.educartsuporte.workers.dev';
 env.EDUCART_OFFICIAL_11_MODE='required';
 env.NEXT_PUBLIC_SUPABASE_URL='https://doygnsubiitencoyzjzk.supabase.co';
 env.NEXT_PUBLIC_SUPABASE_ANON_KEY='sb_publishable_teste_prod_ready_sintetico';
+env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS='approved';
 env.EDUCART_PRIVATE_PREVIEW_MODE='off';
 reset({claims:false});
 r=await proxy(makeRequest('/inscricao',{host:prodReady}));
@@ -316,7 +323,8 @@ assert.equal(r.status,200);
 reset();
 r=await proxy(makeRequest('/admin',{host:prodReady,receivedHost:'invasor.example'}));
 assert.equal(r.status,503,'Host divergente no standby nao e confiavel');
-console.log('TC24 PROXY REAL PASS: standby sem coleta, admin protegido, spoof negado.');
+console.log('TC24 PROXY REAL PASS: standby sem coleta mesmo com liberacao, admin protegido, spoof negado.');
+delete env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS;
 delete env.EDUCART_OFFICIAL_11_MODE;
 env.NEXT_PUBLIC_SUPABASE_URL=DEV;
 env.EDUCART_PRIVATE_PREVIEW_MODE='required';

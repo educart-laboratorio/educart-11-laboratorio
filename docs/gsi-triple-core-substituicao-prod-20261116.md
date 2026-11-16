@@ -9,6 +9,7 @@
 - **Novo destino reservado:** `educart-11-prod-ready` na conta Cloudflare EducART Suporte. **Não é o Worker `educart-production` pré-existente** e **não tem rotas no pacote de preparo**.
 - Configuração futura: `EDUCART_OFFICIAL_11_MODE=required`, `NEXT_PUBLIC_SUPABASE_URL=https://doygnsubiitencoyzjzk.supabase.co`, chave publishable **real do mesmo projeto** no build e runtime. Proibir DEV, service-role e vínculo não autorizado.
 - `educart-11-prod-ready.workers.dev`: host autorizado pela portaria R43, porém **GET da inscrição/cadastro/criar apresenta aviso sem coleta**; POST nesses caminhos recebe HTTP 405. Demais rotas administrativas continuam protegidas por Auth, `portal_admins`, `equipe_papeis` e RLS.
+- **TC26 / portão de captação:** build standby exige `NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS=off`. Mesmo após um corte futuro, o domínio oficial exibe aviso de indisponibilidade até build e runtime autorizados com valor `approved`, somente após correção RLS e backup restaurado. O bloqueio também ocorre no cliente, antes de `createClient`/INSERT; `workers.dev` nunca coleta dados.
 - O candidato DEV e o Worker `educart-production` existentes permanecem intactos.
 
 ## Provas da preparação

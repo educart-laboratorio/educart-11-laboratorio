@@ -19,6 +19,8 @@ if(process.env.EDUCART_OFFICIAL_11_MODE!=='required')
  throw Error('TC24: portaria oficial deve ser obrigatoria');
 if(process.env.EDUCART_PRIVATE_PREVIEW_MODE==='required')
  throw Error('TC24: nao herdar portaria DEV da candidata');
+if(process.env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS!=='off')
+ throw Error('TC24: captacao deve estar desabilitada ate RLS e backup homologados');
 if(process.env.GITHUB_ACTIONS==='true' &&
   (process.env.GITHUB_REPOSITORY!=='educart-laboratorio/educart-11-laboratorio'||
    process.env.GITHUB_REF_NAME!=='gsi-integracao-triple-core-20261115'))
@@ -50,6 +52,7 @@ const config={
   // Jamais configurar a portaria DEV no Worker oficial independente.
   NEXT_PUBLIC_SUPABASE_URL:prod,
   NEXT_PUBLIC_SUPABASE_ANON_KEY:key,
+  NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS:'off',
  },
 };
 // Contractual guard: nenhum alias/route sera configurado por este preparo.
@@ -74,7 +77,7 @@ try{
  fs.writeFileSync(path.join(out,'resumo.json'),JSON.stringify({
   preparedAt:new Date().toISOString(),sourceCommit:process.env.GITHUB_SHA||null,
   worker:target,cloudflareAccount:account,database:'PROD',
-  mode:'required',routes:[],workersDev:true,realKeyPresent:false,
+  mode:'required',routes:[],workersDev:true,registration:'blocked_until_explicit_release',realKeyPresent:false,
   packagingDryRunSuccess:success,writeActions:0,
   note:'Build/empacotamento sintetico com chave publica ficticia. Nao publicado nem conectado ao banco real.'
  },null,2));

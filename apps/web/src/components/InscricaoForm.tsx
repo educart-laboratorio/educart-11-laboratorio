@@ -21,6 +21,7 @@ export function InscricaoForm() {
   useEffect(() => {
     setDestinoInvalido(!destinoPublicoInscricaoSeguro(
       window.location.hostname, process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS,
     ));
   }, []);
   const [triagem, setTriagem] = useState<TriagemInscricao | null>(null);
@@ -94,6 +95,7 @@ export function InscricaoForm() {
     // cache HTML ou servidor legado. Nunca fazer POST no Supabase DEV.
     if (!destinoPublicoInscricaoSeguro(
       window.location.hostname, process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS,
     )) {
       setDestinoInvalido(true);
       setErrorMessage('As inscrições online estão temporariamente indisponíveis. Contate a EducART pelo WhatsApp.');

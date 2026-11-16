@@ -75,7 +75,8 @@ export async function proxy(request: NextRequest) {
       (request.method === 'GET' || request.method === 'HEAD') &&
       /^\/(?:inscricao|cadastro|criar)\/?$/.test(request.nextUrl.pathname);
     const destinoOficialSeguro = process.env.EDUCART_OFFICIAL_11_MODE === 'required' &&
-      destinoPublicoInscricaoSeguro(hostPublico, process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      destinoPublicoInscricaoSeguro(hostPublico, process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS) &&
       configuracaoSupabaseOficial11Valida(
         process.env.NEXT_PUBLIC_SUPABASE_URL,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
