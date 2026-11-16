@@ -64,11 +64,22 @@ jobs:
            headers:{Accept:'text/html',RSC:'1'},signal:AbortSignal.timeout(12000)});
           const target=adminRsc.headers.get('location')||'';
           const parsed=target?new URL(target,base):null;
-          const safeTarget=parsed && parsed.origin===new URL(base).origin ? parsed.pathname : target?'external':'none';
-          console.log('TC28 RSC '+JSON.stringify({status:adminRsc.status,location:safeTarget,
-           cache:adminRsc.headers.get('cache-control'),type:adminRsc.headers.get('content-type'),
-           xRobots:adminRsc.headers.get('x-robots-tag')}));
-          if(adminRsc.status!==401)failures.push('/admin RSC sem sessao deve ser 401');
+          const origin=new URL(base).origin;
+          const hashRedirect=adminRsc.status===307 && parsed?.origin===origin &&
+           parsed.pathname==='/admin' && parsed.searchParams.has('_rsc');
+          console.log('TC28 RSC '+JSON.stringify({status:adminRsc.status,
+           location:parsed?.origin===origin?parsed.pathname:'external',
+           hasRscHash:!!parsed?.searchParams.has('_rsc')}));
+          let effectiveStatus=adminRsc.status;
+          if(hashRedirect){
+           const follow=await fetch(parsed,{method:'GET',redirect:'manual',
+            headers:{Accept:'text/html',RSC:'1'},signal:AbortSignal.timeout(12000)});
+           effectiveStatus=follow.status;
+           console.log('TC28 RSC after canonical hash '+JSON.stringify({status:follow.status,
+            cache:follow.headers.get('cache-control'),
+            xRobots:follow.headers.get('x-robots-tag')}));
+          }
+          if(effectiveStatus!==401)failures.push('/admin RSC anon nao terminou em 401');
           if(failures.length){console.error('TC28 FAIL '+JSON.stringify(failures));process.exitCode=1;}
           else console.log('TC28 PASS: 9 GETs standby, 3 POSTs bloqueados e RSC 401; zero dados reais.');
           NODE
