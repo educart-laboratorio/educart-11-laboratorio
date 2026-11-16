@@ -1,3 +1,5 @@
+# Autorizacao expressa da Direcao nesta GSI: criar SOMENTE Worker novo, sem rotas.
+# Preservar candidate, production, DNS, DB e PR em DRAFT.
 name: "SUPER GSI TC27 | Worker PROD standby autorizado (sem rotas)"
 on:
   push:
