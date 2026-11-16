@@ -1,0 +1,43 @@
+name: "SUPER GSI | P0 protecao publicador oficial (sem deploy)"
+on:
+  push:
+    branches:
+      - gsi-p0-protecao-publicador-oficial-20261115
+  pull_request:
+    branches:
+      - secretaria-11-candidate-online-20261115
+permissions:
+  contents: read
+jobs:
+  provas-sem-publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://doygnsubiitencoyzjzk.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_placeholder
+      EDUCART_OFFICIAL_11_MODE: required
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Instalar dependencias fixadas
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Provar seis negativas de deploy oficial
+        run: node scripts/testar-tc01-publicador-oficial-negativas.mjs
+      - name: Provar portaria oficial e RBAC sintético
+        run: node --experimental-strip-types scripts/testar-r43-portaria-oficial.mjs
+      - name: Verificar TypeScript
+        run: npx tsc --noEmit
+      - name: Build Vinext PROD sintético (sem acesso ao banco ou deploy)
+        run: npm run build:vinext
+      - name: Verificar integridade local do Worker
+        run: test -s .cloudflare/output/v0/workers/default/bundle/index.js
