@@ -290,4 +290,34 @@ r=await proxy(makeRequest('/minha-educart/login',{host:HOST}));
 assert.equal(r.status,303);
 assert(r.redirectTo.endsWith('/admin/login'),'Worker não permite o novo bypass local');
 
+// TC24: novo Worker PROD separado na mesma portaria; sem expor formulário.
+// O banco usa valores sinteticos apenas; nenhuma requisicao real de Auth.
+const prodReady='educart-11-prod-ready.educartsuporte.workers.dev';
+env.EDUCART_OFFICIAL_11_MODE='required';
+env.NEXT_PUBLIC_SUPABASE_URL='https://doygnsubiitencoyzjzk.supabase.co';
+env.NEXT_PUBLIC_SUPABASE_ANON_KEY='sb_publishable_teste_prod_ready_sintetico';
+env.EDUCART_PRIVATE_PREVIEW_MODE='off';
+reset({claims:false});
+r=await proxy(makeRequest('/inscricao',{host:prodReady}));
+assert.equal(r.status,200);
+assert(r.headers.get('x-middleware-rewrite')?.endsWith('/inscricao-indisponivel'));
+assert.equal(r.headers.get('X-Robots-Tag'),'noindex, nofollow, noarchive');
+assert.deepEqual(calls,[],'Standby nao consulta banco para exibir aviso');
+reset({claims:false});
+r=await proxy(makeRequest('/cadastro',{host:prodReady,method:'POST',accept:'application/json'}));
+assert.equal(r.status,405,'Standby recusa POST de cadastro');
+reset({claims:false});
+r=await proxy(makeRequest('/admin',{host:prodReady}));
+assert.equal(r.status,303,'Standby obriga login, nunca libera admin anonimo');
+assert(r.redirectTo.endsWith('/admin/login'));
+reset({claims:false});
+r=await proxy(makeRequest('/admin/login',{host:prodReady}));
+assert.equal(r.status,200);
+reset();
+r=await proxy(makeRequest('/admin',{host:prodReady,receivedHost:'invasor.example'}));
+assert.equal(r.status,503,'Host divergente no standby nao e confiavel');
+console.log('TC24 PROXY REAL PASS: standby sem coleta, admin protegido, spoof negado.');
+delete env.EDUCART_OFFICIAL_11_MODE;
+env.NEXT_PUBLIC_SUPABASE_URL=DEV;
+env.EDUCART_PRIVATE_PREVIEW_MODE='required';
 console.log('R07 PROXY EXEC: 18 classes de acesso testadas, sem dados reais e sem deploy.');

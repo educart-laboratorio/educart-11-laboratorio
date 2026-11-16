@@ -14,7 +14,7 @@ for(const route of ['/admin','/admin/financeiro','/api/admin/exportar']){
  assert.equal(classificarRotaOficial11(HOST_PROD_READY,route,'attacker.example','GET','required'),'negado');
 }
 assert.equal(destinoPublicoInscricaoSeguro(HOST_PROD_READY,dev),false);
-assert.equal(destinoPublicoInscricaoSeguro(HOST_PROD_READY,prod),true);
+assert.equal(destinoPublicoInscricaoSeguro(HOST_PROD_READY,prod),false,'Standby nao coleta nem com banco PROD');
 const p=readFileSync('src/proxy.ts','utf8');
 assert(p.includes('const avisoStandby = standby && rotaInscricao'));
 assert(p.includes("request.method !== 'GET' && request.method !== 'HEAD'"));
