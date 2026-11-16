@@ -97,6 +97,7 @@ function tsModule(filename,identifier) {
 modules['./lib/admin/autorizar-gestao']=tsModule('src/lib/admin/autorizar-gestao.ts','gestao');
 modules['./lib/security/preview-native-policy']=tsModule('src/lib/security/preview-native-policy.ts','politica');
 modules['./lib/security/headers-resposta']=tsModule('src/lib/security/headers-resposta.ts','headers-resposta');
+modules['./lib/security/destino-inscricao-publica']=tsModule('src/lib/security/destino-inscricao-publica.ts','destino-inscricao');
 const main=tsModule('src/proxy.ts','proxy');
 await main.link(specifier=>{
   if(!modules[specifier])throw Error('Import inesperado: '+specifier);
@@ -109,6 +110,28 @@ reset();
 env.EDUCART_PRIVATE_PREVIEW_MODE='off';
 let r=await proxy(makeRequest('/admin',{host:'educart.pro'}));
 assert.equal(r.status,503);assert.equal(calls.length,0,'admin oficial bloqueado sem modo privado obrigatório');
+// TC23: não expor formulário que enviaria dados ao Supabase DEV no host oficial.
+reset();
+r=await proxy(makeRequest('/inscricao',{host:'educart.pro'}));
+assert.equal(r.status,200);
+assert(r.headers.get('x-middleware-rewrite')?.endsWith('/inscricao-indisponivel'));
+assert.equal(r.headers.get('X-Robots-Tag'),'noindex, nofollow, noarchive');
+assert.equal(r.headers.get('Cache-Control'),'private, no-store, max-age=0');
+assert.deepEqual(calls,[],'aviso oficial não consulta Auth nem Supabase');
+reset();
+env.EDUCART_OFFICIAL_11_MODE='required';
+r=await proxy(makeRequest('/inscricao',{host:'www.educart.pro'}));
+assert(r.headers.get('x-middleware-rewrite')?.endsWith('/inscricao-indisponivel'),
+  'Mesmo com modo oficial ativado, URL DEV deve bloquear o formulário');
+env.NEXT_PUBLIC_SUPABASE_URL='https://doygnsubiitencoyzjzk.supabase.co';
+reset();
+r=await proxy(makeRequest('/inscricao',{host:'educart.pro'}));
+assert.equal(r.status,200);
+assert.equal(r.headers.get('x-middleware-rewrite'),null,
+  'Somente configuração oficialmente aprovada permite servir formulário real');
+assert.deepEqual(calls,[],'formulário não consulta banco na portaria');
+env.NEXT_PUBLIC_SUPABASE_URL=DEV;
+delete env.EDUCART_OFFICIAL_11_MODE;
 env.EDUCART_PRIVATE_PREVIEW_MODE='required';
 r=await proxy(makeRequest('/admin',{host:'preview-alias.example.org'}));
 assert.equal(r.status,503,'alias em Worker privado deve ser recusado');
