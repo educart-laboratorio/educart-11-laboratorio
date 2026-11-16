@@ -59,16 +59,27 @@ echo "TC18 PORTAO NEGATIVO PASS."
 {
  printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
  printf "SET educart.tc18_restore='RESTAURACAO_TESTADA';\n"
- printf "SET educart.tc18_coordenador_uid='11111111-1111-4111-8111-111111111111';\n"
  cat "$SOURCE"
 } | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/no-uid.log" 2>&1 && {
  echo "::error::Migracao aceitou execucao sem UID nominal"; exit 1;
 }
 grep -Fq 'TC18: coordenador UID aprovado ausente' "$TMP/no-uid.log"
 echo "TC18 UID NOMINAL OBRIGATORIO PASS."
+# Rejeitar tambem identidade Auth existente sem vinculo de portal_admins.
 {
  printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
  printf "SET educart.tc18_restore='RESTAURACAO_TESTADA';\n"
+ printf "SET educart.tc18_coordenador_uid='22222222-2222-4222-8222-222222222222';\n"
+ cat "$SOURCE"
+} | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/uid-externo.log" 2>&1 && {
+ echo "::error::Migracao aceitou UID fora da administracao"; exit 1;
+}
+grep -Fq 'TC18: coordenador nao e admin Auth existente' "$TMP/uid-externo.log"
+echo "TC18 UID EXTERNO NEGADO PASS."
+{
+ printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
+ printf "SET educart.tc18_restore='RESTAURACAO_TESTADA';\n"
+ printf "SET educart.tc18_coordenador_uid='11111111-1111-4111-8111-111111111111';\n"
  cat "$SOURCE"
 } | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/rollback.log" 2>&1 || {
  cat "$TMP/rollback.log";exit 1;
