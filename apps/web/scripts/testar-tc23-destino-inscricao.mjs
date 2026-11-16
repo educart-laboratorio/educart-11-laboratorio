@@ -11,8 +11,12 @@ for(const host of ['educart.pro','www.educart.pro','EDUCART.PRO','educart.pro.']
  assert.equal(destinoPublicoInscricaoSeguro(host,URL_PROD_INSCRICOES,'off'),false);
  assert.equal(destinoPublicoInscricaoSeguro(host,URL_PROD_INSCRICOES,'approved'),true);
 }
-for(const host of ['localhost','127.0.0.1','educart-11-candidate.educartsuporte.workers.dev']){
- assert.equal(destinoPublicoInscricaoSeguro(host,DEV),true,'Laboratorio DEV deve seguir isolado: '+host);
+for(const host of ['localhost','127.0.0.1']){
+ assert.equal(destinoPublicoInscricaoSeguro(host,DEV),true,'Laboratorio local DEV preservado: '+host);
+}
+for(const host of ['educart-11-candidate.educartsuporte.workers.dev','educart-11-prod-ready.educartsuporte.workers.dev']){
+ assert.equal(destinoPublicoInscricaoSeguro(host,DEV),false,'Worker público não deve enviar ao DEV: '+host);
+ assert.equal(destinoPublicoInscricaoSeguro(host,URL_PROD_INSCRICOES,'approved'),false,'Worker de prévia não coleta nem com liberação: '+host);
 }
 assert.equal(destinoPublicoInscricaoSeguro('educart.pro.evil.example',DEV),true,'Host inventado nao é oficial');
 const proxy=readFileSync('src/proxy.ts','utf8');
