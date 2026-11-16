@@ -7,6 +7,7 @@ import { validateStep, buildInscricaoPayload, type InscricaoFormData } from '@/l
 import { calcularIdade, IDADE_MINIMA_FORMACAO } from '@/lib/idade-formacao';
 import { mensagemCandidatoInscrito } from '@/lib/mensagens-whatsapp';
 import { CasaGameleiraLink, HORARIO_TURMA_FORMACAO, NOME_LOCAL_FORMACAO } from '@/components/CasaGameleiraLink';
+import { destinoPublicoInscricaoSeguro } from '@/lib/security/destino-inscricao-publica';
 
 const WHATSAPP_NUMBER = '5571996824505';
 const PHONE_DISPLAY = '(71) 99682-4505';
@@ -16,6 +17,12 @@ export function InscricaoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [destinoInvalido, setDestinoInvalido] = useState(false);
+  useEffect(() => {
+    setDestinoInvalido(!destinoPublicoInscricaoSeguro(
+      window.location.hostname, process.env.NEXT_PUBLIC_SUPABASE_URL,
+    ));
+  }, []);
   const [triagem, setTriagem] = useState<TriagemInscricao | null>(null);
   const [editarTriagem, setEditarTriagem] = useState(false);
   const successRef = useRef<HTMLDivElement>(null);
@@ -83,6 +90,16 @@ export function InscricaoForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Defesa redundante: falha fechada mesmo se o proxy for contornado por
+    // cache HTML ou servidor legado. Nunca fazer POST no Supabase DEV.
+    if (!destinoPublicoInscricaoSeguro(
+      window.location.hostname, process.env.NEXT_PUBLIC_SUPABASE_URL,
+    )) {
+      setDestinoInvalido(true);
+      setErrorMessage('As inscrições online estão temporariamente indisponíveis. Contate a EducART pelo WhatsApp.');
+      return;
+    }
+
     const result = validateStep(3, formData);
     if (!result.valid) {
       setErrorMessage(result.errorMessage);
@@ -129,6 +146,19 @@ export function InscricaoForm() {
     objetivo: formData.objetivo === 'Outro' ? formData.objetivoOutro : formData.objetivo,
   }));
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
+
+  if (destinoInvalido) {
+    return (
+      <section role="alert" aria-live="assertive" className="multi-step-form-wrapper">
+        <h2>Inscrições temporariamente indisponíveis</h2>
+        <p>Para proteger seus dados, o envio da ficha online está suspenso neste endereço.
+          Nenhuma inscrição é enviada por esta página.</p>
+        <p>Converse com a equipe da EducART para receber orientação sobre sua inscrição.</p>
+        <a className="btn btn-whatsapp" href={`https://wa.me/${WHATSAPP_NUMBER}`}
+          target="_blank" rel="noopener noreferrer">Falar com a EducART pelo WhatsApp</a>
+      </section>
+    );
+  }
 
   if (isSuccess) {
     return (

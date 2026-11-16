@@ -1,0 +1,43 @@
+name: "SUPER GSI TC23 | Impedir envio oficial ao Supabase DEV"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - "apps/web/src/lib/security/destino-inscricao-publica.ts"
+      - "apps/web/src/components/InscricaoForm.tsx"
+      - "apps/web/src/proxy.ts"
+      - "apps/web/src/app/inscricao-indisponivel/page.tsx"
+      - "apps/web/scripts/testar-tc23-destino-inscricao.mjs"
+      - ".github/workflows/gsi-tc23-destino-inscricao.yml"
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://esjrjzyvyhtzwgihcbsc.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_placeholder
+      EDUCART_PRIVATE_PREVIEW_MODE: local
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Provar contrato da inscricao sem POST
+        run: node --experimental-strip-types scripts/testar-tc23-destino-inscricao.mjs
+      - name: Verificar TypeScript
+        run: npx tsc --noEmit
+      - name: Execucao real do proxy isolada sem rede
+        run: node --experimental-vm-modules scripts/testar-r07-proxy-execucao.mjs
+      - name: Gerar build sem deploy
+        run: npm run build:vinext
