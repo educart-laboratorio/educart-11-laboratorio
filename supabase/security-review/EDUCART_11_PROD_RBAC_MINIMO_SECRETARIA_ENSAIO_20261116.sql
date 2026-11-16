@@ -20,8 +20,8 @@ BEGIN
  IF coordenador_uid IS NULL
  THEN RAISE EXCEPTION 'TC18: coordenador UID aprovado ausente'; END IF;
  IF NOT EXISTS (
-   SELECT 1 FROM public.portal_admins p JOIN auth.users u ON u.id=p.user_id
-   WHERE p.user_id=coordenador_uid
+   SELECT 1 FROM public.portal_admins pa JOIN auth.users u ON u.id=pa.user_id
+   WHERE pa.user_id=coordenador_uid
  ) THEN RAISE EXCEPTION 'TC18: coordenador nao e admin Auth existente'; END IF;
  IF to_regclass('public.equipe_papeis') IS NOT NULL
  THEN RAISE EXCEPTION 'TC18: tabela equipe_papeis ja existe'; END IF;
