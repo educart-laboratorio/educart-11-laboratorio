@@ -135,8 +135,20 @@
   .eg-return, .eg-brand-link { min-height: 44px; display: inline-flex; align-items: center; }
 }
 
-/* TC-08: área livre acima dos controles fixos de WhatsApp/acessibilidade no celular. */
+/* TC-08: fluxo de triagem tem rolagem propria acima da faixa de controles
+   fixos globais. Sem esconder opções, rodapé ou recursos de acessibilidade. */
 @media (max-width: 620px) {
-  .eg-root .eg-stage { padding-bottom: max(112px, calc(96px + env(safe-area-inset-bottom))); }
-  .eg-root .eg-progress { margin-bottom: 12px; }
+  .eg-root { height: 100svh; min-height: 100svh; }
+  .eg-root .eg-stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: calc(100svh - 134px);
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    justify-content: flex-start;
+    margin: 0 auto;
+    padding: 24px 22px 26px;
+  }
+  .eg-root .eg-opening, .eg-root .eg-dialog { margin: 0; }
+  .eg-root .eg-foot { flex: 0 0 auto; margin-bottom: 68px; }
 }
