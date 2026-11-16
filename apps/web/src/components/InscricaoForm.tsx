@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { validateStep, buildInscricaoPayload, type InscricaoFormData } from '@/lib/inscricao-validation';
 import { calcularIdade, IDADE_MINIMA_FORMACAO } from '@/lib/idade-formacao';
@@ -15,6 +15,17 @@ export function InscricaoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const successRef = useRef<HTMLDivElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+
+  // O formulário pode terminar abaixo da área visível após três etapas.
+  // Levar o foco à confirmação ou ao erro evita a aparência de envio travado.
+  useEffect(() => {
+    const feedback = isSuccess ? successRef.current : errorMessage ? errorRef.current : null;
+    if (!feedback) return;
+    feedback.focus({ preventScroll: true });
+    feedback.scrollIntoView({ block: 'start', behavior: 'auto' });
+  }, [isSuccess, errorMessage]);
 
   // Form State
   const [formData, setFormData] = useState<InscricaoFormData>({
@@ -105,7 +116,7 @@ export function InscricaoForm() {
 
   if (isSuccess) {
     return (
-      <div className="form-success-card" role="region" aria-live="polite">
+      <div ref={successRef} tabIndex={-1} className="form-success-card" role="region" aria-label="Inscrição concluída" aria-live="polite" style={{ scrollMarginTop: 24 }}>
         <div className="success-icon" aria-hidden="true">
           ✓
         </div>
@@ -180,7 +191,7 @@ export function InscricaoForm() {
   return (
     <div className="multi-step-form-wrapper" id="formulario-inscricao" data-inscricao-step={step}>
       {/* Barra de Progresso do Formulário */}
-      <div className="form-progress-bar" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={3}>
+      <div className="form-progress-bar" role="progressbar" aria-label="Progresso da inscrição" aria-valuenow={step} aria-valuemin={1} aria-valuemax={3}>
         <div className={`progress-step ${step >= 1 ? 'active' : ''}`}>
           <span className="step-circle">1</span>
           <span className="step-label">Objetivo</span>
@@ -198,7 +209,7 @@ export function InscricaoForm() {
       </div>
 
       {errorMessage && (
-        <div className="form-error-alert" role="alert">
+        <div ref={errorRef} tabIndex={-1} className="form-error-alert" role="alert" style={{ scrollMarginTop: 24 }}>
           ⚠️ {errorMessage}
         </div>
       )}
