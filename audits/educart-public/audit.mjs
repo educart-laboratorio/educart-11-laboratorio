@@ -110,6 +110,18 @@ try {
           };
         });
         Object.assign(row, { titlePresent: facts.titlePresent, h1Count: facts.h1Count, missingImageCount: facts.missingImageCount, overflowPx: facts.overflowPx, unnamedButtons: facts.unnamedButtons });
+        // Auditoria complementar de SEO, sem coletar dados pessoais.
+        row.seo = await page.evaluate(() => ({
+          title: document.title || '',
+          description: document.querySelector('meta[name="description"]')?.getAttribute('content') || '',
+          canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href') || '',
+          ogTitle: document.querySelector('meta[property="og:title"]')?.getAttribute('content') || '',
+          robots: document.querySelector('meta[name="robots"]')?.getAttribute('content') || '',
+          lang: document.documentElement.lang || '',
+          headings: [...document.querySelectorAll('h1')].map(el => (el.textContent || '').trim().slice(0,110)),
+          imagesWithoutAlt: [...document.images].filter(img => !img.hasAttribute('alt')).length,
+        }));
+
         for (const href of facts.links) {
           const next = safeRoute(href);
           if (next && !knownRoutes.has(next) && knownRoutes.size < maxRoutes) {
@@ -145,6 +157,30 @@ try {
 } finally {
   await browser.close();
 }
+// Amostra HTTP de publicacao, SEO e cabecalhos — apenas GET; sem login ou escrita.
+const httpChecks = [];
+for (const route of ['/', '/formacao', '/inscricao', '/cadastro', '/criar',
+  '/admin', '/admin/login', '/minha-educart/login', '/niveis-demo',
+  '/matricula-demo', '/robots.txt', '/sitemap.xml', '/favicon.ico']) {
+  const probe = {route, status: null, headers: {}, error: null};
+  try {
+    const response = await fetch(new URL(route, base), {method:'GET', redirect:'manual', signal:AbortSignal.timeout(12000)});
+    probe.status = response.status;
+    probe.headers = {
+      contentType:response.headers.get('content-type'),
+      cacheControl:response.headers.get('cache-control'),
+      xRobotsTag:response.headers.get('x-robots-tag'),
+      strictTransportSecurity:response.headers.get('strict-transport-security'),
+      contentSecurityPolicy:response.headers.get('content-security-policy'),
+      xContentTypeOptions:response.headers.get('x-content-type-options'),
+      referrerPolicy:response.headers.get('referrer-policy'),
+      permissionsPolicy:response.headers.get('permissions-policy'),
+      location:response.headers.get('location'),
+    };
+  } catch(error) { probe.error = String(error?.message||error).slice(0,100); }
+  httpChecks.push(probe);
+}
+
 const report = {
   auditedAt: new Date().toISOString(),
   target: base.origin,
@@ -152,6 +188,7 @@ const report = {
   sourceCommit: process.env.GITHUB_SHA || null,
   modes,
   failures,
+  httpChecks,
   results: records,
   limitations: [
     'Nao demonstra SHA em producao; exige verificacao de deploy.',
@@ -169,6 +206,16 @@ const lines = [
   '| Tela | Rota | HTTP | Overflow | Axe | JS erros | Observacoes |',
   '|---|---|---:|---:|---:|---:|---|',
   ...records.map(r => '| ' + r.viewport + ' | ' + r.route + ' | ' + (r.status ?? '-') + ' | ' + r.overflowPx + 'px | ' + r.axeViolations.length + ' | ' + r.scriptErrorCount + ' | ' + (r.errors.join('; ') || '—') + ' |'),
+  '',
+  '## Metadados e links canônicos por rota',
+  '| Tela | Rota | Canônico | Descrição | Imagens sem ALT |',
+  '|---|---|---|---|---:|',
+  ...records.map(r => '| '+r.viewport+' | '+r.route+' | '+(r.seo?.canonical||'—')+' | '+(r.seo?.description?'presente':'ausente')+' | '+(r.seo?.imagesWithoutAlt??'—')+' |'),
+  '',
+  '## Respostas HTTP e cabecalhos',
+  '| Rota | HTTP | CSP | HSTS | Robots |',
+  '|---|---:|---|---|---|',
+  ...httpChecks.map(r => '| '+r.route+' | '+(r.status??'—')+' | '+(r.headers?.contentSecurityPolicy?'sim':'não')+' | '+(r.headers?.strictTransportSecurity?'sim':'não')+' | '+(r.headers?.xRobotsTag||'—')+' |'),
   '',
   'Limites: sem login, sem envio, sem acesso privado, sem comprovacao do SHA publicado. Conferir capturas e relatorio.json.'
 ];
