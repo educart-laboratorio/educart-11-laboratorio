@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 const token=process.env.CLOUDFLARE_API_TOKEN;
 const account='8fe5407b4d31f20e19a1388527e365ad';
-const scripts=['educart-11-candidate','educart-production'];
+const scripts=['educart-11-candidate','educart-production','educart-11-prod-ready'];
 const wanted=['EDUCART_OFFICIAL_11_MODE','EDUCART_PRIVATE_PREVIEW_MODE',
  'NEXT_PUBLIC_SUPABASE_URL','NEXT_PUBLIC_SUPABASE_ANON_KEY'];
 const report={readOnly:true,writes:0,accountVerified:false,workers:[],checkedAt:new Date().toISOString()};
