@@ -23,5 +23,5 @@ assert(form.includes('destinoPublicoInscricaoSeguro('));
 assert(form.indexOf('if (!destinoPublicoInscricaoSeguro(')<form.indexOf("const supabase = createClient()"),'Bloqueio antes do envio');
 const page=readFileSync('src/app/inscricao-indisponivel/page.tsx','utf8');
 assert(page.includes('robots:{index:false,follow:false}'));
-assert(!/createClient|buildInscricaoPayload|\\.insert\\(/.test(page),'Aviso sem coleta');
+assert(!['createClient','buildInscricaoPayload','.insert('].some(x=>page.includes(x)),'Aviso sem coleta');
 console.log('TC23 PASS: hosts oficiais DEV bloqueados, PROD permitido, DEV isolado e aviso sem coleta.');

@@ -8,6 +8,7 @@ on:
       - "apps/web/src/proxy.ts"
       - "apps/web/src/app/inscricao-indisponivel/page.tsx"
       - "apps/web/scripts/testar-tc23-destino-inscricao.mjs"
+      - "apps/web/scripts/testar-r07-proxy-execucao.mjs"
       - ".github/workflows/gsi-tc23-destino-inscricao.yml"
 permissions:
   contents: read
