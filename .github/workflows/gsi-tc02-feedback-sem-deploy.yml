@@ -32,6 +32,8 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verificar TypeScript
         run: npx tsc --noEmit
+      - name: Testar mapeamento seguro de triagem (TC-06)
+        run: node --experimental-strip-types scripts/testar-tc06-triagem.mjs
       - name: Testar regressões da portaria antes do browser
         run: |
           node --experimental-strip-types scripts/testar-r07-portaria-nativa.mjs
