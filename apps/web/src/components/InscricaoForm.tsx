@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { mapearTriagemInscricao, type TriagemInscricao } from '@/lib/triagem-inscricao';
 import { validateStep, buildInscricaoPayload, type InscricaoFormData } from '@/lib/inscricao-validation';
 import { calcularIdade, IDADE_MINIMA_FORMACAO } from '@/lib/idade-formacao';
 import { mensagemCandidatoInscrito } from '@/lib/mensagens-whatsapp';
 import { CasaGameleiraLink, HORARIO_TURMA_FORMACAO, NOME_LOCAL_FORMACAO } from '@/components/CasaGameleiraLink';
+import { destinoPublicoInscricaoSeguro } from '@/lib/security/destino-inscricao-publica';
 
 const WHATSAPP_NUMBER = '5571996824505';
 const PHONE_DISPLAY = '(71) 99682-4505';
@@ -15,6 +17,28 @@ export function InscricaoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [destinoInvalido, setDestinoInvalido] = useState(false);
+  useEffect(() => {
+    setDestinoInvalido(!destinoPublicoInscricaoSeguro(
+      window.location.hostname, process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS,
+    ));
+  }, []);
+  const [triagem, setTriagem] = useState<TriagemInscricao | null>(null);
+  const [editarTriagem, setEditarTriagem] = useState(false);
+  const successRef = useRef<HTMLDivElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+
+  // O formulário pode terminar abaixo da área visível após três etapas.
+  // Levar o foco à confirmação ou ao erro evita a aparência de envio travado.
+  useEffect(() => {
+    const feedback = isSuccess ? successRef.current : errorMessage ? errorRef.current : null;
+    if (!feedback) return;
+    feedback.focus({ preventScroll: true });
+    // 'instant' não herda scroll-behavior: smooth do CSS global.
+    // A mensagem deve aparecer de imediato, inclusive no celular.
+    feedback.scrollIntoView({ block: 'start', behavior: 'instant' });
+  }, [isSuccess, errorMessage]);
 
   // Form State
   const [formData, setFormData] = useState<InscricaoFormData>({
@@ -32,6 +56,17 @@ export function InscricaoForm() {
     comoConheceu: 'Instagram',
     comoConheceuOutro: '',
   });
+
+  useEffect(() => {
+    const contexto = mapearTriagemInscricao(window.location.search);
+    if (!contexto) return;
+    setTriagem(contexto);
+    setFormData(prev => ({
+      ...prev,
+      ...(contexto.objetivo ? { objetivo: contexto.objetivo, objetivoOutro: contexto.objetivoOutro || '' } : {}),
+      ...(contexto.experienciaPrevia ? { experienciaPrevia: contexto.experienciaPrevia } : {}),
+    }));
+  }, []);
 
   const updateField = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -55,6 +90,17 @@ export function InscricaoForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Defesa redundante: falha fechada mesmo se o proxy for contornado por
+    // cache HTML ou servidor legado. Nunca fazer POST no Supabase DEV.
+    if (!destinoPublicoInscricaoSeguro(
+      window.location.hostname, process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS,
+    )) {
+      setDestinoInvalido(true);
+      setErrorMessage('As inscrições online estão temporariamente indisponíveis. Contate a EducART pelo WhatsApp.');
+      return;
+    }
 
     const result = validateStep(3, formData);
     if (!result.valid) {
@@ -103,9 +149,22 @@ export function InscricaoForm() {
   }));
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
 
+  if (destinoInvalido) {
+    return (
+      <section role="alert" aria-live="assertive" className="multi-step-form-wrapper">
+        <h2>Inscrições temporariamente indisponíveis</h2>
+        <p>Para proteger seus dados, o envio da ficha online está suspenso neste endereço.
+          Nenhuma inscrição é enviada por esta página.</p>
+        <p>Converse com a equipe da EducART para receber orientação sobre sua inscrição.</p>
+        <a className="btn btn-whatsapp" href={`https://wa.me/${WHATSAPP_NUMBER}`}
+          target="_blank" rel="noopener noreferrer">Falar com a EducART pelo WhatsApp</a>
+      </section>
+    );
+  }
+
   if (isSuccess) {
     return (
-      <div className="form-success-card" role="region" aria-live="polite">
+      <div ref={successRef} tabIndex={-1} className="form-success-card" role="region" aria-label="Inscrição concluída" aria-live="polite" style={{ scrollMarginTop: 24 }}>
         <div className="success-icon" aria-hidden="true">
           ✓
         </div>
@@ -180,7 +239,7 @@ export function InscricaoForm() {
   return (
     <div className="multi-step-form-wrapper" id="formulario-inscricao" data-inscricao-step={step}>
       {/* Barra de Progresso do Formulário */}
-      <div className="form-progress-bar" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={3}>
+      <div className="form-progress-bar" role="progressbar" aria-label="Progresso da inscrição" aria-valuenow={step} aria-valuemin={1} aria-valuemax={3}>
         <div className={`progress-step ${step >= 1 ? 'active' : ''}`}>
           <span className="step-circle">1</span>
           <span className="step-label">Objetivo</span>
@@ -198,7 +257,7 @@ export function InscricaoForm() {
       </div>
 
       {errorMessage && (
-        <div className="form-error-alert" role="alert">
+        <div ref={errorRef} tabIndex={-1} className="form-error-alert" role="alert" style={{ scrollMarginTop: 24 }}>
           ⚠️ {errorMessage}
         </div>
       )}
@@ -213,6 +272,21 @@ export function InscricaoForm() {
               <p>Qual é a sua principal motivação para entrar na Formação de Atores?</p>
             </div>
 
+            {triagem && !editarTriagem && (
+              <div className="form-group" role="note" aria-label="Respostas aproveitadas da triagem">
+                <p>Já aproveitamos as respostas que você deu na entrada:</p>
+                {triagem.objetivoRotulo && <p><strong>Interesse:</strong> {triagem.objetivoRotulo}</p>}
+                {triagem.experienciaRotulo && <p><strong>Experiência:</strong> {triagem.experienciaRotulo}</p>}
+                {triagem.faixaRotulo && <p><strong>Faixa etária informada:</strong> {triagem.faixaRotulo}. A data de nascimento será confirmada na próxima etapa.</p>}
+                {(triagem.objetivoRotulo || triagem.experienciaRotulo) && (
+                  <button type="button" className="btn btn-outline" onClick={() => setEditarTriagem(true)}>
+                    Alterar respostas da triagem
+                  </button>
+                )}
+              </div>
+            )}
+
+            {(!triagem?.objetivoRotulo || editarTriagem) && (
             <div className="form-group">
               <label className="form-label" id="label-objetivo">
                 Qual o seu objetivo principal? <span className="req">*</span>
@@ -254,8 +328,11 @@ export function InscricaoForm() {
                 </div>
               )}
             </div>
+            )}
 
             <div className="form-group">
+              {(!triagem?.experienciaRotulo || editarTriagem) && (
+              <>
               <label className="form-label" id="label-experiencia">
                 Já possui experiência anterior em Teatro, TV ou Cinema? <span className="req">*</span>
               </label>
@@ -276,6 +353,8 @@ export function InscricaoForm() {
                   </label>
                 ))}
               </div>
+              </>
+              )}
 
               {formData.experienciaPrevia === 'Sim' && (
                 <div style={{ marginTop: '12px' }}>
@@ -427,8 +506,8 @@ export function InscricaoForm() {
           <fieldset className="form-step-section">
             <div className="step-legend">
               <span className="step-badge">Etapa 3 de 3</span>
-              <h3>Localização e Confirmação da Vaga</h3>
-              <p>Confirme seu endereço para finalizarmos sua vaga na Formação de Atores.</p>
+              <h3>Localização e envio da inscrição</h3>
+              <p>Confirme seus dados de localização para enviar sua ficha. A inscrição não garante vaga nem efetiva matrícula.</p>
             </div>
 
             <div className="form-group">

@@ -549,7 +549,8 @@ html.high-contrast .a11y-floating-trigger.open {
 
 .btn-whatsapp {
   background-color: var(--whatsapp-green);
-  color: #ffffff;
+  /* TC10: texto escuro mantém contraste AA com o verde da marca. */
+  color: #052e16;
   box-shadow: 0 4px 14px var(--whatsapp-glow);
 }
 
@@ -2101,9 +2102,13 @@ select.form-input:focus {
   overflow-wrap: anywhere;
 }
 
-.eg-catalog .educart-link-casa-gameleira,
-.eg-enroll .educart-link-casa-gameleira {
+.eg-catalog .educart-link-casa-gameleira {
   color: #64c7ff;
+}
+/* TC10: cartão de endereço da inscrição é claro no modo padrão,
+   ao contrário do catálogo; usar azul legível em ambas as paletas. */
+.eg-enroll .educart-link-casa-gameleira {
+  color: var(--educart-blue);
 }
 
 .educart-link-casa-gameleira:hover,

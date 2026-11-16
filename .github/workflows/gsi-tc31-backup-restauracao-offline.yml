@@ -1,0 +1,23 @@
+name: "SUPER GSI TC31 | Ensaio de backup e restauracao em PostgreSQL 17 (offline)"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - ".github/workflows/gsi-tc31-backup-restauracao-offline.yml"
+      - "apps/web/scripts/testar-tc31-backup-restauracao-offline.sh"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  restauracao-sintetica:
+    if: github.repository == 'educart-laboratorio/educart-11-laboratorio' && github.ref_name == 'gsi-integracao-triple-core-20261115'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verificar sintaxe Bash
+        run: bash -n apps/web/scripts/testar-tc31-backup-restauracao-offline.sh
+      - name: Executar dump e restauracao em containers descartaveis sem rede
+        run: bash apps/web/scripts/testar-tc31-backup-restauracao-offline.sh

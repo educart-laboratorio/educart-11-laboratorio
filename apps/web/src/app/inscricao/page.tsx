@@ -12,10 +12,10 @@ export default function PaginaInscricao() {
   return (
     <div className="eg-enroll">
       <header className="eg-catalog-bar">
-        <Link className="eg-brand-link" href="/" aria-label="Voltar ao início"><EducartLogo size="default" /></Link>
+        <Link className="eg-brand-link" href="/"><EducartLogo size="default" /><span className="eg-sr-only">Voltar ao início</span></Link>
         <Link className="eg-return" href="/formacao">← Formação</Link>
       </header>
-      <main className="eg-enroll-body" style={{ maxWidth: 900 }}>
+      <div className="eg-enroll-body" style={{ maxWidth: 900 }}>
         <span className="eg-eyebrow">Oficina de Atores Salvador · EducART</span>
         <h1>Comece sua história com a arte.</h1>
         <p className="eg-description">
@@ -27,7 +27,7 @@ export default function PaginaInscricao() {
         <section aria-label="Formulário oficial de inscrição">
           <InscricaoElegibilidade />
         </section>
-      </main>
+      </div>
     </div>
   );
 }

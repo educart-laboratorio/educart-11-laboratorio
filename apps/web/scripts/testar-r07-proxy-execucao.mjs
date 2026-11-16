@@ -96,6 +96,8 @@ function tsModule(filename,identifier) {
 }
 modules['./lib/admin/autorizar-gestao']=tsModule('src/lib/admin/autorizar-gestao.ts','gestao');
 modules['./lib/security/preview-native-policy']=tsModule('src/lib/security/preview-native-policy.ts','politica');
+modules['./lib/security/headers-resposta']=tsModule('src/lib/security/headers-resposta.ts','headers-resposta');
+modules['./lib/security/destino-inscricao-publica']=tsModule('src/lib/security/destino-inscricao-publica.ts','destino-inscricao');
 const main=tsModule('src/proxy.ts','proxy');
 await main.link(specifier=>{
   if(!modules[specifier])throw Error('Import inesperado: '+specifier);
@@ -108,6 +110,34 @@ reset();
 env.EDUCART_PRIVATE_PREVIEW_MODE='off';
 let r=await proxy(makeRequest('/admin',{host:'educart.pro'}));
 assert.equal(r.status,503);assert.equal(calls.length,0,'admin oficial bloqueado sem modo privado obrigatório');
+// TC23: não expor formulário que enviaria dados ao Supabase DEV no host oficial.
+reset();
+r=await proxy(makeRequest('/inscricao',{host:'educart.pro'}));
+assert.equal(r.status,200);
+assert(r.headers.get('x-middleware-rewrite')?.endsWith('/inscricao-indisponivel'));
+assert.equal(r.headers.get('X-Robots-Tag'),'noindex, nofollow, noarchive');
+assert.equal(r.headers.get('Cache-Control'),'private, no-store, max-age=0');
+assert.deepEqual(calls,[],'aviso oficial não consulta Auth nem Supabase');
+reset();
+env.EDUCART_OFFICIAL_11_MODE='required';
+r=await proxy(makeRequest('/inscricao',{host:'www.educart.pro'}));
+assert(r.headers.get('x-middleware-rewrite')?.endsWith('/inscricao-indisponivel'),
+  'Mesmo com modo oficial ativado, URL DEV deve bloquear o formulário');
+env.NEXT_PUBLIC_SUPABASE_URL='https://doygnsubiitencoyzjzk.supabase.co';
+reset();
+r=await proxy(makeRequest('/inscricao',{host:'educart.pro'}));
+assert(r.headers.get('x-middleware-rewrite')?.endsWith('/inscricao-indisponivel'),
+  'PROD sem portao de inscricoes deve ficar em aviso');
+env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS='approved';
+reset();
+r=await proxy(makeRequest('/inscricao',{host:'educart.pro'}));
+assert.equal(r.status,200);
+assert.equal(r.headers.get('x-middleware-rewrite'),null,
+  'Somente configuração oficialmente aprovada permite servir formulário real');
+assert.deepEqual(calls,[],'formulário não consulta banco na portaria');
+env.NEXT_PUBLIC_SUPABASE_URL=DEV;
+delete env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS;
+delete env.EDUCART_OFFICIAL_11_MODE;
 env.EDUCART_PRIVATE_PREVIEW_MODE='required';
 r=await proxy(makeRequest('/admin',{host:'preview-alias.example.org'}));
 assert.equal(r.status,503,'alias em Worker privado deve ser recusado');
@@ -131,6 +161,10 @@ assert.equal(r.headers.get('X-Robots-Tag'),'noindex, nofollow, noarchive',
   'Login publico da candidata nao pode ser indexado');
 assert.equal(r.headers.get('Cache-Control'),'private, no-store, max-age=0',
   'Login da candidata nao pode ser cacheado');
+assert.equal(r.headers.get('X-Frame-Options'),'DENY','Login nao pode ser embutido em iframe');
+assert.equal(r.headers.get('X-Content-Type-Options'),'nosniff');
+assert.match(r.headers.get('Content-Security-Policy')||'',/frame-ancestors 'none'/);
+assert.equal(r.headers.get('Strict-Transport-Security'),null,'Nao impor HSTS em candidato DEV');
 for (const path of ['/','/formacao','/inscricao','/cadastro','/criar']) {
   reset({claims:false});
   r=await proxy(makeRequest(path,{host:candidateHost}));
@@ -262,4 +296,36 @@ r=await proxy(makeRequest('/minha-educart/login',{host:HOST}));
 assert.equal(r.status,303);
 assert(r.redirectTo.endsWith('/admin/login'),'Worker não permite o novo bypass local');
 
+// TC24: novo Worker PROD separado na mesma portaria; sem expor formulário.
+// O banco usa valores sinteticos apenas; nenhuma requisicao real de Auth.
+const prodReady='educart-11-prod-ready.educartsuporte.workers.dev';
+env.EDUCART_OFFICIAL_11_MODE='required';
+env.NEXT_PUBLIC_SUPABASE_URL='https://doygnsubiitencoyzjzk.supabase.co';
+env.NEXT_PUBLIC_SUPABASE_ANON_KEY='sb_publishable_teste_prod_ready_sintetico';
+env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS='approved';
+env.EDUCART_PRIVATE_PREVIEW_MODE='off';
+reset({claims:false});
+r=await proxy(makeRequest('/inscricao',{host:prodReady}));
+assert.equal(r.status,200);
+assert(r.headers.get('x-middleware-rewrite')?.endsWith('/inscricao-indisponivel'));
+assert.equal(r.headers.get('X-Robots-Tag'),'noindex, nofollow, noarchive');
+assert.deepEqual(calls,[],'Standby nao consulta banco para exibir aviso');
+reset({claims:false});
+r=await proxy(makeRequest('/cadastro',{host:prodReady,method:'POST',accept:'application/json'}));
+assert.equal(r.status,405,'Standby recusa POST de cadastro');
+reset({claims:false});
+r=await proxy(makeRequest('/admin',{host:prodReady}));
+assert.equal(r.status,303,'Standby obriga login, nunca libera admin anonimo');
+assert(r.redirectTo.endsWith('/admin/login'));
+reset({claims:false});
+r=await proxy(makeRequest('/admin/login',{host:prodReady}));
+assert.equal(r.status,200);
+reset();
+r=await proxy(makeRequest('/admin',{host:prodReady,receivedHost:'invasor.example'}));
+assert.equal(r.status,503,'Host divergente no standby nao e confiavel');
+console.log('TC24 PROXY REAL PASS: standby sem coleta mesmo com liberacao, admin protegido, spoof negado.');
+delete env.NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS;
+delete env.EDUCART_OFFICIAL_11_MODE;
+env.NEXT_PUBLIC_SUPABASE_URL=DEV;
+env.EDUCART_PRIVATE_PREVIEW_MODE='required';
 console.log('R07 PROXY EXEC: 18 classes de acesso testadas, sem dados reais e sem deploy.');

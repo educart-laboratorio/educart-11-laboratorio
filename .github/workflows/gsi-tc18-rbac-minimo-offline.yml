@@ -1,0 +1,24 @@
+name: "SUPER GSI TC18 | Secretaria minima RBAC em PostgreSQL offline"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - ".github/workflows/gsi-tc18-rbac-minimo-offline.yml"
+      - "apps/web/scripts/testar-tc18-secretaria-minima-postgres.sh"
+      - "supabase/security-review/EDUCART_11_PROD_RBAC_MINIMO_SECRETARIA_ENSAIO_20261116.sql"
+permissions:
+  contents: read
+jobs:
+  rbac:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validar ROLLBACK e sintaxe
+        run: |
+          test "$(grep -Ec '^ROLLBACK;$' supabase/security-review/EDUCART_11_PROD_RBAC_MINIMO_SECRETARIA_ENSAIO_20261116.sql)" = 1
+          bash -n apps/web/scripts/testar-tc18-secretaria-minima-postgres.sh
+      - name: Executar ensaio negativo e positivo no banco efemero
+        run: bash apps/web/scripts/testar-tc18-secretaria-minima-postgres.sh

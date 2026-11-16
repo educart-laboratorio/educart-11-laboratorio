@@ -19,15 +19,13 @@ export default function RootTemplate({ children }: { children: ReactNode }) {
       {pathname === '/' && (
         <nav className="educart-home-acessos" aria-label="Acessos privativos EducART">
           <Link className="educart-home-acesso" href="/admin/login"
-            title="Acesso restrito à gestão institucional"
-            aria-label="Acessar o Painel Administrativo da EducART">
+            title="Acesso restrito à gestão institucional">
             <span>Painel Administrativo</span>
             <small>Acesso da gestão</small>
           </Link>
           <Link className="educart-home-acesso educart-home-acesso-cliente"
             href="/minha-educart/login"
-            title="Minha EducART: acesso individual mediante convite, em homologação"
-            aria-label="Minha EducART, acesso individual por convite em homologação">
+            title="Minha EducART: acesso individual mediante convite, em homologação">
             <span>Minha EducART</span>
             <small>Por convite · em testes</small>
           </Link>

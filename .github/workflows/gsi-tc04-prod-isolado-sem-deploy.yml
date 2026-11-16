@@ -1,0 +1,44 @@
+name: "SUPER GSI TC04 | Ensaio PROD sintetico e portao de interface"
+on:
+  push:
+    branches:
+      - gsi-integracao-triple-core-20261115
+permissions:
+  contents: read
+jobs:
+  candidata_sql_isolada:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Testar SQL PROD candidato no PostgreSQL sem rede nem dados reais
+        run: bash apps/web/scripts/testar-tc04-prod-migracao-sintetica.sh
+  interface_producao_segura:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://doygnsubiitencoyzjzk.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_placeholder
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Dependencias fixas
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Portao de interface PROD sem tabela academica
+        run: node scripts/testar-tc04-prod-guard.mjs
+      - name: TypeScript com configuracao PROD sintetica
+        run: npx tsc --noEmit
+      - name: Build com configuracao PROD sintetica sem publicar
+        run: npm run build:vinext

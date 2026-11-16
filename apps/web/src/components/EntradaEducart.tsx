@@ -38,11 +38,12 @@ export function EntradaEducart() {
   return (
     <div className="eg-root">
       <div className="eg-backdrop" aria-hidden="true" />
-      <main className="eg-stage" id="inicio" data-educart-etapa={etapa}>
+      <div className="eg-stage" id="inicio" data-educart-etapa={etapa}>
         {etapa !== 'abertura' && <div className="eg-top"><button type="button" className="eg-plain" onClick={voltar}>← Voltar</button><span className="eg-mini">EDUCART · PORTAL CULTURAL</span></div>}
         {etapa === 'abertura' && <section className="eg-opening" aria-label="Bem-vindo à EducART">
-          <button className="eg-start" onClick={() => setEtapa('interesses')} type="button" aria-label="Toque na marca da EducART para começar">
+          <button className="eg-start" onClick={() => setEtapa('interesses')} type="button">
             <div className="eg-halo"><div className="eg-logo"><EducartLogo size="large" /></div></div>
+            <span className="eg-sr-only">Começar</span>
           </button>
           <p className="eg-kicker">UM UNIVERSO DE POSSIBILIDADES</p>
           <h1>Seu lugar na arte começa aqui.</h1>
@@ -82,7 +83,7 @@ export function EntradaEducart() {
           <div className="eg-options">{experiencias.map(x => <button className="eg-choice" type="button" key={x} onClick={() => finalizar(x)}><strong>{x}</strong><span aria-hidden="true">↗</span></button>)}</div>
         </section>}
         {etapa !== 'abertura' && <div className="eg-progress" aria-hidden="true"><span style={{width:({interesses:'25%',objetivo:'50%',idade:'75%','idade-indisponivel':'75%',experiencia:'100%'} as Record<string,string>)[etapa]}}/></div>}
-      </main>
+      </div>
       <footer className="eg-foot">EducART · Portal Cultural <span>Salvador, Bahia</span></footer>
     </div>
   );

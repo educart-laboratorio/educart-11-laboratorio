@@ -1,0 +1,30 @@
+name: "SUPER GSI TC22 | Supabase endpoint da vitrine somente leitura"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - "apps/web/scripts/testar-tc22-supabase-build-publico.mjs"
+      - ".github/workflows/gsi-tc22-supabase-build-publico.yml"
+permissions:
+  contents: read
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: |
+          node --check apps/web/scripts/testar-tc22-supabase-build-publico.mjs
+          node apps/web/scripts/testar-tc22-supabase-build-publico.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: super-gsi-tc22-endpoints-sanitizados
+          path: apps/web/tc22-artifacts/
+          if-no-files-found: warn
+          retention-days: 14

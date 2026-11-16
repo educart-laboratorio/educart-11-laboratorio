@@ -38,6 +38,8 @@ assert.match(proxy,/NextResponse\.rewrite\(new URL\('\/inscricao-previa', reques
 assert.doesNotMatch(aviso,/<(?:form|input|textarea|select)(?:\s|>)/i);
 assert.doesNotMatch(aviso,/(?:createClient\s*\(|\.insert\s*\(|\.upload\s*\(|fetch\s*\()/);
 assert.match(aviso,/estão desativados nesta prévia/);
+assert.match(aviso,/https:\/\/wa\.me\/5571996824505/);
+assert.doesNotMatch(aviso,/href="https:\/\/www\.educart\.pro\/"/);
 assert.match(inscricao,/<InscricaoElegibilidade\s*\/>/);
 assert.match(cadastro,/export \{ default, metadata \} from '\.\.\/inscricao\/page'/);
 assert.match(criar,/<FormularioPropostaDocente\s*\/>/);

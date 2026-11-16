@@ -1,0 +1,40 @@
+name: "SUPER GSI TC30 | Inventariar Worker Routes com credenciais existentes (GET)"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - ".github/workflows/gsi-tc30-inventario-rotas-readonly.yml"
+      - "apps/web/scripts/inventariar-rotas-com-tokens-existentes.mjs"
+permissions:
+  contents: read
+jobs:
+  rotas-readonly:
+    if: github.repository == 'educart-laboratorio/educart-11-laboratorio' && github.ref_name == 'gsi-integracao-triple-core-20261115'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      TC30_CANDIDATE_TOKEN: ${{ secrets.EDUCART_CLOUDFLARE_CANDIDATE_TOKEN }}
+      TC30_HOMOLOG_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_HOMOLOG }}
+      TC30_ACCESS_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_ACCESS_HOMOLOG }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Sintaxe, GET somente
+        run: node --check scripts/inventariar-rotas-com-tokens-existentes.mjs
+      - name: Consultar IDs reais sem alterar zona
+        run: node scripts/inventariar-rotas-com-tokens-existentes.mjs
+      - name: Salvar evidencia privada, sem valores de tokens
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsi-tc30-rotas-somente-leitura
+          path: apps/web/tc30-artifacts/
+          if-no-files-found: warn
+          retention-days: 7

@@ -1,0 +1,96 @@
+name: "SUPER GSI TC28 | Homologacao HTTP isolada e bloqueios (sem dados reais)"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - ".github/workflows/gsi-tc28-auditoria-http-standby.yml"
+permissions:
+  contents: read
+jobs:
+  leitura-anonima:
+    if: github.repository == 'educart-laboratorio/educart-11-laboratorio'
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Conferir HTTP com GET e POST bloqueado sem conteudo
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const hosts={
+           standby:'https://educart-11-prod-ready.educartsuporte.workers.dev',
+           candidate:'https://educart-11-candidate.educartsuporte.workers.dev'
+          };
+          const paths=['/','/formacao','/admin/login','/admin','/inscricao',
+                       '/inscricao-indisponivel','/cadastro','/criar','/robots.txt'];
+          const failures=[];
+          const expectedStandby={
+           '/':200,'/formacao':200,'/admin/login':200,'/admin':303,
+           '/inscricao':200,'/inscricao-indisponivel':200,
+           '/cadastro':200,'/criar':200,'/robots.txt':200,
+          };
+          for(const [label,base] of Object.entries(hosts)){
+           for(const path of paths){
+            try{
+             const r=await fetch(base+path,{method:'GET',redirect:'manual',headers:{Accept:'text/html'},signal:AbortSignal.timeout(12000)});
+             const type=r.headers.get('content-type')||'';
+             const body=type.includes('text/html') ? await r.text() : '';
+             const title=(body.match(/<title[^>]*>([^<]*)<\/title>/i)||[])[1]||'';
+             const next=body.includes('/_next/static/');
+             const notice=/inscri[cç][oõ]es temporariamente indispon[ií]ve/i.test(body);
+             const loc=r.headers.get('location');
+             const location=loc && loc.startsWith(base)?loc.slice(base.length):loc && loc.startsWith('/')?loc:null;
+             console.log('TC28 '+JSON.stringify({host:label,path,status:r.status,
+               type:type.split(';')[0],title:title.slice(0,95),next,notice,location,
+               xRobots:(r.headers.get('x-robots-tag')||'').slice(0,55)}));
+             if(label==='standby'){
+              if(r.status!==expectedStandby[path])failures.push(path+' HTTP '+r.status);
+              if(['/inscricao','/cadastro','/criar'].includes(path)&&(!notice||/<form(?:\s|>)/i.test(body)))
+               failures.push(path+' sem aviso seguro ou com formulario');
+             }
+            }catch(e){console.log('TC28 '+JSON.stringify({host:label,path,error:String(e.name||'Error')}));
+             if(label==='standby')failures.push(path+' sem resposta HTTP');}
+           }
+          }
+          const base=hosts.standby;
+          for(const path of ['/inscricao','/cadastro','/criar']){
+           const r=await fetch(base+path,{method:'POST',redirect:'manual',signal:AbortSignal.timeout(12000)});
+           console.log('TC28 BLOCKED POST '+path+' HTTP '+r.status+' (zero body)');
+           if(r.status!==405)failures.push(path+' POST nao bloqueado');
+          }
+          const adminRsc=await fetch(base+'/admin',{method:'GET',redirect:'manual',
+           headers:{Accept:'text/html',RSC:'1'},signal:AbortSignal.timeout(12000)});
+          const target=adminRsc.headers.get('location')||'';
+          const parsed=target?new URL(target,base):null;
+          const origin=new URL(base).origin;
+          const hashRedirect=adminRsc.status===307 && parsed?.origin===origin &&
+           parsed.pathname==='/admin' && parsed.searchParams.has('_rsc');
+          console.log('TC28 RSC '+JSON.stringify({status:adminRsc.status,
+           location:parsed?.origin===origin?parsed.pathname:'external',
+           hasRscHash:!!parsed?.searchParams.has('_rsc')}));
+          let rscNegado=adminRsc.status===401;
+          if(hashRedirect){
+           const follow=await fetch(parsed,{method:'GET',redirect:'manual',
+            headers:{Accept:'text/html',RSC:'1'},signal:AbortSignal.timeout(12000)});
+           const redirectUrl=follow.headers.get('location')||'';
+           const redirectDest=redirectUrl?new URL(redirectUrl,base):null;
+           const cache=follow.headers.get('cache-control')||'';
+           const robots=follow.headers.get('x-robots-tag')||'';
+           const responseBody=await follow.text();
+           const loginSeguro=follow.status===303 && redirectDest?.origin===origin &&
+            redirectDest.pathname==='/admin/login' &&
+            cache.includes('private') && cache.includes('no-store') &&
+            robots.includes('noindex') && responseBody.length<=1024;
+           rscNegado=follow.status===401 || loginSeguro;
+           console.log('TC28 RSC after canonical hash '+JSON.stringify({status:follow.status,
+            destinoSeguro:redirectDest?.origin===origin?redirectDest.pathname:'external',
+            cachePrivado:cache.includes('private')&&cache.includes('no-store'),
+            noindex:robots.includes('noindex'),bodySize:responseBody.length,
+            acessoNegado:rscNegado}));
+          }
+          if(!rscNegado)failures.push('/admin RSC anon nao foi negado ou nao redirecionou seguramente ao login');
+          if(failures.length){console.error('TC28 FAIL '+JSON.stringify(failures));process.exitCode=1;}
+          else console.log('TC28 PASS: 9 GETs standby, 3 POSTs bloqueados e RSC negado com login seguro; zero dados reais.');
+          NODE

@@ -67,7 +67,7 @@ export default function AdminDashboardPage() {
   const supabase = useMemo(() => createClient(), []);
 
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
-  const [areaAtiva, setAreaAtiva] = useState<'academico' | 'ingressos' | 'inscricoes' | 'secretaria' | 'financeiro' | 'clientes'>('academico');
+  const [areaAtiva, setAreaAtiva] = useState<'academico' | 'ingressos' | 'inscricoes' | 'secretaria' | 'financeiro' | 'clientes'>(ACOES_ACADEMICAS_EXCLUSIVAS_DEV ? 'academico' : 'secretaria');
   const [secaoAcademica,setSecaoAcademica]=useState<SecaoAcademica>('visao');
   const [destinoSolicitado,setDestinoSolicitado]=useState<DestinoAdmin|null>(null);
   const [rascunhoAcademicoPendente,setRascunhoAcademicoPendente]=useState(false);
@@ -96,8 +96,9 @@ export default function AdminDashboardPage() {
     areaAtiva==='academico'&&secaoAcademica==='visao'?'visao':'formacoes';
   const aplicarDestino=(destino:DestinoAdmin)=>{
     // Sem serviços R12/R14/Pix homologados, somente a secretaria legada e o acadêmico essencial.
-    if(!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && (destino==='financeiro'||destino==='clientes'))return;
-    const destinoSeguro:DestinoAdmin=!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && destino==='inscricoes'
+    if(!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && (destino==='financeiro'||destino==='clientes'||destino==='ingressos'))return;
+    const destinoSeguro:DestinoAdmin=!ACOES_ACADEMICAS_EXCLUSIVAS_DEV &&
+      (destino==='inscricoes'||['visao','turmas','estudantes','docentes','agenda','frequencia'].includes(destino))
       ?'secretaria':destino;
     if(['visao','turmas','estudantes','docentes','agenda','frequencia'].includes(destinoSeguro)){
       setSecaoAcademica(destinoSeguro as SecaoAcademica);setAreaAtiva('academico');
@@ -490,9 +491,9 @@ export default function AdminDashboardPage() {
           {GRUPOS.map(item=><div key={item.id} className="admin-area-option">
             <button type="button" className={grupoAtivo===item.id?'active':''}
               aria-current={grupoAtivo===item.id?'page':undefined}
-              disabled={!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id==='financeiro'}
+              disabled={!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id!=='pessoas'}
                onClick={()=>{if(grupoAtivo!==item.id)solicitarDestino(item.id==='visao'?'visao':item.id==='pessoas'?(ACOES_ACADEMICAS_EXCLUSIVAS_DEV?'ingressos':'secretaria'):item.id==='formacoes'?'turmas':'financeiro');}}>
-              <span>{item.nome}</span><small>{!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id==='financeiro'?'Disponível após homologação financeira':item.descricao}</small>
+              <span>{item.nome}</span><small>{!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id!=='pessoas'?'Aguardando homologação no banco oficial':item.descricao}</small>
             </button>
             <AdminAjuda titulo={item.nome} descricao={item.descricao}/>
           </div>)}
@@ -504,8 +505,8 @@ export default function AdminDashboardPage() {
               <div key={item.id} className="admin-area-option">
                 <button type="button" className={destinoAtivo===item.id?'active':''}
                   aria-current={destinoAtivo===item.id?'page':undefined}
-                  disabled={!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id==='inscricoes'}
-                   onClick={()=>solicitarDestino(item.id)}><span>{item.nome}{!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id==='inscricoes'?' · em preparação':''}</span></button>
+                  disabled={!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id!=='secretaria' && item.id!=='inscricoes'}
+                   onClick={()=>solicitarDestino(item.id)}><span>{item.nome}{!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id!=='secretaria' && item.id!=='inscricoes'?' · aguardando homologação':''}</span></button>
               </div>)}
           </nav>}
         {areaAtiva === 'clientes' && ACOES_ACADEMICAS_EXCLUSIVAS_DEV ? (

@@ -1,0 +1,66 @@
+name: "SUPER GSI TRIPLE CORE TC24/25 | Versao PROD isolada sem publicar"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - ".github/workflows/gsi-tc24-25-prod-ready-sem-deploy.yml"
+      - "apps/web/scripts/preparar-worker-oficial-prod-triple-core.mjs"
+      - "apps/web/scripts/testar-tc24-standby-prod.mjs"
+      - "apps/web/scripts/planejar-rotas-oficiais-triple-core.mjs"
+      - "apps/web/scripts/testar-tc25-rotas-offline.mjs"
+      - "apps/web/src/lib/security/preview-native-policy.ts"
+      - "apps/web/src/lib/security/destino-inscricao-publica.ts"
+      - "apps/web/src/proxy.ts"
+      - "apps/web/src/components/InscricaoForm.tsx"
+      - "apps/web/scripts/testar-tc23-destino-inscricao.mjs"
+      - "apps/web/scripts/testar-r07-proxy-execucao.mjs"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-sem-deploy:
+    if: github.repository == 'educart-laboratorio/educart-11-laboratorio' && github.ref_name == 'gsi-integracao-triple-core-20261115'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://doygnsubiitencoyzjzk.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_synthetic_tc24
+      EDUCART_OFFICIAL_11_MODE: required
+      EDUCART_PRIVATE_PREVIEW_MODE: off
+      NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS: off
+      NEXT_TELEMETRY_DISABLED: "1"
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Verificar plano de rotas sem rede
+        run: node scripts/testar-tc25-rotas-offline.mjs
+      - name: Instalar dependencias de projeto
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Portas de seguranca do standby e seis negativas
+        run: node --experimental-strip-types scripts/testar-tc24-standby-prod.mjs
+      - name: Portaria VM autenticada sinteticamente
+        run: node --experimental-vm-modules scripts/testar-r07-proxy-execucao.mjs
+      - name: Verificar TypeScript
+        run: npx tsc --noEmit
+      - name: Construir bundle PROD com chave FICTICIA, sem rede Supabase
+        run: npm run build:vinext
+      - name: Validar nome do Worker e bundle Wrangler somente dry-run
+        run: node scripts/preparar-worker-oficial-prod-triple-core.mjs --dry-run
+      - name: Guardar prova de preparacao sem token e sem deploy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsi-triple-core-prod-ready-offline
+          path: apps/web/tc24-artifacts/
+          retention-days: 14
+          if-no-files-found: warn

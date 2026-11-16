@@ -1,0 +1,81 @@
+name: "SUPER GSI | TC-02 feedback de inscrição (sem deploy)"
+on:
+  push:
+    branches:
+      - gsi-tc02-feedback-seguro-20261115
+  pull_request:
+    branches:
+      - secretaria-11-candidate-online-20261115
+permissions:
+  contents: read
+jobs:
+  validar-tc02:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://esjrjzyvyhtzwgihcbsc.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_placeholder_para_teste_isolado
+      EDUCART_PRIVATE_PREVIEW_MODE: "local"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Instalar dependências do projeto
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verificar TypeScript
+        run: npx tsc --noEmit
+      - name: Testar mapeamento seguro de triagem (TC-06)
+        run: node --experimental-strip-types scripts/testar-tc06-triagem.mjs
+      - name: Testar regressões da portaria antes do browser
+        run: |
+          node --experimental-strip-types scripts/testar-r07-portaria-nativa.mjs
+          node --experimental-vm-modules scripts/testar-r07-proxy-execucao.mjs
+      - name: Build Vinext sem publicação
+        run: npm run build:vinext
+      - name: Instalar Playwright isoladamente
+        run: |
+          npm install --no-save --no-package-lock --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+      - name: Subir servidor Vinext local com limite de tempo por tentativa
+        run: |
+          npm run dev:vinext -- --host 127.0.0.1 > /tmp/educart-tc02-vinext.log 2>&1 &
+          pid=$!
+          for i in $(seq 1 40); do
+            if curl --silent --fail --max-time 5 http://127.0.0.1:3001/inscricao > /dev/null; then
+              echo "Vinext local disponivel"
+              exit 0
+            fi
+            if ! kill -0 "$pid" 2>/dev/null; then
+              echo "::error::Processo Vinext terminou antes da prova HTTP"
+              cat /tmp/educart-tc02-vinext.log
+              exit 1
+            fi
+            sleep 2
+          done
+          echo "::error::Vinext local nao respondeu HTTP 200"
+          tail -n 120 /tmp/educart-tc02-vinext.log
+          exit 1
+      - name: Simular 201, 409, 500 e timeout em quatro tamanhos (zero POST real)
+        env:
+          TC02_BASE_URL: http://127.0.0.1:3001
+        run: node scripts/testar-tc02-playwright.mjs
+      - name: Validar triagem aproveitada, edição e bloqueio de idade no browser
+        env:
+          TC02_BASE_URL: http://127.0.0.1:3001
+        run: node scripts/testar-tc06-playwright.mjs
+      - name: Publicar evidências da simulação
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsi-tc02-evidencias-seguras
+          path: apps/web/tc02-artifacts/
+          if-no-files-found: warn
+          retention-days: 14

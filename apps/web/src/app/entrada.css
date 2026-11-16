@@ -4,7 +4,8 @@
 .eg-root button,.eg-catalog button,.eg-enroll button,.eg-enroll input,.eg-enroll select{font:inherit}
 .eg-root button:focus-visible,.eg-catalog a:focus-visible,.eg-enroll input:focus-visible,.eg-enroll button:focus-visible{outline:3px solid var(--eg-yellow);outline-offset:4px}
 .eg-root{position:relative;isolation:isolate;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}
-.eg-backdrop{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,10,20,.85),rgba(6,10,20,.82)),url('/images/hero-topo.jpg') center 40%/cover no-repeat}
+/* TC-07: a foto fica ancorada no viewport, não na altura variável das etapas. */
+.eg-backdrop{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,10,20,.85),rgba(6,10,20,.82)),url('/images/hero-topo.jpg') center 40%/cover no-repeat}
 .eg-stage{flex:1;max-width:930px;width:100%;margin:auto;display:flex;flex-direction:column;justify-content:center;padding:25px 22px}
 .eg-opening{text-align:center;margin:auto;padding:35px 0;max-width:700px}
 .eg-halo{display:grid;place-items:center;padding:55px 28px;min-height:220px;min-width:min(100%,360px);border-radius:38px;background:radial-gradient(ellipse at center,rgba(24,56,101,.46),transparent 72%);box-shadow:0 0 65px #115ab01c;animation:eg-breathe 3.8s ease-in-out infinite}
@@ -75,15 +76,14 @@
 .eg-button:hover{background:#ffda8c;color:#0c1423}
 .eg-secondary{background:transparent;color:white;border:1px solid #6a7b8d}
 .eg-empty{border:1px dashed #68768b55;flex:0 0 130px;min-height:480px;border-radius:23px;display:grid;place-items:center;text-align:center;padding:13px;color:#718099;font-size:13px}
-/* Candidata DEV 1.1: cartaz de referência, não original, apenas no segundo cartão. */
+/* Piso público: atividade indisponível com capa tipográfica, sem imagem não autorizada. */
 .eg-course-unavailable{border-color:#806e4e}
-/* Cartaz da atividade: limitar a altura e cortar somente a parte inferior
-   da imagem de referência para equilibrar ambos os cartões no catálogo. */
-.eg-course-unavailable .eg-cover-poster{height:350px;background:none;overflow:hidden}
-.eg-course-unavailable .eg-cover-poster::after{display:none;content:none}
-.eg-course-unavailable .eg-cover-poster img{
-  display:block;width:100%;height:100%;object-fit:cover;object-position:center top;
+.eg-course-unavailable .eg-cover-poster{
+  height:350px;overflow:hidden;background:linear-gradient(145deg,#172b45,#3c2b26);
 }
+.eg-course-unavailable .eg-cover-poster::after{display:none;content:none}
+.eg-cover-texto{display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.eg-cover-texto span{font-size:clamp(20px,3vw,28px);line-height:1.25;font-weight:900;color:#ffdfab;letter-spacing:-.02em}
 .eg-course-unavailable .eg-course-info{margin-top:0;padding-top:19px}
 .eg-course-unavailable .eg-course-heading strong{font-size:clamp(19px,2.4vw,22px)}
 .eg-course-unavailable .eg-tags .eg-unavailable-tag{
@@ -132,4 +132,31 @@
   .eg-shelf-head h2 { font-size: 23px; line-height: 1.2; }
   .eg-shelf-head span { display: block; max-width: 100%; line-height: 1.45; }
   .eg-return, .eg-brand-link { min-height: 44px; display: inline-flex; align-items: center; }
+}
+
+/* TC-08: fluxo de triagem tem rolagem propria acima da faixa de controles
+   fixos globais. Sem esconder opções, rodapé ou recursos de acessibilidade. */
+@media (max-width: 620px) {
+  .eg-root { height: 100svh; min-height: 100svh; }
+  .eg-root .eg-stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: calc(100svh - 134px);
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    justify-content: flex-start;
+    margin: 0 auto;
+    padding: 24px 22px 26px;
+  }
+  .eg-root .eg-opening, .eg-root .eg-dialog { margin: 0; }
+  .eg-root .eg-foot { flex: 0 0 auto; margin-bottom: 68px; }
+}
+
+/* TC10: texto de ação para tecnologia assistiva sem sobrepor o nome visível
+   da marca. Preserva a aparência e as dimensões de todos os botões. */
+.eg-sr-only{
+  position:absolute!important;width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;white-space:nowrap!important;
+  border:0!important;
 }

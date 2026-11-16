@@ -1,0 +1,55 @@
+name: "SUPER GSI TC10 | Auditoria axe WCAG sem deploy"
+on:
+  push:
+    branches:
+      - gsi-integracao-triple-core-20261115
+permissions:
+  contents: read
+jobs:
+  wcag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://esjrjzyvyhtzwgihcbsc.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_placeholder
+      EDUCART_PRIVATE_PREVIEW_MODE: local
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Instalar dependencias fixas
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Instalar auditora axe e navegador apenas no runner
+        run: |
+          npm install --no-save --no-package-lock --no-audit --no-fund playwright axe-core
+          npx playwright install --with-deps chromium
+      - name: Iniciar Vinext local sem Supabase real
+        run: |
+          npm run dev:vinext -- --host 127.0.0.1 > /tmp/educart-tc10.log 2>&1 &
+          pid=$!
+          for i in $(seq 1 60); do
+            if curl --silent --fail --max-time 5 http://127.0.0.1:3001/ > /dev/null; then echo "Vinext TC10 200"; exit 0; fi
+            if ! kill -0 "$pid" 2>/dev/null; then tail -n 100 /tmp/educart-tc10.log; exit 1; fi
+            sleep 2
+          done
+          tail -n 120 /tmp/educart-tc10.log
+          exit 1
+      - name: Auditora WCAG automatizada em dez telas e dois modais
+        run: node scripts/testar-tc10-axe-playwright.mjs
+      - name: Preservar evidencias e violacoes para revisao
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: super-gsi-tc10-axe-evidencias
+          path: apps/web/tc10-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
