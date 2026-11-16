@@ -1,0 +1,54 @@
+name: "EducART.pro | Varredura publica de qualidade"
+
+on:
+  push:
+    branches:
+      - "auditoria/site-20261115"
+    paths:
+      - "audits/educart-public/**"
+      - ".github/workflows/auditar-educart-pro.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: educart-public-audit-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  varredura-publica:
+    name: "Playwright + acessibilidade + capturas"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      AUDIT_BASE_URL: "https://educart.pro"
+    defaults:
+      run:
+        working-directory: audits/educart-public
+    steps:
+      - name: Buscar codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Instalar dependencias de auditoria isoladas
+        run: |
+          printf '{"name":"educart-public-audit","private":true,"type":"module"}\n' > package.json
+          npm install --no-save --no-package-lock --no-audit --no-fund playwright @axe-core/playwright
+          npx playwright install --with-deps chromium
+
+      - name: Auditar rotas publicas (sem envio ou login)
+        run: node audit.mjs
+
+      - name: Publicar capturas e relatorios para revisao
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: educart-pro-auditoria-${{ github.run_number }}
+          path: audits/educart-public/artifacts/
+          if-no-files-found: warn
+          retention-days: 14
