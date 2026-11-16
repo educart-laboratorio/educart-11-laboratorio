@@ -1,0 +1,66 @@
+name: "SUPER GSI | TC-02 feedback de inscrição (sem deploy)"
+on:
+  push:
+    branches:
+      - gsi-tc02-feedback-seguro-20261115
+  pull_request:
+    branches:
+      - secretaria-11-candidate-online-20261115
+permissions:
+  contents: read
+jobs:
+  validar-tc02:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://esjrjzyvyhtzwgihcbsc.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_placeholder_para_teste_isolado
+      EDUCART_PRIVATE_PREVIEW_MODE: "local"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Instalar dependências do projeto
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verificar TypeScript
+        run: npx tsc --noEmit
+      - name: Testar regressões da portaria antes do browser
+        run: |
+          node --experimental-strip-types scripts/testar-r07-portaria-nativa.mjs
+          node --experimental-vm-modules scripts/testar-r07-proxy-execucao.mjs
+      - name: Build Vinext sem publicação
+        run: npm run build:vinext
+      - name: Instalar Playwright isoladamente
+        run: |
+          npm install --no-save --package-lock=false playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Subir servidor Next local
+        run: |
+          npm run dev -- --hostname 127.0.0.1 --port 3000 > /tmp/educart-tc02-next.log 2>&1 &
+          for i in $(seq 1 90); do
+            if curl --silent --fail http://127.0.0.1:3000/inscricao > /dev/null; then
+              echo "Servidor local disponivel"
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/educart-tc02-next.log
+          exit 1
+      - name: Simular 201, 409, 500 e timeout em quatro tamanhos (zero POST real)
+        run: node scripts/testar-tc02-playwright.mjs
+      - name: Publicar evidências da simulação
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gsi-tc02-evidencias-seguras
+          path: apps/web/tc02-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
