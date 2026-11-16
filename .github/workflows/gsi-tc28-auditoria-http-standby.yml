@@ -1,0 +1,45 @@
+name: "SUPER GSI TC28 | HTTP real standby vs candidato (GET somente)"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - ".github/workflows/gsi-tc28-auditoria-http-standby.yml"
+permissions:
+  contents: read
+jobs:
+  leitura-anonima:
+    if: github.repository == 'educart-laboratorio/educart-11-laboratorio'
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Testar somente GET, sem login nem POST
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const hosts={
+           standby:'https://educart-11-prod-ready.educartsuporte.workers.dev',
+           candidate:'https://educart-11-candidate.educartsuporte.workers.dev'
+          };
+          const paths=['/','/formacao','/admin/login','/admin','/inscricao',
+                       '/inscricao-indisponivel','/cadastro','/criar','/robots.txt'];
+          for(const [label,base] of Object.entries(hosts)){
+           for(const path of paths){
+            try{
+             const r=await fetch(base+path,{method:'GET',redirect:'manual',signal:AbortSignal.timeout(12000)});
+             const type=r.headers.get('content-type')||'';
+             const body=type.includes('text/html') ? await r.text() : '';
+             const title=(body.match(/<title[^>]*>([^<]*)<\/title>/i)||[])[1]||'';
+             const next=body.includes('/_next/static/');
+             const notice=/inscri[cç][oõ]es temporariamente indispon[ií]ve/i.test(body);
+             const loc=r.headers.get('location');
+             const location=loc && loc.startsWith(base)?loc.slice(base.length):loc && loc.startsWith('/')?loc:null;
+             console.log('TC28 '+JSON.stringify({host:label,path,status:r.status,
+               type:type.split(';')[0],title:title.slice(0,95),next,notice,location,
+               xRobots:(r.headers.get('x-robots-tag')||'').slice(0,55)}));
+            }catch(e){console.log('TC28 '+JSON.stringify({host:label,path,error:String(e.name||'Error')}));}
+           }
+          }
+          NODE
