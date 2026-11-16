@@ -1,0 +1,68 @@
+name: "SUPER GSI | TC-07/08/09 mobilidade e navegação (sem deploy)"
+on:
+  push:
+    branches:
+      - gsi-tc07-09-mobile-navegacao-20261115
+  pull_request:
+    branches:
+      - secretaria-11-candidate-online-20261115
+permissions:
+  contents: read
+jobs:
+  validar-mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://esjrjzyvyhtzwgihcbsc.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_placeholder
+      EDUCART_PRIVATE_PREVIEW_MODE: local
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Instalar dependencias
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Validar TypeScript
+        run: npx tsc --noEmit
+      - name: Build Cloudflare isolada (sem publicar)
+        run: npm run build:vinext
+      - name: Instalar Playwright para runner atual
+        run: |
+          npm install --no-save --no-package-lock --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+      - name: Iniciar Vinext local com healthcheck
+        run: |
+          npm run dev:vinext -- --host 127.0.0.1 > /tmp/educart-mobile.log 2>&1 &
+          pid=$!
+          for i in $(seq 1 40); do
+            if curl --silent --fail --max-time 5 http://127.0.0.1:3001/ > /dev/null; then
+              echo "Vinext local disponivel"
+              exit 0
+            fi
+            if ! kill -0 "$pid" 2>/dev/null; then
+              tail -n 120 /tmp/educart-mobile.log
+              exit 1
+            fi
+            sleep 2
+          done
+          tail -n 120 /tmp/educart-mobile.log
+          exit 1
+      - name: Testar 24 estados UX, com zero escrita
+        run: node scripts/testar-tc07-09-playwright.mjs
+      - name: Guardar screenshots e diagnosticos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: super-gsi-tc07-09-evidencias
+          path: apps/web/tc0709-artifacts/
+          if-no-files-found: warn
+          retention-days: 14

@@ -1,5 +1,6 @@
 // Publicador EXCLUSIVO do domínio oficial, por ordem expressa da Direção em 15/11/2026.
-// Mantém a versão antiga recuperável via histórico Cloudflare; aponta o Worker oficial à candidata 1.1, com Supabase DEV autorizado.
+// GSI TC-01/TC-03: nunca publicar DEV no domínio oficial; exigir configuração PROD e portaria obrigatória.
+// Apenas preparação em branch isolada. Este arquivo NÃO autoriza deploy nem atesta schema/RLS.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,8 +13,17 @@ if (!dryRun && process.env.EDUCART_DEPLOY_TARGET !== 'official-user-authorized')
 if (!dryRun && process.env.CLOUDFLARE_ACCOUNT_ID !== '8fe5407b4d31f20e19a1388527e365ad') {
   throw new Error('Conta Cloudflare nao autorizada');
 }
-if (!dryRun && process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://esjrjzyvyhtzwgihcbsc.supabase.co') {
-  throw new Error('Somente banco DEV permitido');
+if (process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://doygnsubiitencoyzjzk.supabase.co') {
+  throw new Error('PUBLICACAO OFICIAL BLOQUEADA: build exige Supabase PROD, nunca DEV');
+}
+if (process.env.EDUCART_OFFICIAL_11_MODE !== 'required') {
+  throw new Error('PUBLICACAO OFICIAL BLOQUEADA: portaria oficial obrigatoria ausente');
+}
+// Estes portões não substituem testes reais: devem ser abertos somente após
+// homologação com usuários institucionais legítimos e esquema PROD compatível.
+if (!dryRun && (process.env.EDUCART_PROD_RBAC_HOMOLOGADO !== 'sim' ||
+    process.env.EDUCART_PROD_INSCRICOES_HOMOLOGADAS !== 'sim')) {
+  throw new Error('PUBLICACAO OFICIAL BLOQUEADA: RBAC e inscricoes PROD ainda nao homologados');
 }
 
 if (!dryRun && process.env.EDUCART_OFFICIAL_CUTOVER_CONFIRM !== 'PUBLICAR-1.1-EDUCART.PRO') { throw new Error('Confirmação oficial ausente'); }
@@ -66,9 +76,10 @@ const config = {
   },
   images:{binding:'IMAGES'},
   workers_dev:true,
-  // O domínio oficial já está conectado ao Worker production; todas as rotas privadas
-  // devem passar pela portaria R07 e exigir Auth/RBAC no servidor.
+  // Portaria oficial R43 exige modo oficial e configuração PROD no runtime;
+  // prévia R07 continua isolada e não é usada como autorização de gestão.
   vars:{
+    EDUCART_OFFICIAL_11_MODE:'required',
     EDUCART_PRIVATE_PREVIEW_MODE:'required',
     NEXT_PUBLIC_SUPABASE_URL:process.env.NEXT_PUBLIC_SUPABASE_URL || '',
     NEXT_PUBLIC_SUPABASE_ANON_KEY:process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
