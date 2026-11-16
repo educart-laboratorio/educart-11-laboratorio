@@ -13,6 +13,7 @@ const etiquetas = ['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa'];
 const resultado = [];
 const browser = await chromium.launch({ headless: true });
 const summarized = [];
+const erros = [];
 
 try {
   for (const largura of larguras) {
@@ -24,9 +25,11 @@ try {
         const status = response?.status() ?? 0;
         assert.equal(status, 200, 'Resposta HTTP inesperada em ' + rota + ': ' + status);
         await page.locator('body').waitFor({ state: 'visible' });
-        await page.waitForTimeout(250); // hidratar e aguardar foco/layout inicial
+        await page.waitForLoadState('load', { timeout: 16000 });
+        await page.waitForTimeout(850); // hidratação real no Vinext DEV
+        await page.addScriptTag({ content: axe.source });
         const scan = async (estado) => {
-          await page.addScriptTag({ content: axe.source });
+          // Uma única injeção por documento: modais reutilizam a mesma instância axe.
           const outcome = await page.evaluate(async tags =>
             // @ts-ignore: script injection supplies axe
             await window.axe.run(document, { runOnly: { type: 'tag', values: tags } }), etiquetas);
@@ -42,15 +45,27 @@ try {
             moderate: violations.filter(v=>v.impact==='moderate').length,
             minor: violations.filter(v=>v.impact==='minor').length
           });
-          for(const v of violations)console.log('AXE '+caseName+' '+v.impact+' '+v.id+' nodes='+v.nodes.length+' target='+JSON.stringify(v.nodes[0]?.target||[]));
+          for(const v of violations)console.log('AXE '+caseName+' '+v.impact+' '+v.id+' nodes='+v.nodes.length+' targets='+JSON.stringify(v.nodes.slice(0,10).map(n=>n.target)));
         };
         await scan('inicial');
         if(rota==='/' || rota==='/inscricao'){
-          const btn=page.getByRole('button',{name:/Abrir menu de acessibilidade/i});
+          const btn=page.locator('.a11y-floating-trigger');
+          const panel=page.locator('#educart-a11y-dialog');
           await btn.click();
-          await page.getByRole('dialog',{name:/Acessibilidade/i}).waitFor({state:'visible'});
+          try { await panel.waitFor({state:'visible',timeout:5000}); }
+          catch (firstError) {
+            // O HTML inicial pode chegar antes do React hidratar; reenviar apenas
+            // se aria-expanded mostrar que a primeira interacao foi ignorada.
+            if(await btn.getAttribute('aria-expanded')==='true') throw firstError;
+            await page.waitForTimeout(700);
+            await btn.click();
+            await panel.waitFor({state:'visible',timeout:6500});
+          }
           await scan('modal-acessibilidade');
         }
+      } catch (error) {
+        erros.push({ caseName: rota+' '+largura+'px', error: String(error) });
+        console.error('TC10 ERRO '+rota+' '+largura+': '+String(error));
       } finally {
         await page.close();
       }
@@ -61,10 +76,10 @@ try {
   await browser.close();
 }
 fs.mkdirSync('tc10-artifacts', { recursive: true });
-fs.writeFileSync('tc10-artifacts/axe-relatorio.json',JSON.stringify({generatedAt:new Date().toISOString(),tags:etiquetas,summary:summarized,cases:resultado},null,2));
+fs.writeFileSync('tc10-artifacts/axe-relatorio.json',JSON.stringify({generatedAt:new Date().toISOString(),tags:etiquetas,summary:summarized,cases:resultado,erros},null,2));
 console.log('TC10: '+resultado.length+' estados auditados, '+resultado.reduce((a,c)=>a+c.violations.length,0)+' violacoes WCAG, zero POST.');
 const severos=resultado.flatMap(c=>c.violations.filter(v=>v.impact==='serious'||v.impact==='critical'));
-if(severos.length) {
-  console.error('TC10 BLOQUEIO: '+severos.length+' violacoes graves encontradas; conferir artifact axe-relatorio.json antes de aprovar.');
+if(severos.length || erros.length) {
+  console.error('TC10 BLOQUEIO: '+severos.length+' violacoes graves e '+erros.length+' erros de varredura; conferir artifact axe-relatorio.json.');
   process.exitCode=1;
 }
