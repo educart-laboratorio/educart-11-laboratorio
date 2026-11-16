@@ -41,8 +41,9 @@ export function EntradaEducart() {
       <div className="eg-stage" id="inicio" data-educart-etapa={etapa}>
         {etapa !== 'abertura' && <div className="eg-top"><button type="button" className="eg-plain" onClick={voltar}>← Voltar</button><span className="eg-mini">EDUCART · PORTAL CULTURAL</span></div>}
         {etapa === 'abertura' && <section className="eg-opening" aria-label="Bem-vindo à EducART">
-          <button className="eg-start" onClick={() => setEtapa('interesses')} type="button" aria-label="EducART Núcleo de Formação de Atores — começar">
+          <button className="eg-start" onClick={() => setEtapa('interesses')} type="button">
             <div className="eg-halo"><div className="eg-logo"><EducartLogo size="large" /></div></div>
+            <span className="eg-sr-only">Começar</span>
           </button>
           <p className="eg-kicker">UM UNIVERSO DE POSSIBILIDADES</p>
           <h1>Seu lugar na arte começa aqui.</h1>

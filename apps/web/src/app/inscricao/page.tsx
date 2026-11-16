@@ -12,7 +12,7 @@ export default function PaginaInscricao() {
   return (
     <div className="eg-enroll">
       <header className="eg-catalog-bar">
-        <Link className="eg-brand-link" href="/" aria-label="EducART Núcleo de Formação de Atores — voltar ao início"><EducartLogo size="default" /></Link>
+        <Link className="eg-brand-link" href="/"><EducartLogo size="default" /><span className="eg-sr-only">Voltar ao início</span></Link>
         <Link className="eg-return" href="/formacao">← Formação</Link>
       </header>
       <div className="eg-enroll-body" style={{ maxWidth: 900 }}>

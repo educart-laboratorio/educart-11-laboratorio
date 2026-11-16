@@ -43,7 +43,7 @@ export default function FormacaoPage() {
   },[detalhe]);
   return <div className="eg-catalog" data-catalog-detail-open={detalhe ? 'true' : 'false'}>
     <header className="eg-catalog-bar">
-      <Link className="eg-brand-link" href="/" aria-label="EducART Núcleo de Formação de Atores — voltar ao início"><EducartLogo size="default"/></Link>
+      <Link className="eg-brand-link" href="/"><EducartLogo size="default"/><span className="eg-sr-only">Voltar ao início</span></Link>
       <Link className="eg-return" href="/">← Início</Link>
     </header>
     <div className="eg-catalog-body">
