@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { mapearTriagemInscricao, type TriagemInscricao } from '@/lib/triagem-inscricao';
 import { validateStep, buildInscricaoPayload, type InscricaoFormData } from '@/lib/inscricao-validation';
 import { calcularIdade, IDADE_MINIMA_FORMACAO } from '@/lib/idade-formacao';
 import { mensagemCandidatoInscrito } from '@/lib/mensagens-whatsapp';
@@ -15,6 +16,8 @@ export function InscricaoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [triagem, setTriagem] = useState<TriagemInscricao | null>(null);
+  const [editarTriagem, setEditarTriagem] = useState(false);
   const successRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +48,17 @@ export function InscricaoForm() {
     comoConheceu: 'Instagram',
     comoConheceuOutro: '',
   });
+
+  useEffect(() => {
+    const contexto = mapearTriagemInscricao(window.location.search);
+    if (!contexto) return;
+    setTriagem(contexto);
+    setFormData(prev => ({
+      ...prev,
+      ...(contexto.objetivo ? { objetivo: contexto.objetivo, objetivoOutro: contexto.objetivoOutro || '' } : {}),
+      ...(contexto.experienciaPrevia ? { experienciaPrevia: contexto.experienciaPrevia } : {}),
+    }));
+  }, []);
 
   const updateField = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -226,6 +240,21 @@ export function InscricaoForm() {
               <p>Qual é a sua principal motivação para entrar na Formação de Atores?</p>
             </div>
 
+            {triagem && !editarTriagem && (
+              <div className="form-group" role="note" aria-label="Respostas aproveitadas da triagem">
+                <p>Já aproveitamos as respostas que você deu na entrada:</p>
+                {triagem.objetivoRotulo && <p><strong>Interesse:</strong> {triagem.objetivoRotulo}</p>}
+                {triagem.experienciaRotulo && <p><strong>Experiência:</strong> {triagem.experienciaRotulo}</p>}
+                {triagem.faixaRotulo && <p><strong>Faixa etária informada:</strong> {triagem.faixaRotulo}. A data de nascimento será confirmada na próxima etapa.</p>}
+                {(triagem.objetivoRotulo || triagem.experienciaRotulo) && (
+                  <button type="button" className="btn btn-outline" onClick={() => setEditarTriagem(true)}>
+                    Alterar respostas da triagem
+                  </button>
+                )}
+              </div>
+            )}
+
+            {(!triagem?.objetivoRotulo || editarTriagem) && (
             <div className="form-group">
               <label className="form-label" id="label-objetivo">
                 Qual o seu objetivo principal? <span className="req">*</span>
@@ -267,8 +296,11 @@ export function InscricaoForm() {
                 </div>
               )}
             </div>
+            )}
 
             <div className="form-group">
+              {(!triagem?.experienciaRotulo || editarTriagem) && (
+              <>
               <label className="form-label" id="label-experiencia">
                 Já possui experiência anterior em Teatro, TV ou Cinema? <span className="req">*</span>
               </label>
@@ -289,6 +321,8 @@ export function InscricaoForm() {
                   </label>
                 ))}
               </div>
+              </>
+              )}
 
               {formData.experienciaPrevia === 'Sim' && (
                 <div style={{ marginTop: '12px' }}>
