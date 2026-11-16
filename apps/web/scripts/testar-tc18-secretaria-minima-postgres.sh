@@ -54,6 +54,18 @@ fi
 grep -Fq 'TC18: autorizacao e restauracao' "$TMP/no-gate.log"
 test "$(docker exec "$NAME" psql -U postgres -XAtq -c "SELECT to_regclass('public.equipe_papeis') IS NULL")" = t
 echo "TC18 PORTAO NEGATIVO PASS."
+# Mesmo com flags sinteticamente habilitadas, nenhum papel entra sem UID
+# nominal previamente identificado como administrador Auth do legado.
+{
+ printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
+ printf "SET educart.tc18_restore='RESTAURACAO_TESTADA';\n"
+ printf "SET educart.tc18_coordenador_uid='11111111-1111-4111-8111-111111111111';\n"
+ cat "$SOURCE"
+} | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/no-uid.log" 2>&1 && {
+ echo "::error::Migracao aceitou execucao sem UID nominal"; exit 1;
+}
+grep -Fq 'TC18: coordenador UID aprovado ausente' "$TMP/no-uid.log"
+echo "TC18 UID NOMINAL OBRIGATORIO PASS."
 {
  printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
  printf "SET educart.tc18_restore='RESTAURACAO_TESTADA';\n"
@@ -67,12 +79,12 @@ node - "$SOURCE" <<'NODE' >"$TMP/positive.sql"
 const fs=require('node:fs'),assert=require('node:assert/strict');
 const s=fs.readFileSync(process.argv[2],'utf8');
 assert.match(s,/\nROLLBACK;\s*$/);
-process.stdout.write("SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\nSET educart.tc18_restore='RESTAURACAO_TESTADA';\n"+s.replace(/\nROLLBACK;\s*$/,'\nCOMMIT;\n'));
+process.stdout.write("SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\nSET educart.tc18_restore='RESTAURACAO_TESTADA';\nSET educart.tc18_coordenador_uid='11111111-1111-4111-8111-111111111111';\n"+s.replace(/\nROLLBACK;\s*$/,'\nCOMMIT;\n'));
 NODE
 docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 <"$TMP/positive.sql" >"$TMP/positive.log" 2>&1 || {
  echo "::error::Copia efemera SQL nao passou";tail -n 40 "$TMP/positive.log";exit 1;
 }
-test "$(docker exec "$NAME" psql -U postgres -XAtq -c 'SELECT count(*) FROM public.equipe_papeis')" = 0
+test "$(docker exec "$NAME" psql -U postgres -XAtq -c 'SELECT count(*) FROM public.equipe_papeis')" = 1
 test "$(docker exec "$NAME" psql -U postgres -XAtq -c 'SELECT count(*) FROM public.inscricoes_oficina')" = 1
 echo "TC18 LEGADO PRESERVADO PASS."
 if docker exec "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 -c \
@@ -83,19 +95,20 @@ grep -Fq 'row-level security policy' "$TMP/anon.log"
 docker exec "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 -c \
  "BEGIN;SET ROLE anon; INSERT INTO public.inscricoes_oficina(data_nascimento) VALUES('2000-01-01');ROLLBACK;" >/dev/null
 NO_ROLE="$(docker exec "$NAME" psql -U postgres -XAtq -v ON_ERROR_STOP=1 -c "
+BEGIN;
+DELETE FROM public.equipe_papeis WHERE papel='coordenacao';
 SET ROLE authenticated;SET request.jwt.claim.sub='11111111-1111-4111-8111-111111111111';
-WITH ch AS(UPDATE public.inscricoes_oficina SET status='confirmado' RETURNING 1) SELECT count(*) FROM ch;")"
+WITH ch AS(UPDATE public.inscricoes_oficina SET status='confirmado' RETURNING 1) SELECT count(*) FROM ch;
+ROLLBACK;")"
 test "$NO_ROLE" = 0
 OTHER="$(docker exec "$NAME" psql -U postgres -XAtq -v ON_ERROR_STOP=1 -c "
 SET ROLE authenticated;SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
 SELECT count(*) FROM public.inscricoes_oficina;SELECT count(*) FROM public.equipe_papeis;")"
 test "$OTHER" = "$(printf '0\n0')"
-docker exec "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 -c \
- "INSERT INTO public.equipe_papeis(user_id,papel) VALUES('11111111-1111-4111-8111-111111111111','coordenacao');" >/dev/null
 WITH_ROLE="$(docker exec "$NAME" psql -U postgres -XAtq -v ON_ERROR_STOP=1 -c "
 BEGIN;SET ROLE authenticated;SET request.jwt.claim.sub='11111111-1111-4111-8111-111111111111';
 WITH ch AS(UPDATE public.inscricoes_oficina SET status='confirmado' RETURNING 1) SELECT count(*) FROM ch;ROLLBACK;")"
 test "$WITH_ROLE" = 1
 test "$(docker exec "$NAME" psql -U postgres -XAtq -c "SELECT count(*) FROM public.inscricoes_oficina WHERE status='pendente_confirmacao'")" = 1
-echo "TC18 RLS PASS: anon nao matricula, pendente permitido; sem papel 0, coordenacao 1, externo 0."
+echo "TC18 RLS PASS: anon nao matricula, pendente permitido; sem papel 0, coordenacao 1, externo 0; provisionamento atomico."
 echo "TC18 PASS: PostgreSQL descartavel, PROD e DEV intocados."

@@ -2,7 +2,8 @@
 -- SOMENTE ENSAIO: ROLLBACK OBRIGATORIO, nao aplicar em PROD/DEV.
 -- Diferente da candidata academica de 13 tabelas, cria somente equipe_papeis
 -- para o portal legado; reforca INSERT publico e UPDATE de inscricoes.
--- Nao cria, promove ou atribui usuarios; dados existentes nao sao modificados.
+-- Nao cria contas Auth; exige UID de coordenacao aprovado e ja em portal_admins.
+-- Ensaio pode atribuir SOMENTE esse papel no banco descartavel; ROLLBACK obrigatorio.
 -- Flags sao portoes de seguranca, NAO evidencias substitutas de autorizacao
 -- expressa e backup real restaurado; futura migracao requer CLI e revisao.
 BEGIN;
@@ -10,11 +11,18 @@ SET LOCAL search_path = pg_catalog, public;
 SET LOCAL lock_timeout='2s';
 SET LOCAL statement_timeout='40s';
 DO $gate$
-DECLARE p record; n bigint; a bigint;
+DECLARE p record; n bigint; a bigint; coordenador_uid uuid;
 BEGIN
  IF current_setting('educart.tc18_aprovacao',true) IS DISTINCT FROM 'DIRECAO_LIBEROU_FASE_MINIMA'
  OR current_setting('educart.tc18_restore',true) IS DISTINCT FROM 'RESTAURACAO_TESTADA'
  THEN RAISE EXCEPTION 'TC18: autorizacao e restauracao nao comprovadas'; END IF;
+ coordenador_uid := NULLIF(current_setting('educart.tc18_coordenador_uid',true),'')::uuid;
+ IF coordenador_uid IS NULL
+ THEN RAISE EXCEPTION 'TC18: coordenador UID aprovado ausente'; END IF;
+ IF NOT EXISTS (
+   SELECT 1 FROM public.portal_admins p JOIN auth.users u ON u.id=p.user_id
+   WHERE p.user_id=coordenador_uid
+ ) THEN RAISE EXCEPTION 'TC18: coordenador nao e admin Auth existente'; END IF;
  IF to_regclass('public.equipe_papeis') IS NOT NULL
  THEN RAISE EXCEPTION 'TC18: tabela equipe_papeis ja existe'; END IF;
  IF to_regclass('public.inscricoes_oficina') IS NULL
@@ -67,6 +75,10 @@ REVOKE ALL ON public.equipe_papeis FROM PUBLIC,anon,authenticated;
 GRANT SELECT ON public.equipe_papeis TO authenticated;
 CREATE POLICY educart_equipe_papeis_ler_proprios ON public.equipe_papeis
  FOR SELECT TO authenticated USING (user_id=(SELECT auth.uid()));
+-- Provisionamento atomico: jamais retirar o UPDATE do admin sem atribuir o
+-- papel aprovado na MESMA transacao, impedindo perda de funcao legada.
+INSERT INTO public.equipe_papeis(user_id,papel)
+ VALUES (current_setting('educart.tc18_coordenador_uid',true)::uuid,'coordenacao');
 
 ALTER POLICY "Permitir envio publico de fichas de inscricao"
  ON public.inscricoes_oficina WITH CHECK (
@@ -86,8 +98,11 @@ DO $post$
 BEGIN
  IF (SELECT count(*) FROM public.inscricoes_oficina)::text IS DISTINCT FROM current_setting('educart.tc18_n',true)
  OR (SELECT count(*) FROM public.portal_admins)::text IS DISTINCT FROM current_setting('educart.tc18_a',true)
- OR (SELECT count(*) FROM public.equipe_papeis)<>0
- THEN RAISE EXCEPTION 'TC18: registros legados ou roles mudaram'; END IF;
+ OR (SELECT count(*) FROM public.equipe_papeis)<>1
+ OR NOT EXISTS (SELECT 1 FROM public.equipe_papeis
+   WHERE user_id=current_setting('educart.tc18_coordenador_uid',true)::uuid
+     AND papel='coordenacao')
+ THEN RAISE EXCEPTION 'TC18: dados legados ou papel atomico divergente'; END IF;
  IF has_table_privilege('anon','public.equipe_papeis','SELECT')
  OR has_table_privilege('authenticated','public.equipe_papeis','INSERT')
  OR NOT has_table_privilege('authenticated','public.equipe_papeis','SELECT')
