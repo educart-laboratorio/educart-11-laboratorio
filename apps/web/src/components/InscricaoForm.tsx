@@ -474,8 +474,8 @@ export function InscricaoForm() {
           <fieldset className="form-step-section">
             <div className="step-legend">
               <span className="step-badge">Etapa 3 de 3</span>
-              <h3>Localização e Confirmação da Vaga</h3>
-              <p>Confirme seu endereço para finalizarmos sua vaga na Formação de Atores.</p>
+              <h3>Localização e envio da inscrição</h3>
+              <p>Confirme seus dados de localização para enviar sua ficha. A inscrição não garante vaga nem efetiva matrícula.</p>
             </div>
 
             <div className="form-group">
