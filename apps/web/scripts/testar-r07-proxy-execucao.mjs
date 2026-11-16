@@ -96,6 +96,7 @@ function tsModule(filename,identifier) {
 }
 modules['./lib/admin/autorizar-gestao']=tsModule('src/lib/admin/autorizar-gestao.ts','gestao');
 modules['./lib/security/preview-native-policy']=tsModule('src/lib/security/preview-native-policy.ts','politica');
+modules['./lib/security/headers-resposta']=tsModule('src/lib/security/headers-resposta.ts','headers-resposta');
 const main=tsModule('src/proxy.ts','proxy');
 await main.link(specifier=>{
   if(!modules[specifier])throw Error('Import inesperado: '+specifier);
@@ -131,6 +132,10 @@ assert.equal(r.headers.get('X-Robots-Tag'),'noindex, nofollow, noarchive',
   'Login publico da candidata nao pode ser indexado');
 assert.equal(r.headers.get('Cache-Control'),'private, no-store, max-age=0',
   'Login da candidata nao pode ser cacheado');
+assert.equal(r.headers.get('X-Frame-Options'),'DENY','Login nao pode ser embutido em iframe');
+assert.equal(r.headers.get('X-Content-Type-Options'),'nosniff');
+assert.match(r.headers.get('Content-Security-Policy')||'',/frame-ancestors 'none'/);
+assert.equal(r.headers.get('Strict-Transport-Security'),null,'Nao impor HSTS em candidato DEV');
 for (const path of ['/','/formacao','/inscricao','/cadastro','/criar']) {
   reset({claims:false});
   r=await proxy(makeRequest(path,{host:candidateHost}));
