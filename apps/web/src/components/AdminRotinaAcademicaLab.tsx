@@ -58,6 +58,12 @@ export function AdminRotinaAcademicaLab({supabase,podeGerir,secao,onSolicitarSec
     return()=>onRascunhoPendenteChange?.(false);
   },[rascunhoPendente,rascunhoEstudantePendente,onRascunhoPendenteChange]);
   const atualizarIndicadores=useCallback(async()=>{
+    // PROD real possui apenas o legado de inscrições. Não consultar tabelas DEV
+    // até que esquema, RLS e módulos tenham homologação e ativação explícitas.
+    if(!ACOES_ACADEMICAS_EXCLUSIVAS_DEV){
+      setIndicadores(null);setProximas([]);setTurmas([]);setCarregando(false);
+      return;
+    }
     setCarregando(true);setErro('');
     const tabelas=['formacoes','turmas','matriculas','educart_aulas_dev','educart_chamadas_dev'];
     const hoje=new Date().toLocaleDateString('sv-SE',{timeZone:'America/Bahia'});
@@ -81,6 +87,10 @@ export function AdminRotinaAcademicaLab({supabase,podeGerir,secao,onSolicitarSec
   },[supabase]);
   useEffect(()=>{void atualizarIndicadores();},[atualizarIndicadores]);
   useEffect(()=>{if(secao==='visao')setBuscaEncaminhada(null);},[secao]);
+  if(!ACOES_ACADEMICAS_EXCLUSIVAS_DEV) return <section className="admin-academico" aria-label="Módulos acadêmicos pendentes de homologação">
+    <h1 className="admin-page-title">Gestão acadêmica em homologação<span className="admin-title-accent">.</span></h1>
+    <p role="status">O banco oficial ainda não contém as tabelas e permissões acadêmicas necessárias. A consulta às inscrições existentes continua disponível na Secretaria. Nenhum cadastro, matrícula, chamada ou pagamento foi simulado.</p>
+  </section>;
   return <section className="admin-academico" aria-label="Gestão acadêmica da EducART">
     <div className="admin-header-row"><div>
       <span className="admin-kicker">EDUCART 1.1 · INTEGRAÇÃO INSTITUCIONAL</span>
