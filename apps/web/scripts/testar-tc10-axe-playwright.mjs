@@ -35,7 +35,7 @@ try {
             await window.axe.run(document, { runOnly: { type: 'tag', values: tags } }), etiquetas);
           const violations = outcome.violations.map(v => ({
             id: v.id, impact: v.impact, help: v.help, tags: v.tags,
-            nodes: v.nodes.map(n => ({ target: n.target, failureSummary: n.failureSummary })).slice(0, 20)
+            nodes: v.nodes.map(n => ({ target: n.target, html: n.html?.slice(0, 900), failureSummary: n.failureSummary })).slice(0, 20)
           }));
           const caseName = rota + ' ' + largura + 'px ' + estado;
           resultado.push({ caseName, status, violations, incomplete: outcome.incomplete.map(v => v.id) });
@@ -45,7 +45,7 @@ try {
             moderate: violations.filter(v=>v.impact==='moderate').length,
             minor: violations.filter(v=>v.impact==='minor').length
           });
-          for(const v of violations)console.log('AXE '+caseName+' '+v.impact+' '+v.id+' nodes='+v.nodes.length+' targets='+JSON.stringify(v.nodes.slice(0,10).map(n=>n.target)));
+          for(const v of violations)console.log('AXE '+caseName+' '+v.impact+' '+v.id+' nodes='+v.nodes.length+' targets='+JSON.stringify(v.nodes.slice(0,10).map(n=>({selector:n.target,html:n.html?.slice(0,240)}))));
         };
         await scan('inicial');
         if(rota==='/' || rota==='/inscricao'){

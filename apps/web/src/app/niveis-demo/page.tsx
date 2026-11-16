@@ -90,7 +90,7 @@ export default function NiveisDemoPage() {
         </div>
       </header>
 
-      <main className="lv-container">
+      <div className="lv-container">
         <section className="lv-hero">
           <span className="lv-eyebrow"><span className="lv-eyebrow-dot" /> A JORNADA DO ARTISTA</span>
           <h1>Todo talento tem <em>um próximo nível.</em></h1>
@@ -138,7 +138,7 @@ export default function NiveisDemoPage() {
               </button>
             ))}
           </div>
-          <div className="lv-progression" aria-label="Iniciante, Intermediário, Avançado, Pró">
+          <div className="lv-progression" aria-hidden="true">
             {tiers.map((item,index) => <span key={item.slug} className={index<=selected?'lv-on':''}/>)}
           </div>
 
@@ -166,7 +166,7 @@ export default function NiveisDemoPage() {
           <div className="lv-section-head">
             <div><span className="lv-overline">RECURSOS PROPOSTOS</span><h2 id="lv-resources-title">Uma matriz que cresce com você</h2></div>
           </div>
-          <div className="lv-matrix-scroller">
+          <div className="lv-matrix-scroller" tabIndex={0} role="region" aria-label="Tabela de comparação dos perfis com rolagem horizontal">
             <table className="lv-matrix">
               <thead><tr><th scope="col">Recurso</th>{tiers.map(item=><th key={item.slug} scope="col">{item.name.replace('Perfil ','')}</th>)}</tr></thead>
               <tbody>{features.map(row=><tr key={row[0]}>{row.map((cell,i)=>i===0?<th scope="row" key={i}>{cell}</th>:<td key={i}>{cell}</td>)}</tr>)}</tbody>
@@ -194,7 +194,7 @@ export default function NiveisDemoPage() {
           <button type="button" className="lv-back" onClick={conhecerInicial}>Conhecer o perfil inicial <span aria-hidden="true">↗</span></button>
         </div>
         <footer className="lv-footer"><span>EducART · Formação, arte e oportunidades.</span><span>Conceito AutoDEV · sem impacto na produção</span></footer>
-      </main>
+      </div>
     </div>
   );
 }

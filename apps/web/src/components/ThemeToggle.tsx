@@ -29,7 +29,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       className="theme-toggle-btn"
-      aria-label={isDark ? 'Alternar para Modo Claro' : 'Alternar para Modo Noturno'}
+      aria-label={mounted ? (isDark ? 'Noite — alternar para modo claro' : 'Dia — alternar para modo noturno') : 'Tema — alternar tema'}
       title={
         isDark
           ? 'Modo Noturno ativo (clique para alternar para modo claro)'

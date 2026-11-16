@@ -3,6 +3,9 @@
 html.dark .lv-page{--lv-bg:#07080b;--lv-fg:#f9fafb;--lv-muted:#b3bfcc;--lv-border:#343d4b;--lv-card:#15191f;--lv-alt:#10141c;--lv-accent-text:#91bbff}
 .lv-page *{box-sizing:border-box}.lv-container{max-width:1180px;width:calc(100% - 36px);margin-inline:auto}
 .lv-header{background:var(--lv-card);border-bottom:1px solid var(--lv-border)}
+/* Logo sobre fundo claro/escuro: corrigir texto branco ilegível da marca sem mexer no componente global. */
+.lv-header .educart-brand-block strong{color:var(--lv-fg)!important}
+.lv-header .educart-brand-block span{color:var(--lv-muted)!important}
 .lv-header-inner{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .lv-actions{display:flex;align-items:center;gap:20px}.lv-preview{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--lv-muted);font-weight:850}
 .lv-hero{position:relative;max-width:1000px;padding:86px 0 56px}
@@ -25,7 +28,7 @@ html.dark .lv-hero h1 em{color:#f4bc5a}
 .lv-tier-card:focus-visible{outline:3px solid var(--lv-accent);outline-offset:3px}
 .lv-tier-selected{box-shadow:0 0 0 1px var(--lv-accent),0 14px 40px rgba(0,0,0,.13);border-color:var(--lv-accent)}
 .lv-tier-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:27px}
-.lv-tier-number{font-size:12px;letter-spacing:.07em;font-weight:900;color:var(--lv-accent)}
+.lv-tier-number{font-size:12px;letter-spacing:.07em;font-weight:900;color:var(--lv-accent-text)}
 .lv-tier-tag{font-size:9px;line-height:1.4;letter-spacing:.05em;color:var(--lv-muted);font-weight:800;text-align:right}
 .lv-tier-name{font-size:clamp(1.2rem,2vw,1.5rem);font-weight:850;letter-spacing:-.05em;line-height:1.22}
 .lv-tier-sub{font-size:13px;line-height:1.55;color:var(--lv-muted);margin-top:13px;min-height:64px}
@@ -44,6 +47,7 @@ html.dark .lv-hero h1 em{color:#f4bc5a}
 .lv-future h4{font-size:20px;letter-spacing:-.03em;margin:15px 0 10px}.lv-future p{color:var(--lv-muted);font-size:13px;line-height:1.6;margin-bottom:12px}
 .lv-future-foot{border-top:1px solid var(--lv-border);padding-top:15px;margin-top:18px;font-size:12px;font-weight:750;color:var(--lv-fg)}
 .lv-matrix-scroller{overflow-x:auto;border:1px solid var(--lv-border);border-radius:15px;background:var(--lv-card)}
+.lv-matrix-scroller:focus-visible{outline:3px solid var(--lv-accent-text);outline-offset:3px}
 .lv-matrix{width:100%;border-collapse:collapse;table-layout:fixed;min-width:670px;font-size:13px}
 .lv-matrix th,.lv-matrix td{padding:17px 15px;text-align:center;border-bottom:1px solid var(--lv-border)}
 .lv-matrix th:first-child{width:32%;text-align:left}

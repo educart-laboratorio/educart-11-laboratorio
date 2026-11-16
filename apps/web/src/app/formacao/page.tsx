@@ -43,10 +43,10 @@ export default function FormacaoPage() {
   },[detalhe]);
   return <div className="eg-catalog" data-catalog-detail-open={detalhe ? 'true' : 'false'}>
     <header className="eg-catalog-bar">
-      <Link className="eg-brand-link" href="/" aria-label="EducART — voltar ao início"><EducartLogo size="default"/></Link>
+      <Link className="eg-brand-link" href="/" aria-label="EducART Núcleo de Formação de Atores — voltar ao início"><EducartLogo size="default"/></Link>
       <Link className="eg-return" href="/">← Início</Link>
     </header>
-    <main className="eg-catalog-body">
+    <div className="eg-catalog-body">
       <section className="eg-catalog-lead">
         <span className="eg-eyebrow">EducART · Soluções de formação</span>
         <h1>Encontre seu próximo movimento.</h1>
@@ -112,7 +112,7 @@ export default function FormacaoPage() {
         <p className="eg-nextline">A Formação de Atores mantém suas inscrições. A oficina de Interpretação e Expressão Corporal está indisponível para inscrições avulsas.</p>
       </section>
       </>}
-    </main>
+    </div>
     <dialog ref={detalheRef} className="eg-conhecer-dialog"
       aria-labelledby="eg-conhecer-titulo"
       onCancel={e=>{e.preventDefault();setDetalhe(null);}}>
