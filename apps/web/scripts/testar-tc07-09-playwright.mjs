@@ -61,11 +61,24 @@ try {
     const context=await browser.newContext({viewport:{width,height:800}});
     await context.route(/https:\/\/[^/]+\.supabase\.co\/.*/,route=>route.abort('blockedbyclient'));
     const page=await context.newPage();
+    page.setDefaultTimeout(8000);
+    const browserErrors=[];
+    page.on('pageerror', e=>browserErrors.push(String(e)));
+    page.on('console', m=>{ if(m.type()==='error')browserErrors.push(m.text()); });
     try{
       const res=await page.goto(base+'/',{waitUntil:'domcontentloaded'});
       assert.equal(res?.status(),200);
+      await page.waitForLoadState('load',{timeout:12000});
+      await page.waitForTimeout(700);
       await registrar(page,width,'abertura');
       await page.getByRole('button',{name:/Toque para começar/}).click();
+      try {
+        await page.locator('[data-educart-etapa="interesses"]').waitFor({timeout:5000});
+      } catch {
+        // O DOM inicial pode chegar antes do React hidratar em Vinext DEV.
+        await page.waitForTimeout(700);
+        await page.getByRole('button',{name:/Toque para começar/}).click();
+      }
       await registrar(page,width,'interesses');
       await page.locator('.eg-area-on').click();
       await registrar(page,width,'objetivo');
@@ -88,7 +101,7 @@ try {
       console.log(JSON.stringify({width,passed:true,steps:6}));
     } catch(e) {
       await page.screenshot({path:path.join(output,'erro-'+width+'.png')}).catch(()=>{});
-      results.push({width,passed:false,error:String(e)});
+      results.push({width,passed:false,error:String(e),browserErrors});
       console.error(JSON.stringify(results.at(-1)));
     } finally {await context.close();}
   }
