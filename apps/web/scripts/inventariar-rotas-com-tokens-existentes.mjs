@@ -1,7 +1,7 @@
 // SUPER GSI TC30 — somente GET Cloudflare, teste de credenciais JA EXISTENTES.
 // Nao imprime tokens, nao escreve na zona e nao tenta corte de rotas.
 import fs from 'node:fs';
-import {gerarPlano} from './planejar-rotas-oficiais-triple-core.mjs';
+import {gerarPlano,selecionarZonaOficial} from './planejar-rotas-oficiais-triple-core.mjs';
 
 const ACCOUNT='8fe5407b4d31f20e19a1388527e365ad';
 const ZONE='educart.pro';
@@ -39,12 +39,11 @@ try{
   try{z=await get('/zones?name='+ZONE+'&account.id='+ACCOUNT,token)}
   catch(e){out.checks.push({tokenLabel:label,zoneStatus:'network_error'});continue}
   const zones=Array.isArray(z.data)?z.data:[];
-  const zone=zones.find(x=>x?.name===ZONE && x?.account?.id===ACCOUNT)||
-    zones.find(x=>x?.name===ZONE);
+  const zone=selecionarZonaOficial(zones);
   out.checks.push({tokenLabel:label,zoneStatus:z.status,zoneFound:Boolean(zone)});
   if(zone?.id){zoneId=zone.id;break}
  }
- if(!zoneId)throw Error('TC30: nenhuma credencial conseguiu identificar a zona');
+ if(!zoneId)throw Error('TC30: nenhuma credencial validou a zona na conta EducART Suporte');
  const used=new Set();
  for(const [label,token] of TOKENS){
   if(!token||used.has(token))continue;

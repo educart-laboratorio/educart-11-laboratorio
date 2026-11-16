@@ -8,6 +8,14 @@ const ZONE='educart.pro';
 const SOURCE='educart-11-candidate';
 const TARGET='educart-11-prod-ready';
 export const REQUIRED=['www.educart.pro','www.educart.pro/*','*.educart.pro/*','educart.pro/*'];
+/** Confirma nome, conta e id da zona. Nunca aceitar homonima de outra conta. */
+export function selecionarZonaOficial(zones){
+ if(!Array.isArray(zones))return null;
+ const matches=zones.filter(x=>x?.name===ZONE &&
+   x?.account?.id===ACCOUNT &&
+   typeof x?.id==='string' && /^[a-f0-9]{32}$/i.test(x.id));
+ return matches.length===1?matches[0]:null;
+}
 export function gerarPlano(rotas,zoneId){
  if(!Array.isArray(rotas)||!zoneId)throw Error('TC25: inventario incompleto');
  const matches=rotas.filter(x=>typeof x.pattern==='string'&&x.pattern.includes('educart.pro'));
@@ -51,9 +59,9 @@ async function main(){
   const token=process.env.CLOUDFLARE_API_TOKEN;
   if(!token)throw Error('TC25: token de somente leitura ausente');
   const zones=await cloudflareGet('https://api.cloudflare.com/client/v4/zones?name='+ZONE+'&account.id='+ACCOUNT,token);
-  const matches=Array.isArray(zones)?zones.filter(z=>z.name===ZONE):[];
-  if(matches.length!==1)throw Error('TC25: zona inesperada');
-  zoneId=matches[0].id;
+  const zone=selecionarZonaOficial(zones);
+  if(!zone)throw Error('TC25: zona ausente, duplicada ou conta divergente');
+  zoneId=zone.id;
   routeList=await cloudflareGet('https://api.cloudflare.com/client/v4/zones/'+zoneId+'/workers/routes',token);
  }
  const plan=gerarPlano(routeList,zoneId);
