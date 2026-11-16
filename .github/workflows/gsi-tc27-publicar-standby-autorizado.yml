@@ -1,0 +1,74 @@
+name: "SUPER GSI TC27 | Worker PROD standby autorizado (sem rotas)"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - ".github/workflows/gsi-tc27-publicar-standby-autorizado.yml"
+      - "apps/web/scripts/publicar-standby-triple-core-autorizado.mjs"
+      - "apps/web/scripts/testar-tc27-standby-deploy-gates.mjs"
+permissions:
+  contents: read
+concurrency:
+  group: educart-gsi-tc27-prod-ready-isolado
+  cancel-in-progress: false
+jobs:
+  validar-contrato:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Sintaxe do publicador, nenhuma chamada remota
+        run: node --check scripts/publicar-standby-triple-core-autorizado.mjs
+      - name: Nove negativas, sem token nem Cloudflare
+        run: node scripts/testar-tc27-standby-deploy-gates.mjs
+
+  publicar-standby-isolado:
+    needs: [validar-contrato]
+    if: >-
+      github.repository == 'educart-laboratorio/educart-11-laboratorio' &&
+      github.ref_name == 'gsi-integracao-triple-core-20261115' &&
+      github.event_name == 'push' &&
+      github.event.head_commit.message == 'gsi(tc27): publicar somente worker standby autorizado'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.EDUCART_CLOUDFLARE_CANDIDATE_TOKEN }}
+      GSI_TC27_APPROVAL: GSI_TRIPLE_CORE_EXPLICIT_AUTHORIZATION
+      NEXT_PUBLIC_EDUCART_INSCRICOES_ATIVAS: off
+      NEXT_TELEMETRY_DISABLED: "1"
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Dependencias travadas do portal
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Portaria de standby e negativas
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://doygnsubiitencoyzjzk.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_test_synthetic_tc24
+          EDUCART_OFFICIAL_11_MODE: required
+          EDUCART_PRIVATE_PREVIEW_MODE: off
+        run: |
+          node --experimental-strip-types scripts/testar-tc24-standby-prod.mjs
+          node --experimental-strip-types scripts/testar-tc23-destino-inscricao.mjs
+          node --experimental-vm-modules scripts/testar-r07-proxy-execucao.mjs
+          npx tsc --noEmit
+      - name: Publicar somente Worker novo, obter chave PROD de binding privado e testar HTTP
+        run: node scripts/publicar-standby-triple-core-autorizado.mjs --authorized-deploy
