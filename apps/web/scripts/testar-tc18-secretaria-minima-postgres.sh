@@ -10,7 +10,9 @@ trap cleanup EXIT
 docker run -d --rm --network none --name "$NAME" -e POSTGRES_PASSWORD=tc18-sintetico postgres:16 >/dev/null
 ready=0
 for _ in $(seq 1 60); do
-  if docker exec "$NAME" pg_isready -U postgres >/dev/null 2>&1; then ready=1; break; fi
+  # pg_isready pode responder durante a inicialização temporária anterior ao restart.
+  if docker logs "$NAME" 2>&1 | grep -Fq 'PostgreSQL init process complete; ready for start up.' \
+    && docker exec "$NAME" psql -U postgres -d postgres -XAtq -v ON_ERROR_STOP=1 -c 'SELECT 1' 2>/dev/null | grep -Fxq 1; then ready=1; break; fi
   sleep 1
 done
 test "$ready" = 1
