@@ -1,0 +1,30 @@
+name: "SUPER GSI TC21 | Comparacao de builds publicas sem DNS"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - "apps/web/scripts/testar-tc21-public-build-signature.mjs"
+      - ".github/workflows/gsi-tc21-public-build-signature.yml"
+permissions:
+  contents: read
+jobs:
+  comparar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: |
+          node --check apps/web/scripts/testar-tc21-public-build-signature.mjs
+          node apps/web/scripts/testar-tc21-public-build-signature.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: super-gsi-tc21-public-builds
+          path: apps/web/tc21-artifacts/
+          retention-days: 14
+          if-no-files-found: warn
