@@ -67,6 +67,10 @@ jobs:
         env:
           TC02_BASE_URL: http://127.0.0.1:3001
         run: node scripts/testar-tc02-playwright.mjs
+      - name: Validar triagem aproveitada, edição e bloqueio de idade no browser
+        env:
+          TC02_BASE_URL: http://127.0.0.1:3001
+        run: node scripts/testar-tc06-playwright.mjs
       - name: Publicar evidências da simulação
         if: always()
         uses: actions/upload-artifact@v4
