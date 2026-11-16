@@ -45,6 +45,40 @@ if(!token || process.env.GITHUB_REPOSITORY!=='educart-laboratorio/educart-11-lab
    report.workers.push(d);console.log('TC19 REQUEST '+JSON.stringify(d));
   }
  }
+ // Custom Domains usam esta API: a leitura nao exige permissao DNS.
+ try{
+  const url='https://api.cloudflare.com/client/v4/accounts/'+account+'/workers/domains';
+  const res=await fetch(url,{method:'GET',headers:{Authorization:'Bearer '+token,accept:'application/json'},signal:AbortSignal.timeout(15000)});
+  const json=res.ok?await res.json():null;
+  const list=Array.isArray(json?.result)?json.result:[];
+  const filtered=list.filter(x=>x?.hostname==='educart.pro'||x?.hostname==='www.educart.pro')
+    .map(x=>({hostname:x.hostname,worker:x.service??x.script??x.worker??'(not-provided)',enabled:x.enabled??null}));
+  report.domains={http:res.status,matching:filtered};
+  console.log('TC19 DOMAINS '+JSON.stringify(report.domains));
+ }catch(e){
+  report.domains={errorType:String(e?.name||'Error')};
+  console.log('TC19 DOMAINS '+JSON.stringify(report.domains));
+ }
+ // Zone Routes sao distintas de Custom Domains. Sem permissao zone read,
+ // registrar apenas status, nao inferir ausencia de rota.
+ try{
+  const qs='?name=educart.pro&account.id='+account;
+  const zr=await fetch('https://api.cloudflare.com/client/v4/zones'+qs,
+   {method:'GET',headers:{Authorization:'Bearer '+token,accept:'application/json'},signal:AbortSignal.timeout(15000)});
+  const zones=zr.ok?await zr.json():null;
+  const zone=Array.isArray(zones?.result)?zones.result.find(x=>x?.name==='educart.pro'):null;
+  report.zoneRead={http:zr.status,found:Boolean(zone)};
+  if(zone?.id){
+   const rr=await fetch('https://api.cloudflare.com/client/v4/zones/'+encodeURIComponent(zone.id)+'/workers/routes',
+    {method:'GET',headers:{Authorization:'Bearer '+token,accept:'application/json'},signal:AbortSignal.timeout(15000)});
+   const rt=rr.ok?await rr.json():null;
+   report.routes={http:rr.status,
+    matching:(Array.isArray(rt?.result)?rt.result:[]).filter(x=>/^(www\.)?educart\.pro\/\*/.test(x?.pattern??''))
+     .map(x=>({pattern:x.pattern,worker:x.script??null}))};
+   console.log('TC19 ROUTES '+JSON.stringify(report.routes));
+  }else console.log('TC19 ZONE '+JSON.stringify(report.zoneRead));
+ }catch(e){report.routes={errorType:String(e?.name||'Error')};
+  console.log('TC19 ROUTES '+JSON.stringify(report.routes));}
 }
 fs.mkdirSync('tc19-artifacts',{recursive:true});
 fs.writeFileSync('tc19-artifacts/config-sanitizada.json',JSON.stringify(report,null,2));
