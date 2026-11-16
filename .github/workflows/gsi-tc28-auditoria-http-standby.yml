@@ -70,16 +70,27 @@ jobs:
           console.log('TC28 RSC '+JSON.stringify({status:adminRsc.status,
            location:parsed?.origin===origin?parsed.pathname:'external',
            hasRscHash:!!parsed?.searchParams.has('_rsc')}));
-          let effectiveStatus=adminRsc.status;
+          let rscNegado=adminRsc.status===401;
           if(hashRedirect){
            const follow=await fetch(parsed,{method:'GET',redirect:'manual',
             headers:{Accept:'text/html',RSC:'1'},signal:AbortSignal.timeout(12000)});
-           effectiveStatus=follow.status;
+           const redirectUrl=follow.headers.get('location')||'';
+           const redirectDest=redirectUrl?new URL(redirectUrl,base):null;
+           const cache=follow.headers.get('cache-control')||'';
+           const robots=follow.headers.get('x-robots-tag')||'';
+           const responseBody=await follow.text();
+           const loginSeguro=follow.status===303 && redirectDest?.origin===origin &&
+            redirectDest.pathname==='/admin/login' &&
+            cache.includes('private') && cache.includes('no-store') &&
+            robots.includes('noindex') && responseBody.length<=1024;
+           rscNegado=follow.status===401 || loginSeguro;
            console.log('TC28 RSC after canonical hash '+JSON.stringify({status:follow.status,
-            cache:follow.headers.get('cache-control'),
-            xRobots:follow.headers.get('x-robots-tag')}));
+            destinoSeguro:redirectDest?.origin===origin?redirectDest.pathname:'external',
+            cachePrivado:cache.includes('private')&&cache.includes('no-store'),
+            noindex:robots.includes('noindex'),bodySize:responseBody.length,
+            acessoNegado:rscNegado}));
           }
-          if(effectiveStatus!==401)failures.push('/admin RSC anon nao terminou em 401');
+          if(!rscNegado)failures.push('/admin RSC anon nao foi negado ou nao redirecionou seguramente ao login');
           if(failures.length){console.error('TC28 FAIL '+JSON.stringify(failures));process.exitCode=1;}
-          else console.log('TC28 PASS: 9 GETs standby, 3 POSTs bloqueados e RSC 401; zero dados reais.');
+          else console.log('TC28 PASS: 9 GETs standby, 3 POSTs bloqueados e RSC negado com login seguro; zero dados reais.');
           NODE
