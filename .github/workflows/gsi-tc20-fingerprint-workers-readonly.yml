@@ -1,0 +1,32 @@
+name: "SUPER GSI TC20 | Fingerprint HTTP Workers read only"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - "apps/web/scripts/testar-tc20-fingerprint-http.mjs"
+      - ".github/workflows/gsi-tc20-fingerprint-workers-readonly.yml"
+permissions:
+  contents: read
+jobs:
+  comparar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Checar sintaxe e requisicoes GET anônimas
+        run: |
+          node --check apps/web/scripts/testar-tc20-fingerprint-http.mjs
+          node apps/web/scripts/testar-tc20-fingerprint-http.mjs
+      - name: Guardar hashes sem corpo HTML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: super-gsi-tc20-public-fingerprints
+          path: apps/web/tc20-artifacts/
+          retention-days: 14
+          if-no-files-found: warn
