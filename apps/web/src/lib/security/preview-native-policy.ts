@@ -5,6 +5,8 @@
  */
 export const HOST_PREVIA_PRIVADA = 'educart-11-homologacao.educartsuporte.workers.dev';
 export const HOST_PREVIA_CANDIDATA = 'educart-11-candidate.educartsuporte.workers.dev';
+// Triple Core: worker separado, inicialmente sem qualquer rota de educart.pro.
+export const HOST_PROD_READY = 'educart-11-prod-ready.educartsuporte.workers.dev';
 export const URL_SUPABASE_DEV = 'https://esjrjzyvyhtzwgihcbsc.supabase.co';
 
 /**
@@ -17,6 +19,7 @@ export const HOSTS_PORTAL_OFICIAL_11 = [
   'educart.pro',
   'www.educart.pro',
   'educart-production.educartsuporte.workers.dev',
+  HOST_PROD_READY,
 ] as const;
 
 export function classificarRotaOficial11(

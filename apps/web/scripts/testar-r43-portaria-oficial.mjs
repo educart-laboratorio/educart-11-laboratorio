@@ -13,7 +13,8 @@ import { obterPapeisGestao } from '../src/lib/admin/autorizar-gestao.ts';
 const classificar=(host,rota,modo='required',metodo='GET',recebido=host)=>
   classificarRotaOficial11(host,rota,recebido,metodo,modo);
 const hosts=['educart.pro','www.educart.pro',
-  'educart-production.educartsuporte.workers.dev'];
+  'educart-production.educartsuporte.workers.dev',
+  'educart-11-prod-ready.educartsuporte.workers.dev'];
 for(const host of hosts) {
   for(const rota of ['/','/formacao','/formacao/','/inscricao','/cadastro',
                      '/criar','/images/oficina-atores-simbolo.svg']) {

@@ -6,6 +6,7 @@ import { destinoPublicoInscricaoSeguro } from './lib/security/destino-inscricao-
 import {
   classificarRequisicaoPrivada,
   HOST_PREVIA_CANDIDATA,
+  HOST_PROD_READY,
   identidadeHomologacaoPermitida,
   configuracaoSupabaseDevValida,
   configuracaoSupabaseOficial11Valida,
@@ -79,19 +80,30 @@ export async function proxy(request: NextRequest) {
         process.env.NEXT_PUBLIC_SUPABASE_URL,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       );
+    // Worker de homologação oficial: nunca coleta dados pela URL workers.dev.
+    // Só o dominio oficial, após futuro corte autorizado, poderá exibir o form.
+    const standby = hostPublico === HOST_PROD_READY &&
+      request.nextUrl.hostname.toLowerCase() === HOST_PROD_READY;
+    const rotaInscricao = /^\/(?:inscricao|cadastro|criar)\/?$/.test(request.nextUrl.pathname);
+    const avisoStandby = standby && rotaInscricao &&
+      (request.method === 'GET' || request.method === 'HEAD');
+    const bloqueioStandbyPost = standby && rotaInscricao &&
+      request.method !== 'GET' && request.method !== 'HEAD';
     const avisoOficial = formularioOficial && !destinoOficialSeguro;
-    const response = avisoOficial
-      ? NextResponse.rewrite(new URL('/inscricao-indisponivel', request.url))
-      : avisoCandidata
-        ? NextResponse.rewrite(new URL('/inscricao-previa', request.url))
-        : NextResponse.next();
+    const response = bloqueioStandbyPost
+      ? NextResponse.json({erro:'Inscricoes indisponiveis na homologacao'}, {status:405})
+      : avisoOficial || avisoStandby
+        ? NextResponse.rewrite(new URL('/inscricao-indisponivel', request.url))
+        : avisoCandidata
+          ? NextResponse.rewrite(new URL('/inscricao-previa', request.url))
+          : NextResponse.next();
     // A prévia em workers.dev não é produção: inclusive o login público
     // não deve entrar em mecanismos de busca nem em cache compartilhado.
     if (hostPublico===HOST_PREVIA_CANDIDATA) {
       response.headers.set('X-Robots-Tag','noindex, nofollow, noarchive');
       response.headers.set('Cache-Control','private, no-store, max-age=0');
     }
-    if (avisoOficial) {
+    if (avisoOficial || standby) {
       response.headers.set('X-Robots-Tag','noindex, nofollow, noarchive');
       response.headers.set('Cache-Control','private, no-store, max-age=0');
     }
