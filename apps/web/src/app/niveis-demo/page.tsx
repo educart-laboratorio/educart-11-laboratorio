@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type CSSProperties } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { EducartLogo } from '@/components/EducartLogo';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -71,7 +71,12 @@ const features = [
 
 export default function NiveisDemoPage() {
   const [selected, setSelected] = useState(0);
+  const detalheRef = useRef<HTMLDivElement>(null);
   const tier = tiers[selected];
+  const conhecerInicial = () => {
+    setSelected(0);
+    detalheRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  };
   return (
     <div className="lv-page">
       <header className="lv-header">
@@ -137,7 +142,7 @@ export default function NiveisDemoPage() {
             {tiers.map((item,index) => <span key={item.slug} className={index<=selected?'lv-on':''}/>)}
           </div>
 
-          <div className="lv-detail" style={{'--lv-accent':tier.accent} as CSSProperties}>
+          <div ref={detalheRef} className="lv-detail" style={{'--lv-accent':tier.accent} as CSSProperties}>
             <div className="lv-detail-main">
               <span className="lv-overline">DETALHES DO NÍVEL {String(selected+1).padStart(2,'0')}</span>
               <h3>{tier.name}</h3>
@@ -186,7 +191,7 @@ export default function NiveisDemoPage() {
             <p>Perfil Iniciante R$ 10 · Intermediário R$ 15 · Avançado R$ 20 · Pró R$ 25</p>
             <small>Seu Iniciante é ativado após o primeiro pagamento confirmado da formação, sem cobrança extra pelo perfil durante o curso. Depois, o acesso por assinatura depende de sua escolha; não há renovação nem cobrança automática. O Pró exige aprovação.</small>
           </div>
-          <Link href="/matricula-demo" className="lv-back">Conhecer o perfil inicial <span aria-hidden="true">↗</span></Link>
+          <button type="button" className="lv-back" onClick={conhecerInicial}>Conhecer o perfil inicial <span aria-hidden="true">↗</span></button>
         </div>
         <footer className="lv-footer"><span>EducART · Formação, arte e oportunidades.</span><span>Conceito AutoDEV · sem impacto na produção</span></footer>
       </main>

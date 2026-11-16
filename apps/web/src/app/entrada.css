@@ -4,7 +4,8 @@
 .eg-root button,.eg-catalog button,.eg-enroll button,.eg-enroll input,.eg-enroll select{font:inherit}
 .eg-root button:focus-visible,.eg-catalog a:focus-visible,.eg-enroll input:focus-visible,.eg-enroll button:focus-visible{outline:3px solid var(--eg-yellow);outline-offset:4px}
 .eg-root{position:relative;isolation:isolate;min-height:100svh;display:flex;flex-direction:column;overflow:hidden}
-.eg-backdrop{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,10,20,.85),rgba(6,10,20,.82)),url('/images/hero-topo.jpg') center 40%/cover no-repeat}
+/* TC-07: a foto fica ancorada no viewport, não na altura variável das etapas. */
+.eg-backdrop{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(6,10,20,.85),rgba(6,10,20,.82)),url('/images/hero-topo.jpg') center 40%/cover no-repeat}
 .eg-stage{flex:1;max-width:930px;width:100%;margin:auto;display:flex;flex-direction:column;justify-content:center;padding:25px 22px}
 .eg-opening{text-align:center;margin:auto;padding:35px 0;max-width:700px}
 .eg-halo{display:grid;place-items:center;padding:55px 28px;min-height:220px;min-width:min(100%,360px);border-radius:38px;background:radial-gradient(ellipse at center,rgba(24,56,101,.46),transparent 72%);box-shadow:0 0 65px #115ab01c;animation:eg-breathe 3.8s ease-in-out infinite}
@@ -132,4 +133,22 @@
   .eg-shelf-head h2 { font-size: 23px; line-height: 1.2; }
   .eg-shelf-head span { display: block; max-width: 100%; line-height: 1.45; }
   .eg-return, .eg-brand-link { min-height: 44px; display: inline-flex; align-items: center; }
+}
+
+/* TC-08: fluxo de triagem tem rolagem propria acima da faixa de controles
+   fixos globais. Sem esconder opções, rodapé ou recursos de acessibilidade. */
+@media (max-width: 620px) {
+  .eg-root { height: 100svh; min-height: 100svh; }
+  .eg-root .eg-stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: calc(100svh - 134px);
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    justify-content: flex-start;
+    margin: 0 auto;
+    padding: 24px 22px 26px;
+  }
+  .eg-root .eg-opening, .eg-root .eg-dialog { margin: 0; }
+  .eg-root .eg-foot { flex: 0 0 auto; margin-bottom: 68px; }
 }
