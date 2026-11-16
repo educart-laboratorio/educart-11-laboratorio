@@ -20,7 +20,7 @@ docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 <<'BOOT'
 CREATE ROLE anon NOLOGIN;
 CREATE ROLE authenticated NOLOGIN;
 CREATE SCHEMA auth;
-CREATE TABLE auth.users(id uuid PRIMARY KEY);
+CREATE TABLE auth.users(id uuid PRIMARY KEY,email text NOT NULL,email_confirmed_at timestamptz);
 CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $fun$
 SELECT nullif(current_setting('request.jwt.claim.sub',true),'')::uuid
 $fun$;
@@ -44,8 +44,13 @@ CREATE POLICY educart_admin_update_inscricoes ON public.inscricoes_oficina FOR U
  USING(EXISTS(SELECT 1 FROM public.portal_admins a WHERE a.user_id=(SELECT auth.uid())))
  WITH CHECK(EXISTS(SELECT 1 FROM public.portal_admins a WHERE a.user_id=(SELECT auth.uid())));
 CREATE TABLE public.perfis_administrativos_oficina(inscricao_id uuid PRIMARY KEY REFERENCES public.inscricoes_oficina(id));
-INSERT INTO auth.users VALUES('11111111-1111-4111-8111-111111111111'),('22222222-2222-4222-8222-222222222222');
-INSERT INTO public.portal_admins VALUES('11111111-1111-4111-8111-111111111111');
+INSERT INTO auth.users VALUES
+('11111111-1111-4111-8111-111111111111','confirmado@educart.test',now()),
+('22222222-2222-4222-8222-222222222222','externo@educart.test',now()),
+('33333333-3333-4333-8333-333333333333','nao-confirmado@educart.test',NULL);
+INSERT INTO public.portal_admins VALUES
+('11111111-1111-4111-8111-111111111111'),
+('33333333-3333-4333-8333-333333333333');
 INSERT INTO public.inscricoes_oficina(data_nascimento) VALUES('2000-01-01');
 BOOT
 if cat "$SOURCE" | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/no-gate.log" 2>&1;then
@@ -70,20 +75,55 @@ echo "TC18 UID NOMINAL OBRIGATORIO PASS."
  printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
  printf "SET educart.tc18_restore='RESTAURACAO_TESTADA';\n"
  printf "SET educart.tc18_coordenador_uid='22222222-2222-4222-8222-222222222222';\n"
+ printf "SET educart.tc18_coordenador_email='externo@educart.test';\n"
  cat "$SOURCE"
 } | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/uid-externo.log" 2>&1 && {
  echo "::error::Migracao aceitou UID fora da administracao"; exit 1;
 }
-if ! grep -Fq 'TC18: coordenador nao e admin Auth existente' "$TMP/uid-externo.log"; then
+if ! grep -Fq 'TC18: coordenador sem identidade Auth confirmada ou vinculo' "$TMP/uid-externo.log"; then
  echo "::error::TC18: erro inesperado no portao do UID externo (somente dados sinteticos)"
  tail -n 16 "$TMP/uid-externo.log"
  exit 1
 fi
 echo "TC18 UID EXTERNO NEGADO PASS."
+# Mesmo com portal_admins e UID valido, e-mail divergente e/ou Auth
+# nao confirmado nunca pode receber o papel de coordenacao.
+for case_name in email-divergente auth-nao-confirmado; do
+  if [ "$case_name" = 'email-divergente' ]; then
+    uid='11111111-1111-4111-8111-111111111111'
+    mail='nao-e-a-conta-aprovada@educart.test'
+  else
+    uid='33333333-3333-4333-8333-333333333333'
+    mail='nao-confirmado@educart.test'
+  fi
+  {
+    printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
+    printf "SET educart.tc18_restore='RESTAURACAO_TESTADA';\n"
+    printf "SET educart.tc18_coordenador_uid='%s';\n" "$uid"
+    printf "SET educart.tc18_coordenador_email='%s';\n" "$mail"
+    cat "$SOURCE"
+  } | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/$case_name.log" 2>&1 && {
+    echo "::error::TC18 aceitou $case_name"; exit 1;
+  }
+  grep -Fq 'TC18: coordenador sem identidade Auth confirmada ou vinculo' "$TMP/$case_name.log"
+  echo "TC18 $case_name NEGADO PASS."
+done
+# UID correto mas e-mail aprovado omitido deve ser negado.
+{
+  printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
+  printf "SET educart.tc18_restore='RESTAURACAO_TESTADA';\n"
+  printf "SET educart.tc18_coordenador_uid='11111111-1111-4111-8111-111111111111';\n"
+  cat "$SOURCE"
+} | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/email-ausente.log" 2>&1 && {
+  echo "::error::TC18 aceitou e-mail de coordenacao ausente"; exit 1;
+}
+grep -Fq 'TC18: email de coordenacao aprovado ausente' "$TMP/email-ausente.log"
+echo "TC18 EMAIL NOMINAL OBRIGATORIO PASS."
 {
  printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
  printf "SET educart.tc18_restore='RESTAURACAO_TESTADA';\n"
  printf "SET educart.tc18_coordenador_uid='11111111-1111-4111-8111-111111111111';\n"
+ printf "SET educart.tc18_coordenador_email='confirmado@educart.test';\n"
  cat "$SOURCE"
 } | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/rollback.log" 2>&1 || {
  cat "$TMP/rollback.log";exit 1;
@@ -94,7 +134,7 @@ node - "$SOURCE" <<'NODE' >"$TMP/positive.sql"
 const fs=require('node:fs'),assert=require('node:assert/strict');
 const s=fs.readFileSync(process.argv[2],'utf8');
 assert.match(s,/\nROLLBACK;\s*$/);
-process.stdout.write("SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\nSET educart.tc18_restore='RESTAURACAO_TESTADA';\nSET educart.tc18_coordenador_uid='11111111-1111-4111-8111-111111111111';\n"+s.replace(/\nROLLBACK;\s*$/,'\nCOMMIT;\n'));
+process.stdout.write("SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\nSET educart.tc18_restore='RESTAURACAO_TESTADA';\nSET educart.tc18_coordenador_uid='11111111-1111-4111-8111-111111111111';\nSET educart.tc18_coordenador_email='confirmado@educart.test';\n"+s.replace(/\nROLLBACK;\s*$/,'\nCOMMIT;\n'));
 NODE
 docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 <"$TMP/positive.sql" >"$TMP/positive.log" 2>&1 || {
  echo "::error::Copia efemera SQL nao passou";tail -n 40 "$TMP/positive.log";exit 1;
