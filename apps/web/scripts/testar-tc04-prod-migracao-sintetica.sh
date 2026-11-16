@@ -144,8 +144,8 @@ echo "TC01: falha de status publico reproduzida no banco descartavel."
 node - "$POLICY" <<'NODE' >"$LAB/policy-teste.sql"
 const fs=require('node:fs'),assert=require('node:assert/strict');
 const source=fs.readFileSync(process.argv[2],'utf8');
-assert.match(source,/\\nROLLBACK;\\s*$/);
-process.stdout.write(source.replace(/\\nROLLBACK;\\s*$/,'\\nCOMMIT;\\n'));
+assert.match(source,/\nROLLBACK;\s*$/);
+process.stdout.write(source.replace(/\nROLLBACK;\s*$/,'\nCOMMIT;\n'));
 NODE
 docker exec -i "$CTR" psql -U postgres -d postgres -Xq -v ON_ERROR_STOP=1 \
   <"$LAB/policy-teste.sql" >"$LAB/policy-positivo.log" 2>&1 || {
