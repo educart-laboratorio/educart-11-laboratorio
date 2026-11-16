@@ -28,6 +28,10 @@ jobs:
           cache-dependency-path: apps/web/package-lock.json
       - name: Dependencias travadas
         run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: TC04 - porta de entrada academica PROD sem consulta DEV
+        run: node scripts/testar-tc04-prod-guard.mjs
+      - name: TC04 - ensaio da migracao PROD em PostgreSQL sintetico sem rede
+        run: bash scripts/testar-tc04-prod-migracao-sintetica.sh
       - name: Testes negativos do publicador PROD
         env:
           NEXT_PUBLIC_SUPABASE_URL: https://doygnsubiitencoyzjzk.supabase.co
