@@ -67,7 +67,7 @@ jobs:
         env:
           TC02_BASE_URL: http://127.0.0.1:3001
         run: node scripts/testar-tc06-playwright.mjs
-      - name: Fundo, sobreposicoes e navegacao: 24 estados
+      - name: "Fundo, sobreposicoes e navegacao: 24 estados"
         env:
           TC0709_BASE_URL: http://127.0.0.1:3001
         run: node scripts/testar-tc07-09-playwright.mjs
