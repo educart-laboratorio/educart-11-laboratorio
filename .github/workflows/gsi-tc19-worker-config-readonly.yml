@@ -1,0 +1,37 @@
+name: "SUPER GSI TC19 | Diagnostico Cloudflare somente leitura"
+on:
+  push:
+    branches: [gsi-integracao-triple-core-20261115]
+    paths:
+      - ".github/workflows/gsi-tc19-worker-config-readonly.yml"
+      - "apps/web/scripts/testar-tc19-worker-config-readonly.mjs"
+permissions:
+  contents: read
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.EDUCART_CLOUDFLARE_CANDIDATE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Conferir sintaxe
+        run: node --check scripts/testar-tc19-worker-config-readonly.mjs
+      - name: Ler somente os estados sanitizados de variaveis do Worker
+        run: node scripts/testar-tc19-worker-config-readonly.mjs
+      - name: Guardar diagnostico sem valores nem credenciais
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: super-gsi-tc19-config-sanitizada
+          path: apps/web/tc19-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
