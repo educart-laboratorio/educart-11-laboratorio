@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { obterPapeisGestao } from './lib/admin/autorizar-gestao';
+import { reforcarCabecalhos } from './lib/security/headers-resposta';
 import {
   classificarRequisicaoPrivada,
   HOST_PREVIA_CANDIDATA,
@@ -83,6 +84,7 @@ export async function proxy(request: NextRequest) {
       response.headers.set('Cache-Control','private, no-store, max-age=0');
       response.headers.set('X-Robots-Tag','noindex, nofollow, noarchive');
     }
+    reforcarCabecalhos(response, request, portalOficial);
     return response;
   }
 
@@ -100,6 +102,7 @@ export async function proxy(request: NextRequest) {
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Vary', 'Cookie');
     response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+    reforcarCabecalhos(response, request, portalOficial);
     return response;
   };
 

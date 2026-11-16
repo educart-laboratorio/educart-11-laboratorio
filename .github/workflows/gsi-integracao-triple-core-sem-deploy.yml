@@ -37,6 +37,8 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: https://doygnsubiitencoyzjzk.supabase.co
           EDUCART_OFFICIAL_11_MODE: required
         run: node scripts/testar-tc01-publicador-oficial-negativas.mjs
+      - name: Cabecalhos e comportamento de cache TC14
+        run: node --experimental-strip-types scripts/testar-tc14-cabecalhos.mjs
       - name: Guardas da portaria e mapeamento de triagem
         run: |
           node --experimental-strip-types scripts/testar-r43-portaria-oficial.mjs
@@ -63,6 +65,8 @@ jobs:
           exit 1
       - name: HTTP sitemap, robots, favicon e metadados
         run: node scripts/testar-tc13-http.mjs
+      - name: TC14 verificar headers HTTP reais no Vinext local
+        run: node scripts/testar-tc14-http.mjs
       - name: Inscricao 201, 409, 500, timeout em quatro viewports
         env:
           TC02_BASE_URL: http://127.0.0.1:3001
