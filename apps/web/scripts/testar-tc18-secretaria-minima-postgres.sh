@@ -74,7 +74,11 @@ echo "TC18 UID NOMINAL OBRIGATORIO PASS."
 } | docker exec -i "$NAME" psql -U postgres -Xq -v ON_ERROR_STOP=1 >"$TMP/uid-externo.log" 2>&1 && {
  echo "::error::Migracao aceitou UID fora da administracao"; exit 1;
 }
-grep -Fq 'TC18: coordenador nao e admin Auth existente' "$TMP/uid-externo.log"
+if ! grep -Fq 'TC18: coordenador nao e admin Auth existente' "$TMP/uid-externo.log"; then
+ echo "::error::TC18: erro inesperado no portao do UID externo (somente dados sinteticos)"
+ tail -n 16 "$TMP/uid-externo.log"
+ exit 1
+fi
 echo "TC18 UID EXTERNO NEGADO PASS."
 {
  printf "SET educart.tc18_aprovacao='DIRECAO_LIBEROU_FASE_MINIMA';\n"
