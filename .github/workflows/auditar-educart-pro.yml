@@ -44,6 +44,10 @@ jobs:
       - name: Auditar rotas publicas (sem envio ou login)
         run: node audit.mjs
 
+      - name: Inspecionar feedback de inscricao com respostas simuladas (zero escrita)
+        if: always()
+        run: node diagnosticar-fluxo-inscricao.mjs
+
       - name: Publicar capturas e relatorios para revisao
         if: always()
         uses: actions/upload-artifact@v4
