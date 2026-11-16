@@ -30,13 +30,12 @@ export default function AvisoCandidata() {
           Nenhuma solicitação real será recebida por esta interface.
         </p>
         <p className="eg-description">
-          Para fazer uma inscrição ou entrar em contato com a EducART,
-          utilize exclusivamente o portal oficial.
+          Para saber sobre inscrições e disponibilidade de vagas,
+          converse com a equipe da EducART pelo WhatsApp. Não preencha fichas nesta prévia.
         </p>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <a className="eg-button" href="https://www.educart.pro/">
-            Abrir portal oficial
-          </a>
+          <a className="eg-button" href="https://wa.me/5571996824505"
+            target="_blank" rel="noopener noreferrer">Falar com a EducART</a>
           <Link className="eg-button eg-secondary" href="/formacao">
             Voltar à formação
           </Link>

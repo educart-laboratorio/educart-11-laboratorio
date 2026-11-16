@@ -76,15 +76,14 @@
 .eg-button:hover{background:#ffda8c;color:#0c1423}
 .eg-secondary{background:transparent;color:white;border:1px solid #6a7b8d}
 .eg-empty{border:1px dashed #68768b55;flex:0 0 130px;min-height:480px;border-radius:23px;display:grid;place-items:center;text-align:center;padding:13px;color:#718099;font-size:13px}
-/* Candidata DEV 1.1: cartaz de referência, não original, apenas no segundo cartão. */
+/* Piso público: atividade indisponível com capa tipográfica, sem imagem não autorizada. */
 .eg-course-unavailable{border-color:#806e4e}
-/* Cartaz da atividade: limitar a altura e cortar somente a parte inferior
-   da imagem de referência para equilibrar ambos os cartões no catálogo. */
-.eg-course-unavailable .eg-cover-poster{height:350px;background:none;overflow:hidden}
-.eg-course-unavailable .eg-cover-poster::after{display:none;content:none}
-.eg-course-unavailable .eg-cover-poster img{
-  display:block;width:100%;height:100%;object-fit:cover;object-position:center top;
+.eg-course-unavailable .eg-cover-poster{
+  height:350px;overflow:hidden;background:linear-gradient(145deg,#172b45,#3c2b26);
 }
+.eg-course-unavailable .eg-cover-poster::after{display:none;content:none}
+.eg-cover-texto{display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.eg-cover-texto span{font-size:clamp(20px,3vw,28px);line-height:1.25;font-weight:900;color:#ffdfab;letter-spacing:-.02em}
 .eg-course-unavailable .eg-course-info{margin-top:0;padding-top:19px}
 .eg-course-unavailable .eg-course-heading strong{font-size:clamp(19px,2.4vw,22px)}
 .eg-course-unavailable .eg-tags .eg-unavailable-tag{

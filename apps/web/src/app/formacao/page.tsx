@@ -61,7 +61,7 @@ export default function FormacaoPage() {
       {triagemPronta && faixaSelecionada !== FAIXA_ATE_13 && <>
       {interesse && <p className="eg-recommended"><strong>Para seu interesse em {interesse.toLocaleLowerCase('pt-BR')}:</strong> {insights[interesse] || 'conheça nossas experiências de formação.'}</p>}
       <section aria-label="Soluções disponíveis">
-        <div className="eg-shelf-head"><h2>Escolha sua formação</h2><span>1 formação com inscrições · 1 atividade exclusiva · deslize para explorar</span></div>
+        <div className="eg-shelf-head"><h2>Escolha sua formação</h2><span>1 formação para conhecer · 1 atividade exclusiva · deslize para explorar</span></div>
         <div className="eg-shelf" role="region" aria-label="Carrossel de soluções de formação" tabIndex={0}>
           <article className="eg-course" aria-labelledby="oficina-titulo">
             <button type="button" className="eg-course-open"
@@ -80,21 +80,19 @@ export default function FormacaoPage() {
                 <span><strong>Local:</strong> {NOME_LOCAL_FORMACAO} · <CasaGameleiraLink /></span>
               </div>
               <div style={{display:'flex',flexWrap:'wrap',gap:'9px'}}>
-                <Link className="eg-button" href={href}>Quero me inscrever →</Link>
+                <Link className="eg-button" href={href}>Consultar inscrições →</Link>
                 <button className="eg-button eg-secondary" type="button" onClick={()=>setDetalhe('formacao')}>Conhecer</button>
               </div>
 
             </div>
           </article>
-          {/* Prévia DEV: imagem de referência recortada do Instagram, não é o original; sem autorização de publicação definitiva. Não consultar ficha privada do docente. */}
+          {/* Atividade exclusiva preservada sem exibir cartaz de referência não autorizado. */}
           <article className="eg-course eg-course-unavailable" aria-labelledby="expressao-corporal-titulo">
             <button type="button" className="eg-course-open"
               aria-label="Conhecer a atividade Interpretação e Expressão Corporal"
               onClick={()=>setDetalhe('expressao')}/>
-            <div className="eg-cover eg-cover-poster">
-              <img src="/images/fernando-santana-cartaz-referencia-dev.png" width="709" height="990"
-                alt="Cartaz: Novembro na Oficina, Interpretação e Expressão Corporal com Fernando Santana, com sua fotografia e as marcas oficiais da Oficina de Atores Salvador e EducART"
-                loading="lazy" decoding="async"/>
+            <div className="eg-cover eg-cover-poster eg-cover-texto" aria-hidden="true">
+              <span>Interpretação e Expressão Corporal</span>
             </div>
             <div className="eg-course-info">
               <div className="eg-course-heading">
@@ -109,7 +107,7 @@ export default function FormacaoPage() {
             </div>
           </article>
         </div>
-        <p className="eg-nextline">A Formação de Atores mantém suas inscrições. A oficina de Interpretação e Expressão Corporal está indisponível para inscrições avulsas.</p>
+        <p className="eg-nextline">Inscrições online temporariamente suspensas. Consulte a equipe da EducART pelo WhatsApp. A atividade de Interpretação e Expressão Corporal segue indisponível para inscrições avulsas.</p>
       </section>
       </>}
     </div>
@@ -129,8 +127,9 @@ export default function FormacaoPage() {
         <p><strong>Horário das aulas:</strong> {HORARIO_TURMA_FORMACAO}</p>
         <p><strong>Local:</strong> {NOME_LOCAL_FORMACAO} · <CasaGameleiraLink /></p>
         <p><strong>Coordenação:</strong> Aline Nepomuceno. <strong>Investimento de referência:</strong> matrícula de R$ 50 e mensalidade de R$ 320. Datas, vagas e condições devem ser confirmadas com a escola.</p>
+        <p>Inscrições online temporariamente suspensas. Consulte a coordenação pelo WhatsApp.</p>
         <div className="eg-conhecer-acoes">
-          <Link className="eg-button" href={href}>Quero me inscrever →</Link>
+          <Link className="eg-button" href={href}>Consultar inscrições →</Link>
           <a className="eg-button eg-secondary" href={whatsapp}
             target="_blank" rel="noopener noreferrer">Falar com a coordenação ↗</a>
         </div>
@@ -138,10 +137,6 @@ export default function FormacaoPage() {
       {detalhe==='expressao'&&<div className="eg-conhecer-conteudo">
         <h2 id="eg-conhecer-titulo">Interpretação e Expressão Corporal</h2>
         <p><strong>Com Fernando Santana.</strong> Atividade exclusiva dos estudantes do Curso Livre de Teatro da Oficina de Atores Salvador.</p>
-        <figure className="eg-conhecer-cartaz">
-          <img src="/images/fernando-santana-cartaz-referencia-dev.png"
-            alt="Cartaz de referência da atividade Interpretação e Expressão Corporal" width="709" height="990" loading="lazy"/>
-        </figure>
         <p className="eg-conhecer-indisponivel">Indisponível para inscrições avulsas. Não há reservas de vagas ou compras disponíveis para esta oficina.</p>
       </div>}
     </dialog>
