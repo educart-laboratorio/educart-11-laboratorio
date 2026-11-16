@@ -24,7 +24,9 @@ export function InscricaoForm() {
     const feedback = isSuccess ? successRef.current : errorMessage ? errorRef.current : null;
     if (!feedback) return;
     feedback.focus({ preventScroll: true });
-    feedback.scrollIntoView({ block: 'start', behavior: 'auto' });
+    // 'instant' não herda scroll-behavior: smooth do CSS global.
+    // A mensagem deve aparecer de imediato, inclusive no celular.
+    feedback.scrollIntoView({ block: 'start', behavior: 'instant' });
   }, [isSuccess, errorMessage]);
 
   // Form State
