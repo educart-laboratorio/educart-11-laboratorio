@@ -119,3 +119,48 @@ NEGADOS="$(docker exec "$CTR" psql -U postgres -d postgres -XAtq -v ON_ERROR_STO
  -c "SET ROLE authenticated; SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222'; SELECT count(*) FROM public.pessoas; SELECT count(*) FROM public.equipe_papeis;")"
 test "$NEGADOS" = "$(printf '0\n0')"
 echo "TC04: JWT sintetico autorizado 1/1; outra identidade 0/0. Sem conexao a bases reais."
+
+# TC-01: a auditoria atual de PROD demonstrou que o INSERT anon de status
+# nao e restrito. Reproduzir e testar a proposta historica ROLLBACK-ONLY
+# apenas neste banco sintetico, sem editar o arquivo de revisao.
+POLICY="$REPO_ROOT/supabase/security-review/EDUCART_11_PROD_CORRECAO_POLITICA_INSCRICOES_ENSAIO_20261111.sql"
+test -s "$POLICY"
+docker exec -i "$CTR" psql -U postgres -d postgres -Xq -v ON_ERROR_STOP=1 <<'SQLBEFORE'
+ALTER TABLE public.inscricoes_oficina ENABLE ROW LEVEL SECURITY;
+GRANT INSERT ON public.inscricoes_oficina TO anon, authenticated;
+CREATE POLICY "Permitir envio publico de fichas de inscricao"
+ ON public.inscricoes_oficina FOR INSERT TO anon, authenticated
+ WITH CHECK (data_nascimento <= (((now() AT TIME ZONE 'America/Bahia')::date - '14 years'::interval)::date));
+SQLBEFORE
+# Vulnerabilidade reproduzida antes da correcao: aceita INSERT direto
+# com status matriculado. Transaction sempre descartada.
+docker exec "$CTR" psql -U postgres -d postgres -Xq -v ON_ERROR_STOP=1 \
+ -c "BEGIN; SET ROLE anon; INSERT INTO public.inscricoes_oficina(data_nascimento,status) VALUES ('2000-01-01','matriculado'); ROLLBACK;" \
+ >"$LAB/antes-policy.log" 2>&1 || { echo "::error::Divergencia: negativo anterior nao reproduzido"; tail -n 10 "$LAB/antes-policy.log"; exit 1; }
+echo "TC01: falha de status publico reproduzida no banco descartavel."
+
+# Somente no banco descartavel: substituir o ROLLBACK final por COMMIT
+# na COPIA EM MEMORIA do script, para testar a policy com roles reais.
+node - "$POLICY" <<'NODE' >"$LAB/policy-teste.sql"
+const fs=require('node:fs'),assert=require('node:assert/strict');
+const source=fs.readFileSync(process.argv[2],'utf8');
+assert.match(source,/\\nROLLBACK;\\s*$/);
+process.stdout.write(source.replace(/\\nROLLBACK;\\s*$/,'\\nCOMMIT;\\n'));
+NODE
+docker exec -i "$CTR" psql -U postgres -d postgres -Xq -v ON_ERROR_STOP=1 \
+  <"$LAB/policy-teste.sql" >"$LAB/policy-positivo.log" 2>&1 || {
+  echo "::error::Correcao de policy nao passou em banco sintetico"; tail -n 20 "$LAB/policy-positivo.log"; exit 1;
+}
+if docker exec "$CTR" psql -U postgres -d postgres -Xq -v ON_ERROR_STOP=1 \
+ -c "SET ROLE anon; INSERT INTO public.inscricoes_oficina(data_nascimento,status) VALUES ('2000-01-01','matriculado');" \
+ >"$LAB/policy-negativo.log" 2>&1; then
+  echo "::error::Anon ainda consegue simular matricula no INSERT"; exit 1
+fi
+grep -Fq 'row-level security policy' "$LAB/policy-negativo.log" || {
+  echo "::error::Negativo falhou por erro diferente de RLS"; tail -n 10 "$LAB/policy-negativo.log"; exit 1;
+}
+docker exec "$CTR" psql -U postgres -d postgres -Xq -v ON_ERROR_STOP=1 \
+ -c "BEGIN; SET ROLE anon; INSERT INTO public.inscricoes_oficina(data_nascimento,status) VALUES ('2000-01-01','pendente_confirmacao'); ROLLBACK;" \
+ >/dev/null
+test "$(docker exec "$CTR" psql -U postgres -d postgres -XAtq -c 'SELECT count(*) FROM public.inscricoes_oficina')" = "1"
+echo "TC01: correcao RLS testada: matriculado negado, pendente permitido, legado preservado. Apenas PostgreSQL descartavel."
