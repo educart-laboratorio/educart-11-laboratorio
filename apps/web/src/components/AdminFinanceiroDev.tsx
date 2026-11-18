@@ -27,6 +27,6 @@ export function AdminFinanceiroDev({supabase,podeGerir,onRascunhoPendenteChange}
     </nav>
     {frente==='principal' && <AdminFinanceiroEssencialR11Dev supabase={supabase} podeGerir={podeGerir}
       onRascunhoPendenteChange={aoRascunho}/>}
-    {frente==='extras' && <AdminComercialFinanceiroExtras/>}
+    {frente==='extras' && <AdminComercialFinanceiroExtras supabase={supabase}/>}
   </>;
 }
