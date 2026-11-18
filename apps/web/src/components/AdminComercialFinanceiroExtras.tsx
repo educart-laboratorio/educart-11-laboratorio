@@ -1,6 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import {
   FORMATOS_EXTRAS, MAX_PARTICIPANTES_CENARIO,
   moedaBRL, simularInvestimentoExtra, type CodigoFormatoExtra,
@@ -13,8 +14,27 @@ function interpretarQuantidade(texto: string): number | null {
   return valor <= MAX_PARTICIPANTES_CENARIO ? valor : null;
 }
 
-/** Planejamento comercial, totalmente local e sem efeitos no banco de dados. */
-export function AdminComercialFinanceiroExtras() {
+/** Planejamento comercial e leitura agregada de propostas docentes, sem escritas no banco. */
+export function AdminComercialFinanceiroExtras({supabase}:{supabase:SupabaseClient}) {
+  const [propostas,setPropostas] = useState<{total:number;pendentes:number}|null>(null);
+  const [carregandoPropostas,setCarregandoPropostas] = useState(false);
+  const [erroPropostas,setErroPropostas] = useState('');
+  const carregarPropostas = useCallback(async()=>{
+    setCarregandoPropostas(true);setErroPropostas('');
+    try {
+      const [todas,pendentes] = await Promise.all([
+        supabase.from('educart_propostas_solucoes_docentes_dev').select('id',{count:'exact',head:true}),
+        supabase.from('educart_propostas_solucoes_docentes_dev').select('id',{count:'exact',head:true})
+          .eq('estado','pendente_analise'),
+      ]);
+      if(todas.error||pendentes.error||todas.count===null||pendentes.count===null
+        ||pendentes.count>todas.count)throw new Error('Consulta indisponível ou incompleta');
+      setPropostas({total:todas.count,pendentes:pendentes.count});
+    } catch {
+      setPropostas(null);setErroPropostas('Não foi possível consultar as propostas docentes autorizadas no DEV.');
+    } finally {setCarregandoPropostas(false);}
+  },[supabase]);
+  useEffect(()=>{void carregarPropostas();},[carregarPropostas]);
   const [codigo, setCodigo] = useState<CodigoFormatoExtra>('F01');
   const [externos, setExternos] = useState('0');
   const [atores, setAtores] = useState('0');
@@ -37,6 +57,24 @@ export function AdminComercialFinanceiroExtras() {
       Fonte comercial: DC-093, 16/11/2026. Os formatos F01–F06 não são turmas abertas.
       Nenhum valor apresentado significa receita recebida, contrato aprovado ou vaga garantida.
     </p>
+    <div aria-label="Prospecção docente no DEV">
+      <div className="admin-r11-linha">
+        <h3>Prospecção docente · Dados reais do DEV</h3>
+        <button className="admin-btn admin-btn-secondary" type="button"
+          onClick={()=>void carregarPropostas()} disabled={carregandoPropostas}>↻ Atualizar</button>
+      </div>
+      {carregandoPropostas&&<p role="status">Consultando propostas docentes...</p>}
+      {erroPropostas&&<p role="alert">{erroPropostas}</p>}
+      {propostas&&!carregandoPropostas&&<div className="admin-r11-resumo" role="group"
+        aria-label="Propostas docentes existentes no DEV">
+        <div><small>Propostas docentes registradas</small><strong>{propostas.total}</strong></div>
+        <div><small>Aguardando análise</small><strong>{propostas.pendentes}</strong></div>
+      </div>}
+      <p className="admin-academico-note">
+        Propostas de professores não são manifestações de interesse de estudantes.
+        Estes contadores não representam inscrições, matrículas, ofertas abertas ou faturamento.
+      </p>
+    </div>
     <div className="admin-r11-linha"><h3>1. Escolha o formato</h3></div>
     <div className="admin-r11-lista" role="group" aria-label="Formatos comerciais F01 a F06">
       {FORMATOS_EXTRAS.map(formato => <button
