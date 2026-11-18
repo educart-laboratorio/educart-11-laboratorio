@@ -25,10 +25,8 @@ export function AdminFinanceiroDev({supabase,podeGerir,onRascunhoPendenteChange}
       <div className="admin-r11-aba"><button type="button" className={frente==='extras'?'active':''}
         aria-current={frente==='extras'?'page':undefined} onClick={()=>mudarFrente('extras')}>Formações Extras · Planejamento</button></div>
     </nav>
-    <div hidden={frente!=='principal'}>
-      <AdminFinanceiroEssencialR11Dev supabase={supabase} podeGerir={podeGerir}
-        onRascunhoPendenteChange={aoRascunho}/>
-    </div>
+    {frente==='principal' && <AdminFinanceiroEssencialR11Dev supabase={supabase} podeGerir={podeGerir}
+      onRascunhoPendenteChange={aoRascunho}/>}
     {frente==='extras' && <AdminComercialFinanceiroExtras/>}
   </>;
 }
