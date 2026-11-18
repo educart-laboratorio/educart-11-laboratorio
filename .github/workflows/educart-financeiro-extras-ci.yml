@@ -1,0 +1,56 @@
+name: "EducART Financeiro | Formações Extras CI sem deploy"
+on:
+  push:
+    branches:
+      - financeiro-formacoes-extras-dc093-20261118
+    paths:
+      - "apps/web/src/components/AdminFinanceiroDev.tsx"
+      - "apps/web/src/components/AdminComercialFinanceiroExtras.tsx"
+      - "apps/web/src/lib/comercial/**"
+      - "apps/web/scripts/testar-financeiro-formacoes-extras.mjs"
+      - ".github/workflows/educart-financeiro-extras-ci.yml"
+  pull_request:
+    branches:
+      - secretaria-11-candidate-online-20261115
+    paths:
+      - "apps/web/src/components/AdminFinanceiroDev.tsx"
+      - "apps/web/src/components/AdminComercialFinanceiroExtras.tsx"
+      - "apps/web/src/lib/comercial/**"
+      - "apps/web/scripts/testar-financeiro-formacoes-extras.mjs"
+      - ".github/workflows/educart-financeiro-extras-ci.yml"
+permissions:
+  contents: read
+concurrency:
+  group: financeiro-extras-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+jobs:
+  validar-sem-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_ci_placeholder
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Dependências imutáveis sem scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verificar modelo comercial e isolamento
+        run: node --experimental-strip-types scripts/testar-financeiro-formacoes-extras.mjs
+      - name: Verificar regressão do Financeiro R11
+        run: |
+          node scripts/testar-r11-financeiro-essencial.mjs
+          node --experimental-strip-types scripts/testar-r11-modelo-financeiro-24.mjs
+      - name: Verificar TypeScript
+        run: npx tsc --noEmit
+      - name: Validar compilação local, sem publicação
+        run: npm run build:vinext
