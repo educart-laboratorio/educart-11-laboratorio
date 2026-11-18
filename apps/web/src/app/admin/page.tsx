@@ -11,6 +11,8 @@ import { AdminRegistroModalDev } from '@/components/AdminRegistroModalDev';
 import { AdminGestaoInscricoesDev } from '@/components/AdminGestaoInscricoesDev';
 import {AdminIndicadoresInscricoesDev} from '@/components/AdminIndicadoresInscricoesDev';
 import { AdminFinanceiroDev } from '@/components/AdminFinanceiroDev';
+import { AdminHouston95Navegacao } from '@/components/AdminHouston95Navegacao';
+import { AdminHouston95VisaoDev } from '@/components/AdminHouston95VisaoDev';
 import { AdminClientesDev } from '@/components/AdminClientesDev';
 import { AdminMatriculaUnificadaDev } from '@/components/AdminMatriculaUnificadaDev';
 
@@ -42,26 +44,6 @@ export interface Inscricao {
 
 type SecaoAcademica='visao'|'turmas'|'estudantes'|'docentes'|'agenda'|'frequencia';
 type DestinoAdmin=SecaoAcademica|'ingressos'|'inscricoes'|'secretaria'|'financeiro'|'clientes';
-type GrupoAdmin='visao'|'pessoas'|'formacoes'|'financeiro';
-const GRUPOS:{id:GrupoAdmin;nome:string;descricao:string}[]=[
-{id:'visao',nome:'Visão geral',descricao:'Indicadores e aulas'},
-{id:'pessoas',nome:'Pessoas e matrículas',descricao:'Inscrições e vínculos'},
-{id:'formacoes',nome:'Formações e aulas',descricao:'Turmas e frequência'},
-{id:'financeiro',nome:'Financeiro',descricao:'Pix e mensalidades'},
-];
-const OPCOES_PESSOAS:{id:DestinoAdmin;nome:string}[]=[
-{id:'ingressos',nome:'Matrículas e mensalidades'},
-{id:'clientes',nome:'Clientes históricos'},
-{id:'inscricoes',nome:'Gestão de inscrições'}, 
-{id:'secretaria',nome:'Secretaria / Coordenação'},
-{id:'estudantes',nome:'Estudantes e vínculos'},
-];
-const OPCOES_FORMACOES:{id:DestinoAdmin;nome:string}[]=[
-{id:'turmas',nome:'Formações e turmas'},
-{id:'docentes',nome:'Docentes'},
-{id:'agenda',nome:'Agenda'},
-{id:'frequencia',nome:'Frequência'},
-];
 export default function AdminDashboardPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
@@ -91,9 +73,6 @@ export default function AdminDashboardPage() {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<string | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const destinoAtivo:DestinoAdmin=areaAtiva==='academico'?secaoAcademica:areaAtiva;
-  const grupoAtivo:GrupoAdmin=areaAtiva==='financeiro'?'financeiro':
-    areaAtiva==='ingressos'||areaAtiva==='inscricoes'||areaAtiva==='secretaria'||areaAtiva==='clientes'||(areaAtiva==='academico'&&secaoAcademica==='estudantes')?'pessoas': 
-    areaAtiva==='academico'&&secaoAcademica==='visao'?'visao':'formacoes';
   const aplicarDestino=(destino:DestinoAdmin)=>{
     // Sem serviços R12/R14/Pix homologados, somente a secretaria legada e o acadêmico essencial.
     if(!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && (destino==='financeiro'||destino==='clientes'))return;
@@ -485,35 +464,24 @@ export default function AdminDashboardPage() {
             <span>Este painel é reservado ao único operador administrativo autorizado. Secretaria, Coordenação, Acadêmico, Gestão de inscrições e Financeiro são áreas do mesmo portal, não usuários diferentes. As ações são registradas na conta autenticada; mantenha suas credenciais pessoais e documente conferências sensíveis.</span>
           </div>
         )}
-        {/* A EducART 1.0 lidera esta interface; o protótipo do secretário é apenas fonte funcional. */}
-        <nav className="admin-area-selector" aria-label="Quatro destinos do Painel Central EducART">
-          {GRUPOS.map(item=><div key={item.id} className="admin-area-option">
-            <button type="button" className={grupoAtivo===item.id?'active':''}
-              aria-current={grupoAtivo===item.id?'page':undefined}
-              disabled={!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id==='financeiro'}
-               onClick={()=>{if(grupoAtivo!==item.id)solicitarDestino(item.id==='visao'?'visao':item.id==='pessoas'?(ACOES_ACADEMICAS_EXCLUSIVAS_DEV?'ingressos':'secretaria'):item.id==='formacoes'?'turmas':'financeiro');}}>
-              <span>{item.nome}</span><small>{!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id==='financeiro'?'Disponível após homologação financeira':item.descricao}</small>
-            </button>
-            <AdminAjuda titulo={item.nome} descricao={item.descricao}/>
-          </div>)}
-        </nav>
-        {(grupoAtivo==='pessoas'||grupoAtivo==='formacoes')&&
-          <nav className="admin-area-selector admin-subarea-selector"
-            aria-label={grupoAtivo==='pessoas'?'Opções de Pessoas e matrículas':'Opções de Formações e aulas'}>
-            {(grupoAtivo==='pessoas'?OPCOES_PESSOAS:OPCOES_FORMACOES).map(item=>
-              <div key={item.id} className="admin-area-option">
-                <button type="button" className={destinoAtivo===item.id?'active':''}
-                  aria-current={destinoAtivo===item.id?'page':undefined}
-                  disabled={!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id==='inscricoes'}
-                   onClick={()=>solicitarDestino(item.id)}><span>{item.nome}{!ACOES_ACADEMICAS_EXCLUSIVAS_DEV && item.id==='inscricoes'?' · em preparação':''}</span></button>
-              </div>)}
-          </nav>}
+        {/* Houston V9.5 PALCO-02 define a arquitetura de navegação.
+            Os módulos operacionais preexistentes permanecem sob suas próprias permissões. */}
+        <div className="houston95-dashboard">
+          <AdminHouston95Navegacao
+            ativo={destinoAtivo==='ingressos'||destinoAtivo==='clientes'?'secretaria':destinoAtivo}
+            habilitarFinanceiro={ACOES_ACADEMICAS_EXCLUSIVAS_DEV}
+            habilitarGestaoInscricoes={ACOES_ACADEMICAS_EXCLUSIVAS_DEV}
+            navegar={solicitarDestino}
+          />
+          <main className="houston95-main">
         {areaAtiva === 'clientes' && ACOES_ACADEMICAS_EXCLUSIVAS_DEV ? (
           <AdminClientesDev supabase={supabase} podeConsultar={podeMatricular} podeGerirVinculos={podeAlterarStatus} />
         ) : areaAtiva === 'academico' ? (
-          <AdminRotinaAcademicaLab supabase={supabase} podeGerir={podeAlterarStatus}
-            secao={secaoAcademica} onSolicitarSecao={solicitarDestino}
-            onRascunhoPendenteChange={setRascunhoAcademicoPendente} />
+          secaoAcademica==='visao'
+            ? <AdminHouston95VisaoDev supabase={supabase} navegar={solicitarDestino}/>
+            : <AdminRotinaAcademicaLab supabase={supabase} podeGerir={podeAlterarStatus}
+                secao={secaoAcademica} onSolicitarSecao={solicitarDestino}
+                onRascunhoPendenteChange={setRascunhoAcademicoPendente} />
         ) : areaAtiva === 'ingressos' && ACOES_ACADEMICAS_EXCLUSIVAS_DEV ? (
           <AdminIngressosSimplesDev supabase={supabase} podeGerir={podeAlterarStatus}
             onAbrirDocentes={()=>solicitarDestino('docentes')}
@@ -749,6 +717,8 @@ export default function AdminDashboardPage() {
             </>
           </>
         )}
+          </main>
+        </div>
       </div>
 
       {/* Rodapé reservado para conferências eventuais, depois de toda a lista operacional. */}

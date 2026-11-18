@@ -1,0 +1,98 @@
+/* Secretaria EducART: experiência baseada na Houston V9.5 PALCO-02.
+   Identidade e estrutura, sem importar os scripts ou dados demonstrativos da maquete. */
+.houston95-dashboard {
+  display:grid;
+  grid-template-columns:minmax(205px,245px) minmax(0,1fr);
+  border:1px solid #42546e;
+  border-radius:18px;
+  background:#10192a;
+  overflow:hidden;
+  min-height:560px;
+  margin-top:16px;
+  color:#f4f5f9;
+}
+.houston95-sidebar {
+  min-width:0;
+  padding:22px 13px;
+  background:linear-gradient(160deg,#0a1220,#0d192d);
+  border-right:1px solid #394963;
+}
+.houston95-sidehead {
+  display:flex;flex-direction:column;gap:10px;
+  padding:2px 8px 20px;
+  border-bottom:1px solid #ffffff20;
+}
+.houston95-sidehead small {
+  font-size:10px;letter-spacing:.1em;color:#aabbd2;
+}
+.houston95-sidegrid {display:flex;flex-direction:column;gap:5px;margin-top:6px;}
+.houston95-sidegroup {display:flex;flex-direction:column;gap:3px;}
+.houston95-sidelabel {
+  color:#91a3be;font-size:10px;text-transform:uppercase;
+  letter-spacing:1.5px;font-weight:900;padding:12px 12px 5px;
+}
+.houston95-sidebtn {
+  width:100%;display:flex;align-items:center;gap:9px;
+  text-align:left;border:1px solid transparent;
+  background:transparent;border-radius:9px;
+  color:#ccd7e7;padding:11px 12px;
+  font-size:12px;font-weight:700;cursor:pointer;
+}
+.houston95-sidebtn::before {content:'◇';color:#b7c4d9;}
+.houston95-sidebtn.active {color:#f2d39c;background:#2a2636;border-color:#9377507c;}
+.houston95-sidebtn.active::before {content:'◆';color:#e9be76;}
+.houston95-sidebtn:hover:not(:disabled){background:#26354a;}
+.houston95-sidebtn:disabled{opacity:.56;cursor:not-allowed;}
+.houston95-sidebtn small{font-size:9px;font-weight:500;}
+.houston95-sidebtn:focus-visible,
+.houston95-refresh:focus-visible,
+.houston95-actions button:focus-visible {outline:3px solid #f4ca81;outline-offset:3px;}
+.houston95-sidefoot {font-size:10px;line-height:1.55;color:#9eafc7;margin:25px 9px 0;}
+.houston95-main {min-width:0;padding:clamp(14px,2.4vw,29px);}
+.houston95-overview {min-width:0;color:#f4f5f9;}
+.houston95-overview-head{display:flex;gap:18px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;}
+.houston95-kicker {font-size:10px;font-weight:800;letter-spacing:1.3px;color:#e6bd7f;}
+.houston95-overview-head h1{font:700 clamp(28px,3vw,39px)/1.13 Georgia,serif;margin:9px 0;color:#f4f5f9;}
+.houston95-overview-head h1 em{color:#e2ba7e;font-style:italic;}
+.houston95-overview-head p{font-size:13px;color:#c0cada;line-height:1.6;max-width:720px;}
+.houston95-refresh {
+  border:1px solid #9b805c;background:#262236;color:#f7d8a3;
+  padding:10px 13px;border-radius:9px;cursor:pointer;font-weight:650;font-size:12px;
+}
+.houston95-refresh:disabled{opacity:.55;cursor:wait;}
+.houston95-kpis {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:24px 0 20px;}
+.houston95-kpi {border:1px solid #3d536f;background:#18243a;border-radius:11px;padding:17px;min-width:0;}
+.houston95-kpi span{font-size:11px;color:#b7c5d9;display:block;}
+.houston95-kpi strong{display:block;font-size:30px;color:#f8e2bd;line-height:1.35;margin:6px 0;}
+.houston95-kpi small{font-size:10px;color:#afbad0;}
+.houston95-workspace {border:1px solid #46536b;border-radius:12px;background:#111928;padding:18px;}
+.houston95-workspace-title {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.houston95-workspace-title h2{font:700 22px Georgia,serif;margin:0;}
+.houston95-workspace-title span{font-size:10px;color:#c4b18e;font-weight:800;letter-spacing:.4px;}
+.houston95-workspace>p{font-size:12px;color:#c0cada;}
+.houston95-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-top:16px;}
+.houston95-actions button{
+  border:1px solid #435876;background:#192a42;border-radius:10px;
+  padding:16px;color:#f0e6d6;display:flex;align-items:center;
+  justify-content:space-between;text-align:left;font-size:13px;
+  font-weight:750;cursor:pointer;gap:8px;
+}
+.houston95-actions button:hover{border-color:#dcb77d;background:#23334a;}
+.houston95-actions button span{font-size:19px;color:#e2ba7e;}
+.houston95-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;}
+.houston95-pills span{border:1px solid #59627d;border-radius:30px;padding:8px 11px;font-size:11px;color:#d5dceb;background:#15233a;}
+.houston95-overview-foot,.houston95-note{color:#c0cada;font-size:11px;line-height:1.6;margin-top:20px;}
+@media(max-width:900px){.houston95-dashboard{grid-template-columns:195px minmax(0,1fr);}}
+@media(max-width:690px){
+  .houston95-dashboard{grid-template-columns:minmax(0,1fr);}
+  .houston95-sidebar{border-right:0;border-bottom:1px solid #394963;padding:11px;}
+  .houston95-sidehead{padding:6px 4px 10px;gap:4px;}
+  .houston95-sidegrid{flex-direction:row;overflow-x:auto;gap:5px;padding:4px 0 9px;}
+  .houston95-sidegroup{display:flex;flex-direction:row;flex:none;gap:5px;}
+  .houston95-sidelabel,.houston95-sidefoot{display:none;}
+  .houston95-sidebtn{white-space:nowrap;width:auto;flex:none;padding:10px 12px;}
+  .houston95-main{padding:15px;}
+  .houston95-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .houston95-actions{grid-template-columns:minmax(0,1fr);}
+}
+@media(max-width:380px){.houston95-kpis{grid-template-columns:minmax(0,1fr);}}

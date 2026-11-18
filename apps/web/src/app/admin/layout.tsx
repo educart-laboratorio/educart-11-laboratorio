@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './admin.css';
+import './houston95.css';
 
 export const metadata: Metadata = {
   title: 'Painel Administrativo | EducART',
