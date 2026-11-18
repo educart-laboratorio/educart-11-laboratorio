@@ -27,7 +27,11 @@ const front=readFileSync('src/components/AdminComercialFinanceiroExtras.tsx','ut
 const parent=readFileSync('src/components/AdminFinanceiroDev.tsx','utf8');
 for(const term of ['DC-093','Potencial bruto hipotético','Não são receitas','Formações em planejamento','onChange','aria-pressed'])
   assert(front.includes(term),'Interface incompleta: '+term);
-assert(!/\.rpc\(|\.from\(|fetch\(/.test(front),'Simulador não pode criar operações ou buscar dados privados');
+assert(!/\.rpc\(|\.insert\(|\.update\(|\.delete\(|\.upsert\(|fetch\(/.test(front),'Painel de extras não pode gravar operações financeiras');
+assert(front.includes("head:true") && front.includes("pendente_analise"),'Propostas docentes devem ser contadas por leitura agregada');
+assert(front.includes("não são manifestações de interesse de estudantes"),'Propostas docentes não são leads estudantis');
+assert(front.includes("Não foi possível consultar"),'Falha de leitura não pode virar zero fictício');
+assert(parent.includes("supabase={supabase}"),'Fonte de dados do painel deve ser o cliente autorizado');
 assert(parent.includes('AdminFinanceiroEssencialR11Dev') && parent.includes('AdminComercialFinanceiroExtras'));
 assert(parent.includes('rascunhoPendente'),'Mudança de frente deve proteger rascunhos não salvos');
 console.log('PASS: 6 formatos DC-093, simulação hipotética, validações, isolamento e integração visual.');
