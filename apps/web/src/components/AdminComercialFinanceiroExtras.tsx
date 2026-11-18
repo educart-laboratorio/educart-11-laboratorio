@@ -112,9 +112,10 @@ export function AdminComercialFinanceiroExtras({supabase}:{supabase:SupabaseClie
     <h3>3. Condições antes de operar</h3>
     <p className="admin-page-desc">
       O benefício Ator EducART exige matrícula regular no curso principal de dois anos e verificação antes da contratação.
-      Formações em planejamento captam interesse gratuitamente. Somente uma formação realmente aprovada, com docente,
-      ementa, condições e inscrições autorizadas, pode avançar para contratação. Este módulo não acessa o banco, não
-      concede descontos e não interfere nas 24 mensalidades do R11.
+      Formações adicionais em planejamento não estão abertas para inscrição ou contratação. Somente uma formação
+      aprovada, com docente, ementa e condições verificadas, poderá avançar para a etapa comercial autorizada.
+      Este simulador não cria cadastros, não recolhe manifestações de interesse, não registra receitas, não concede
+      descontos e não interfere nas 24 mensalidades do R11.
     </p>
     <p className="admin-academico-footer">Simulador de planejamento · DC-093 · sem persistência ou cobrança</p>
   </section>;
