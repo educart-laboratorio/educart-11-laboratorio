@@ -29,6 +29,8 @@ for(const term of ['DC-093','Potencial bruto hipotético','Não são receitas','
   assert(front.includes(term),'Interface incompleta: '+term);
 assert(!/\.rpc\(|\.insert\(|\.update\(|\.delete\(|\.upsert\(|fetch\(/.test(front),'Painel de extras não pode gravar operações financeiras');
 assert(front.includes("head:true") && front.includes("pendente_analise"),'Propostas docentes devem ser contadas por leitura agregada');
+assert(!front.includes('Formações em planejamento captam interesse gratuitamente.'),'Não ressuscitar captação de interesse legada na Houston');
+assert(front.includes('não estão abertas para inscrição ou contratação'),'Candidata não anuncia ofertas abertas');
 assert(front.includes("não são manifestações de interesse de estudantes"),'Propostas docentes não são leads estudantis');
 assert(front.includes("Não foi possível consultar"),'Falha de leitura não pode virar zero fictício');
 assert(parent.includes("supabase={supabase}"),'Fonte de dados do painel deve ser o cliente autorizado');
