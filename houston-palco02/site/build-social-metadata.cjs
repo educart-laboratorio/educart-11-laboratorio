@@ -15,10 +15,11 @@ const body=html.slice(html.search(/<body\b/i));let image=null;
 if(/^artistas\/perfil\/[^/]+\/index\.html$/.test(rel)){const blocks=body.match(/<(?:div|span|figure)\b[^>]*class=["'][^"']*\b(?:portrait|avatar|profile-avatar|profile-photo)\b[^"']*["'][^>]*>\s*<img\b[^>]*>/gi)||[];for(const b of blocks){image=usable(attr(tags(b)[0]||'','src'),url);if(image)break}if(image)portraits++;}
 else if(/^espetaculos\/[^/]+\/index\.html$/.test(rel)){const blocks=body.match(/<(?:section|div)\b[^>]*class=["'][^"']*\b(?:hero|community-cover|video)\b[^"']*["'][^>]*>[\s\S]{0,500}?<img\b[^>]*>/gi)||[];image=usable(value('og:image'),url);for(const b of blocks){if(image)break;image=usable(attr(tags(b)[0]||'','src'),url)}}
 else if(/\/(?:galeria|acervo)\/index\.html$/.test(rel)){for(const tag of tags(body)){image=usable(attr(tag,'src'),url);if(image)break}}
+if(rel==='espetaculos/o-homem-ajuda-o-homem/index.html')image=usable('/espetaculos/o-homem-ajuda-o-homem/media/cena/DAN_2599.webp',url)||image;
 if(!image){image=origin+fallback;institutional++}
 const pairs={'og:type':'website','og:locale':'pt_BR','og:site_name':'EducART','og:title':title,'og:description':desc,'og:url':url,'og:image':image};
 let h=head.replace(/<meta\b[^>]*>/gi,m=>{const k=(attr(m,'property')||attr(m,'name')||'').toLowerCase();return k.startsWith('og:')||k==='twitter:card'||k==='twitter:title'||k==='twitter:description'||k==='twitter:image'?'':m});
 h=h.replace(/<\/head>/i,Object.entries(pairs).map(([k,v])=>'<meta property="'+k+'" content="'+esc(v)+'">').join('\n')+'\n<meta name="twitter:card" content="summary_large_image">\n</head>');
-const out=html.replace(head,()=>h);if(out.slice(out.search(/<body\b/i))!==body)throw Error('Body changed '+rel);fs.writeFileSync(f,out,'utf8');count++;
+const out=html.replace(head,()=>h);if(out.slice(out.search(/<body\b/i))!==body)throw Error('Body changed '+rel);const publicHtml=out.replace(/<div class="proof">\s*Ficha editorial\s*·\s*NÃO PUBLICADA\s*<\/div>/gi,'');fs.writeFileSync(f,publicHtml,'utf8');count++;
 }
 walk(root);console.log('Houston social metadata: '+count+' pages, '+portraits+' artist portraits, '+institutional+' institutional covers');if(count<70)throw Error('Incomplete Houston package');
