@@ -1,0 +1,99 @@
+/* EDUCART V19: adaptação de layout, referenciada à imagem de três destinos.
+   A estilização enviada pela Direção permanece integral e separada em educart-design-system.css. */
+body{background-color:var(--bg-dark-theater)!important;background-image:var(--bg-gradient-theater)!important;color:#fff}
+/* ESCOLA — respeitar a entrada da V18, modificar só #portalView */
+#portalView{background:var(--bg-gradient-theater)}
+#portalView .experienceBar{background:#050a14f2!important;backdrop-filter:blur(8px);border-bottom:1px solid #ffffff1c;position:sticky;top:0;z-index:60}
+#portalView .experienceInner{max-width:1100px}
+#portalView .rebornStage{overflow:hidden;border-radius:0;isolation:isolate}
+#portalView .rebornStageTitleBlock h1{font-family:var(--font-serif)!important;font-weight:700!important;letter-spacing:-.045em!important;line-height:1.02!important;text-shadow:0 2px 15px #000a}
+#portalView .rebornStageTitleBlock h1 em{color:var(--color-gold-amber)!important;font-style:normal!important}
+#portalView .rebornStageKicker,#portalView .catalogLandingKicker{color:#e9af63!important;letter-spacing:1.7px!important;font-size:11px!important;font-weight:800!important}
+#portalView .rebornStageContent>p{border-left:4px solid #dc2626;padding-left:16px!important;max-width:450px!important;background:linear-gradient(90deg,#03060e4d,transparent)}
+#portalView .rebornStageCTA--red{background:linear-gradient(135deg,#ef4444,#dc2626)!important;border-radius:13px!important;box-shadow:0 4px 16px #dc26264d,inset 0 1px 1px #ffffff48!important}
+#portalView .rebornStageCTA--blue{background:#111e34a8!important;border:1px solid #6a7b95!important;border-radius:13px!important;backdrop-filter:blur(12px)}
+#portalView .catalogLanding{background:radial-gradient(ellipse at 90% 0%,#5b1e2945,transparent 60%),#080d18!important}
+#portalView .catalogLandingHeader h2{font-family:var(--font-serif)!important;font-size:clamp(29px,4.4vw,42px)!important}
+/* ARTISTAS — preservar catálogo, perfis, player e paginador */
+#educartArtistsView .ar-header{position:sticky;top:0;z-index:80;background:#040915f2!important;border-bottom:1px solid #ffffff20;backdrop-filter:blur(8px)}
+#educartArtistsView .ar-headinner{min-height:72px!important;max-width:1100px;display:flex;justify-content:space-between;gap:10px;flex-wrap:nowrap!important}
+#educartArtistsView .ar-shell{max-width:1100px}
+#educartArtistsView .ar-hnav{display:flex;flex-direction:column;align-items:stretch!important;gap:4px!important}
+#educartArtistsView .ar-hnav button{text-align:left;padding:9px!important;font-size:12px!important;background:#121c2c!important;border:1px solid #ffffff23!important;border-radius:7px!important}
+#educartArtistsView .educart-help-panel{min-width:185px}
+#educartArtistsView .ar-hero{position:relative;isolation:isolate;min-height:325px;box-sizing:border-box;padding:90px 22px 23px!important;overflow:hidden;background:#090d17!important;display:block!important;border-radius:0!important;margin:0 -20px 0!important}
+#educartArtistsView .ar-hero::before{content:"";position:absolute;inset:0;background:url('artistas/assets/educart/festival-2025/mostra-01/05.webp') center 38% / cover no-repeat;z-index:-2}
+#educartArtistsView .ar-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#050a14 0%,#050a14be 35%,#050a1438 75%,#060a10a8 100%);z-index:-1}
+#educartArtistsView .ar-hero>div:first-child{position:relative;z-index:1;max-width:840px}
+#educartArtistsView .ar-hero .ar-eyebrow{font:800 11px/1.25 var(--font-sans)!important;letter-spacing:2px!important;text-transform:uppercase;color:#efb76b!important;margin-bottom:8px}
+#educartArtistsView .ar-hero h1{font-family:var(--font-serif)!important;font-weight:700!important;line-height:1.02!important;font-size:clamp(34px,5.6vw,58px)!important;max-width:550px;margin:4px 0 10px!important;text-shadow:0 3px 18px #000b}
+#educartArtistsView .ar-hero h1 .ar-emphasis{color:#eab769!important}
+#educartArtistsView .ar-hero .ar-lead{font-size:13px!important;line-height:1.45!important;max-width:580px!important;color:#c7cfda!important;text-shadow:0 1px 6px #000b}
+#educartArtistsView .ar-mobile-playlist.btn-primary-coral{display:inline-flex!important;width:auto!important;margin:15px 0 0!important;padding:13px 18px!important;min-height:0!important;font-size:13px!important;gap:6px!important;background:linear-gradient(135deg,#ed7055,#dc2626)!important;border:1px solid #ffffff40!important;border-radius:11px!important;text-decoration:none!important;box-shadow:0 6px 20px #d42a2552!important}
+#educartArtistsView .ar-hero-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px!important}
+#educartArtistsView .ar-hero-meta span{border-radius:999px!important;border:1px solid #ffffff30!important;background:#172338b8!important;color:#c2cad6!important;padding:6px 10px!important;display:inline-block!important;font-size:11px!important}
+#educartArtistsView .ar-list{padding:13px 0 30px!important}
+#educartArtistsView .ar-list h2{font-family:var(--font-sans)!important;font-size:22px!important;font-weight:800!important;margin-bottom:8px!important}
+#educartArtistsView .ar-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+#educartArtistsView .ar-card{border:1px solid #ffffff25!important;border-radius:12px!important;background:#141e31!important}
+#educartArtistsView .ar-card .ar-portrait{height:clamp(110px,16vw,160px)!important}
+#educartArtistsView .ar-cardbody{background:#121e31!important}
+#educartArtistsView .ar-cardname{font-size:13px!important}
+@media(max-width:720px){#educartArtistsView .ar-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+/* ESPETÁCULOS — quatro mostras, player e fotos permanecem reais */
+body:has(.showpick) .header{background:#050a14f3;border-bottom:1px solid #ffffff25;position:sticky;top:0;z-index:80;padding:0}
+body:has(.showpick) .header .bar{min-height:72px;max-width:1100px}
+body:has(.showpick) .header-nav{display:flex;flex-direction:column;align-items:stretch;gap:5px}
+body:has(.showpick) .header-nav a{padding:7px!important;text-decoration:none;color:#e4edf8!important}
+body:has(.showpick) .intro{display:flex;align-items:flex-end;min-height:270px;padding:100px 24px 22px;box-sizing:border-box;position:relative;isolation:isolate;margin:0 -20px 14px;background:#03060e;border-radius:0;overflow:hidden}
+body:has(.showpick) .intro::before{content:"";position:absolute;inset:0;background:url('artistas/assets/educart/festival-2025/mostra-01/03.webp') center 30% / cover no-repeat;z-index:-2}
+body:has(.showpick) .intro::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#03060e 0%,#03060ec4 48%,#03060e5e 78%,#03060ea3 100%);z-index:-1}
+body:has(.showpick) .intro h1{font:700 clamp(38px,5vw,58px)/1.03 var(--font-serif);letter-spacing:-.04em;margin:7px 0!important;text-shadow:0 3px 18px #000c}
+body:has(.showpick) .intro h1 em{color:#e7b366;font-style:normal}
+body:has(.showpick) .intro .capsule{display:none}
+body:has(.showpick) .intro p{color:#c8d0db;font-size:13px;max-width:520px}
+body:has(.showpick) .eyebrow{color:#efb76b;font-size:10px;letter-spacing:1.5px;font-weight:800}
+body:has(.showpick) .tabs.educart-tab-bar{border-bottom:1px solid #ffffff24;margin-bottom:12px;gap:7px}
+body:has(.showpick) .tab.tab-item{font-size:12px;padding:9px 13px;background:#14213990;color:#c5d0df;border:1px solid #ffffff2a;border-radius:24px}
+body:has(.showpick) .tab[aria-selected="true"]{background:linear-gradient(135deg,#f3c178,#d9a35c);color:#1c2230;border:1px solid #f4ca8d}
+body:has(.showpick) .showpick.mostras-grid-pills{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+body:has(.showpick) .pick.mostra-pill{min-height:55px;padding:9px 10px;display:flex;flex-direction:column;justify-content:center;text-align:left;background:#152035c2;border:1px solid #ffffff2a;border-radius:11px;color:#fff}
+body:has(.showpick) .pick small{font-size:8px!important;letter-spacing:.6px;color:#9caec8!important}
+body:has(.showpick) .pick b{font:700 12px/1.25 var(--font-sans)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body:has(.showpick) .pick[aria-pressed="true"]{background:linear-gradient(135deg,#614b3b,#192438);border-color:#f1bd74;box-shadow:inset 0 0 0 1px #f3bd6144,0 0 10px #d5aa5130}
+body:has(.showpick) .pick[aria-pressed="true"] small{color:#eabb72!important}
+body:has(.showpick) .showstage{display:flex;flex-direction:column;gap:10px;padding:10px;background:linear-gradient(145deg,#0b1728,#08121f);border-color:#435775;border-radius:17px}
+body:has(.showpick) .showstage .screen{min-height:210px;aspect-ratio:16/9;background-position:center;background-size:cover;border-radius:11px}
+body:has(.showpick) .showstage .showcopy{padding:6px 8px 10px;display:flex;gap:5px;align-items:flex-start}
+body:has(.showpick) .showcopy h2{font:700 clamp(27px,4vw,35px)/1.06 var(--font-serif)}
+body:has(.showpick) .showcopy a{color:#efbc79}
+body:has(.showpick) .play{background:linear-gradient(135deg,#f0c781,#dbac61);border:1px solid #f6d7a0;color:#151b29;box-shadow:0 5px 25px #000a}
+body:has(.showpick) .record{background:var(--glass-bg);border:1px solid var(--glass-border)}
+@media(max-width:620px){
+ #portalView .rebornStageTitleBlock h1{font-size:clamp(38px,11vw,54px)!important}
+ #educartArtistsView .ar-hero{min-height:340px;padding:83px 20px 20px!important}
+ #educartArtistsView .ar-hero h1{font-size:clamp(37px,10vw,48px)!important}
+ #educartArtistsView .ar-hero .ar-lead{font-size:12px!important;max-width:380px!important}
+ #educartArtistsView .ar-list{padding-top:18px!important}
+ body:has(.showpick) .intro{min-height:242px;padding:72px 18px 18px}
+ body:has(.showpick) .intro h1{font-size:clamp(38px,11vw,48px)}
+ body:has(.showpick) .showpick.mostras-grid-pills{grid-template-columns:repeat(4,minmax(0,1fr))}
+ body:has(.showpick) .pick.mostra-pill{padding:7px;min-height:52px}
+ body:has(.showpick) .pick b{font-size:10px!important}
+ body:has(.showpick) .pick small{font-size:7px!important}
+ body:has(.showpick) .tabs.educart-tab-bar{gap:5px;overflow-x:auto}
+ body:has(.showpick) .tab.tab-item{white-space:nowrap;padding:8px 10px;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){.btn-primary-coral,.btn-secondary-glass{transition:none}}
+
+/* Correção de overflow móvel, sem mudar a estrutura ou tokens originais. */
+body:has(.showpick) .intro{margin-left:0!important;margin-right:0!important;border-radius:12px}
+
+/* V23.2 | Faixa fotografica dos monologos: altura pela metade no celular. */
+@media(max-width:620px){
+#educartArtistsView #educartCatalogIntro[hidden]{min-height:170px!important;height:170px!important;padding:0!important;margin-bottom:0!important}
+#educartArtistsView #educartCatalogIntro[hidden]::before{background-position:center 38%}
+}
+
+/* V23.3 — Espetáculos: diminuir respiro superior do hero móvel, preservar imagem/abas. */
+@media(max-width:620px){body:has(.showpick) .intro{min-height:216px!important;padding:40px 18px 18px!important}}

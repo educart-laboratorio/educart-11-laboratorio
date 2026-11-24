@@ -1,0 +1,808 @@
+{
+  "schema": "educart-vitrine-mostra-perfis-v1",
+  "date": "2026-11-22",
+  "shows": [
+    {
+      "number": 1,
+      "slug": "o-que-e-teatro",
+      "title": "O que é Teatro?",
+      "subtitle": "Turma 1 · Mostra Cênica",
+      "video": "0KEZ5eAHEew",
+      "photoCount": 45,
+      "album": "https://drive.google.com/drive/folders/1-hAHt2q7YG8ELf8yFJe6LUsRNBIVoJOX",
+      "cover": 24,
+      "cast": [
+        "Beatriz David",
+        "Bárbara Nunes",
+        "Fernando Guerreiro",
+        "Gabriel da Matta",
+        "Laira Maissa",
+        "Laura Assis",
+        "Liliana Falcão",
+        "Mateus de Jesus",
+        "Mel Cosme",
+        "Nice Santana",
+        "Vani Bia",
+        "Ícaro Moreira"
+      ]
+    },
+    {
+      "number": 2,
+      "slug": "entre-mundos-e-vozes",
+      "title": "Entre Mundos e Vozes",
+      "subtitle": "Mostra Cênica 2",
+      "video": "Co8JLSPxuUI",
+      "photoCount": 22,
+      "album": "https://drive.google.com/drive/folders/1yYzykTYeDYjIvsGKTUTbUfw50uSWLRzZ",
+      "cover": 22,
+      "cast": [
+        "Bia Montarroyos",
+        "Bia Trabuco",
+        "Celso Carvalho",
+        "Clarice Rezende",
+        "Clarice Lemos",
+        "Dan Menezes",
+        "Mirelle Miqueias",
+        "Pedro Antônio",
+        "Rhanna Borges",
+        "Vicky Vargas",
+        "Vinícius Machado"
+      ]
+    },
+    {
+      "number": 3,
+      "slug": "ainda-somos",
+      "title": "Ainda Somos",
+      "subtitle": "Mostra Cênica 3",
+      "video": "RsgO-fhzdRc",
+      "photoCount": 15,
+      "album": "https://drive.google.com/drive/folders/10mka-6NKGha095cvsj9w_-O5bKmWrKTG",
+      "cover": 1,
+      "cast": [
+        "Arthur Regis",
+        "Felipe Bispo",
+        "Germano",
+        "Henrique Bianchi",
+        "Jack Rolim",
+        "Jesse",
+        "Jotta Erre",
+        "João Toti",
+        "Liz Moreira",
+        "Lucas S. Dias",
+        "Thiago Oliveira",
+        "Veloso",
+        "Wlamir Mattos",
+        "Yago Savalla",
+        "Érica Dantas"
+      ]
+    },
+    {
+      "number": 4,
+      "slug": "isopor",
+      "title": "Isopor",
+      "subtitle": "Mostra Cênica 4",
+      "video": "Rek_OoV64oM",
+      "photoCount": 24,
+      "album": "https://drive.google.com/drive/folders/1fLiyVHgFRpXyEChFGBkzuh09P1aiIReZ",
+      "cover": 11,
+      "cast": [
+        "Dildiana",
+        "Felipe Bispo",
+        "Gabriela Duarte",
+        "Geovane Eduardo",
+        "Henrique Bianchi",
+        "Liz Moreira",
+        "Luan Pinto",
+        "Luiz Leal",
+        "Maria Sotero",
+        "Mon Anjos",
+        "Thiago Oliveira"
+      ]
+    }
+  ],
+  "people": [
+    {
+      "name": "Arthur Regis",
+      "programName": "Arthur Regis",
+      "slug": "arthur-regis",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Beatriz David",
+      "programName": "Beatriz David",
+      "slug": "beatriz-david",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Bia Montarroyos",
+      "programName": "Beatriz Montarroyos",
+      "slug": "bia-montarroyos",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-22.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-22.webp": "terceira da esquerda, cabelos escuros curtos/cacheados e roupa preta"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Bia Trabuco",
+      "programName": "Beatriz Trabuco",
+      "slug": "bia-trabuco",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-03.webp",
+        "mostra-02-04.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-03.webp": "mulher com lenço claro na cabeça",
+        "mostra-02-04.webp": "mulher com lenço claro na cabeça"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Bárbara Nunes",
+      "programName": "Bárbara Nunes",
+      "slug": "barbara-nunes",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Celso Carvalho",
+      "programName": "Celso Carvalho",
+      "slug": "celso-carvalho",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        2
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Clarice Rezende",
+      "programName": "Clarice Rezende",
+      "slug": "clarice-rezende",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-14.webp",
+        "mostra-02-16.webp",
+        "mostra-02-22.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-14.webp": "mulher sentada, à direita, blusa branca",
+        "mostra-02-16.webp": "mulher sentada, blusa branca",
+        "mostra-02-22.webp": "quinta da esquerda, cabelo cacheado avermelhado, camiseta preta"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Clarice Lemos",
+      "programName": "Clarisse Lemos",
+      "slug": "clarice-lemos",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-13.webp",
+        "mostra-02-18.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-13.webp": "atr iz em preto",
+        "mostra-02-18.webp": "direita: mulher com roupa preta, cabelos compridos"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Dan Menezes",
+      "programName": "Dan Menezes",
+      "slug": "dan-menezes",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-12.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-12.webp": "artista sentado, roupa preta, celular na mão"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Dildiana",
+      "programName": "Dill Diana",
+      "slug": "dildiana",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        4
+      ],
+      "photos": [
+        "mostra-04-09.webp",
+        "mostra-04-14.webp"
+      ],
+      "photoPositions": {
+        "mostra-04-09.webp": "atriz de turbante claro e figurino estampado",
+        "mostra-04-14.webp": "atriz de turbante claro e figurino estampado"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Felipe Bispo",
+      "programName": "Felipe Bispo",
+      "slug": "felipe-bispo",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        4,
+        3
+      ],
+      "photos": [
+        "mostra-04-04.webp",
+        "mostra-04-19.webp"
+      ],
+      "photoPositions": {
+        "mostra-04-04.webp": "ao lado de Thiago Oliveira, conforme a direção; posição exata na foto não delimitada",
+        "mostra-04-19.webp": "ao fundo, de vermelho"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Fernando Guerreiro",
+      "programName": "Fernando Guerreiro",
+      "slug": "fernando-guerreiro",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Gabriel da Matta",
+      "programName": "Gabriel da Matta",
+      "slug": "gabriel-da-matta",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Gabriela Duarte",
+      "programName": "Gabriela Duarte",
+      "slug": "gabriela-duarte",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        4
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Geovane Eduardo",
+      "programName": "Geovane Eduardo",
+      "slug": "geovane-eduardo",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        4
+      ],
+      "photos": [
+        "mostra-04-19.webp"
+      ],
+      "photoPositions": {
+        "mostra-04-19.webp": "ao fundo, de laranja, à direita"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Germano",
+      "programName": "Germano",
+      "slug": "germano",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Henrique Bianchi",
+      "programName": "Henrique Bianchi",
+      "slug": "henrique-bianchi",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        4,
+        3
+      ],
+      "photos": [
+        "mostra-04-02.webp",
+        "mostra-04-07.webp"
+      ],
+      "photoPositions": {
+        "mostra-04-02.webp": "ator careca, camisa azul",
+        "mostra-04-07.webp": "ator careca, camisa azul"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Jack Rolim",
+      "programName": "Jack Rolim",
+      "slug": "jack-rolim",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Jesse",
+      "programName": "Jesse",
+      "slug": "jesse",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Jotta Erre",
+      "programName": "Jotta Erre",
+      "slug": "jotta-erre",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "João Toti",
+      "programName": "João Toti",
+      "slug": "joao-toti",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Laira Maissa",
+      "programName": "Laira Maissa",
+      "slug": "laira-maissa",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Laura Assis",
+      "programName": "Laura Assis",
+      "slug": "laura-assis",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Liliana Falcão",
+      "programName": "Liliana Falcão",
+      "slug": "liliana-falcao",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Liz Moreira",
+      "programName": "Liz Moreira",
+      "slug": "liz-moreira",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        4,
+        3
+      ],
+      "photos": [
+        "mostra-04-06.webp"
+      ],
+      "photoPositions": {
+        "mostra-04-06.webp": "atriz sentada, de roupa preta, de oculos, segurando papeis"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Luan Pinto",
+      "programName": "Luan Pinto",
+      "slug": "luan-pinto",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        4
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Lucas S. Dias",
+      "programName": "Lucas S. Dias",
+      "slug": "lucas-s-dias",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Luiz Leal",
+      "programName": "Luiz Leal",
+      "slug": "luiz-alberto-leal",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        4
+      ],
+      "photos": [
+        "mostra-04-11.webp",
+        "mostra-04-16.webp"
+      ],
+      "photoPositions": {
+        "mostra-04-11.webp": "ator de camisa amarela, atras da atriz",
+        "mostra-04-16.webp": "ator de camisa escura, de perfil, com a cabeça inclinada para trás"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Maria Sotero",
+      "programName": "Maria Sotero",
+      "slug": "maria-sotero",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        4
+      ],
+      "photos": [
+        "mostra-04-11.webp"
+      ],
+      "photoPositions": {
+        "mostra-04-11.webp": "atriz de vestido florido, em primeiro plano"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Mateus de Jesus",
+      "programName": "Mateus de Jesus",
+      "slug": "mateus-de-jesus",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Mel Cosme",
+      "programName": "Mel Cosme",
+      "slug": "mel-cosme",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Mirelle Miqueias",
+      "programName": "Mirelly Miqueas",
+      "slug": "mirelle-miqueias",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-22.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-22.webp": "quarta da esquerda, cabelo curto avermelhado e óculos"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Mon Anjos",
+      "programName": "Mon'Andos",
+      "slug": "mon-anjos",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        4
+      ],
+      "photos": [
+        "mostra-04-19.webp"
+      ],
+      "photoPositions": {
+        "mostra-04-19.webp": "em primeiro plano, roupa estampada, tiara de corações"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Nice Santana",
+      "programName": "Nice Santana",
+      "slug": "nice-santana",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Pedro Antônio",
+      "programName": "Pedro Antônio",
+      "slug": "pedro-antonio",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-09.webp",
+        "mostra-02-10.webp",
+        "mostra-02-14.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-09.webp": "homem com figurino azul",
+        "mostra-02-10.webp": "homem com figurino azul",
+        "mostra-02-14.webp": "homem à esquerda, terno e óculos"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Rhanna Borges",
+      "programName": "Rhanna Borges",
+      "slug": "rhanna-borges",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-22.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-22.webp": "primeira à esquerda, vestido preto, cabelos escuros e óculos"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Thiago Oliveira",
+      "programName": "Thiago Oliveira",
+      "slug": "thiago-oliveira",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        4,
+        3
+      ],
+      "photos": [
+        "mostra-04-04.webp",
+        "mostra-04-05.webp"
+      ],
+      "photoPositions": {
+        "mostra-04-04.webp": "artista de regata vermelha",
+        "mostra-04-05.webp": "artista de regata vermelha"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Vani Bia",
+      "programName": "Vani Bia",
+      "slug": "vani-bia",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Veloso",
+      "programName": "Veloso",
+      "slug": "veloso",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Vicky Vargas",
+      "programName": "Vicky Vargas",
+      "slug": "vicky-vargas",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-01.webp",
+        "mostra-02-02.webp",
+        "mostra-02-22.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-01.webp": "mulher com roupa preta",
+        "mostra-02-02.webp": "mulher com roupa preta",
+        "mostra-02-22.webp": "segunda à esquerda, vestido preto e cabelo longo"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Vinícius Machado",
+      "programName": "Vinicius Machado",
+      "slug": "vinicius-machado",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        2
+      ],
+      "photos": [
+        "mostra-02-18.webp"
+      ],
+      "photoPositions": {
+        "mostra-02-18.webp": "esquerda: homem de camisa azul"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Wlamir Mattos",
+      "programName": "Wlamir Mattos",
+      "slug": "wlamir-mattos",
+      "existing": true,
+      "monologueInIndex": true,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Yago Savalla",
+      "programName": "Yago Savalla",
+      "slug": "yago-savalla",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [
+        "mostra-03-01.webp",
+        "mostra-03-02.webp"
+      ],
+      "photoPositions": {
+        "mostra-03-01.webp": "artista de camisa branca com bolsa atravessada",
+        "mostra-03-02.webp": "artista de camisa branca com bolsa atravessada"
+      },
+      "formationConfirmed": false
+    },
+    {
+      "name": "Érica Dantas",
+      "programName": "Érica Dantas",
+      "slug": "erica-dantas",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        3
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    },
+    {
+      "name": "Ícaro Moreira",
+      "programName": "Ícaro Moreira",
+      "slug": "icaro-moreira",
+      "existing": false,
+      "monologueInIndex": false,
+      "shows": [
+        1
+      ],
+      "photos": [],
+      "photoPositions": {},
+      "formationConfirmed": false
+    }
+  ],
+  "notes": {
+    "attribution": "Artistas listados nos elencos fornecidos pela direção; imagens nominativas só onde confirmadas",
+    "formation": "Nenhum selo automático de formado sem comprovante nominal",
+    "copyright": "Fotografias oficiais EducART, originais e links Drive preservados",
+    "publicStatus": "Perfis iniciais são fichas baseadas em créditos artísticos; não indicam matrícula ativa nem conclusão"
+  }
+}

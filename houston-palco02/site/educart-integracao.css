@@ -1,0 +1,17 @@
+/* Adaptador de identidade para páginas existentes: sem alterar dados, JS ou conteúdos de acervo. */
+:root{color-scheme:dark}
+html{background:#03060e}
+button,a{touch-action:manipulation}
+:focus-visible{outline:2px solid #fbbf24!important;outline-offset:3px}
+.educart-dots-logo{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2.5px;flex-shrink:0}
+.educart-dots-logo i{display:block;aspect-ratio:1;border-radius:50%;background:var(--dot);box-shadow:0 0 6px #0004}
+.educart-brand-link{display:flex;align-items:center;gap:9px;text-decoration:none;color:#fff;flex-shrink:0}
+.educart-brand-link .brand-name{font-size:18px}
+.educart-brand-link .brand-tagline{font-size:6.6px;letter-spacing:0}
+.educart-help-menu{position:relative;flex-shrink:0}
+.educart-help-menu summary{list-style:none;cursor:pointer}
+.educart-help-menu summary::-webkit-details-marker{display:none}
+.educart-help-menu .help-circle{border-color:#bbb6a4;font-size:20px;font-weight:700}
+.educart-help-panel{position:absolute;right:0;top:100%;background:#0d1729;border:1px solid #ffffff42;border-radius:14px;padding:10px;min-width:180px;box-shadow:0 20px 50px #000a;z-index:120;display:flex;flex-direction:column;gap:6px}
+.educart-help-panel a,.educart-help-panel button{display:block;width:100%;box-sizing:border-box;background:#131f35;border:1px solid #ffffff19;border-radius:8px;color:#f3f6fc;text-align:left;text-decoration:none;padding:9px;font-size:12px;cursor:pointer}
+.educart-help-panel small{font-size:10px;color:#b8c8dc}

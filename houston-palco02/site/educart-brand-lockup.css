@@ -1,0 +1,31 @@
+
+/* EducART V23.0: assinatura oficial em escala única (1255:340), sem zoom de retratos */
+#educartArtistsView a.educart-brand-link,header.educart-header a.educart-brand-link{
+ display:block!important;flex:0 1 auto!important;position:relative!important;
+ width:clamp(258px,29vw,365px)!important;max-width:calc(100vw - 100px)!important;
+ height:auto!important;min-height:0!important;aspect-ratio:1255/340!important;
+ padding:0!important;margin:0!important;border:0!important;border-radius:0!important;
+ background:transparent url("/educart-identidade-oficial.svg") left center/contain no-repeat!important;
+ box-shadow:none!important;text-decoration:none!important}
+#educartArtistsView a.educart-brand-link > *,header.educart-header a.educart-brand-link > *{display:none!important}
+header.educart-header .header-container{max-width:1180px!important;width:100%!important;gap:12px;align-items:center}
+.experienceBar .expBrand.expBrand--nine{display:block!important;position:relative!important;
+ width:clamp(265px,34vw,400px)!important;max-width:calc(100vw - 102px)!important;
+ min-width:0!important;height:auto!important;aspect-ratio:1255/340!important;flex:0 1 auto!important;
+ padding:0!important;margin:0!important;background:transparent url("/educart-identidade-oficial.svg") left center/contain no-repeat!important;
+ border:0!important;box-shadow:none!important}
+.experienceBar .expBrand.expBrand--nine > .ecDotGrid,.experienceBar .expBrand.expBrand--nine > .ecBrandType{display:none!important}
+header.top a.brand.educart-brand-lockup,header.sitehead .brand.educart-brand-lockup{display:block!important;position:relative!important;
+ width:clamp(265px,29vw,350px)!important;max-width:calc(100vw - 36px)!important;
+ height:auto!important;aspect-ratio:1255/340!important;flex:none!important;
+ font-size:0!important;line-height:0!important;letter-spacing:0!important;color:transparent!important;
+ background:transparent url("/educart-identidade-oficial.svg") left center/contain no-repeat!important;
+ padding:0!important;margin:0!important;text-decoration:none!important}
+header.top .educart-brand-lockup b,header.sitehead .educart-brand-lockup b,header.sitehead .educart-brand-lockup small{display:none!important}
+@media(max-width:720px){header.top,header.sitehead{flex-wrap:wrap!important;gap:10px!important;padding-block:12px!important}
+ header.top .topnav{flex:1 1 100%;justify-content:flex-start;flex-wrap:wrap;gap:13px!important}header.sitehead .navlink{flex:1 1 100%}}
+@media(max-width:575px){
+ #educartArtistsView a.educart-brand-link,header.educart-header a.educart-brand-link{width:min(238px,calc(100vw - 100px))!important;max-width:calc(100vw - 100px)!important}
+ .experienceBar .expBrand.expBrand--nine{width:min(242px,calc(100vw - 98px))!important;max-width:calc(100vw - 98px)!important}
+ header.top a.brand.educart-brand-lockup,header.sitehead .brand.educart-brand-lockup{width:min(280px,calc(100vw - 36px))!important}
+ header.educart-header .header-container{gap:8px!important}}
