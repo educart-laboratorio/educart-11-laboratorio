@@ -11,7 +11,7 @@
   function thumbnail(original, label, fallback) {
     const id = fileId(original);
     if (!id) return "";
-    const backup = fallback && /^\/(?!\/)/.test(fallback)
+    const backup = fallback && (/^\/(?!\/)/.test(fallback) || /^data:image\/webp;base64,[\w+/=]+$/.test(fallback))
       ? ` data-album-fallback="${encode(fallback)}"` : "";
     const src = `https://drive.google.com/thumbnail?id=${id}&sz=w220`;
     return `<a class="drive-thumbnail" href="${encode(original)}" target="_blank" rel="noopener noreferrer" aria-label="${encode(label)} — abrir original no Drive"><img src="${encode(src)}" alt="${encode(label)}" loading="lazy" decoding="async"${backup}></a>`;
