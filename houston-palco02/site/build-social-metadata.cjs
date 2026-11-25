@@ -20,6 +20,13 @@ if(!image){image=origin+fallback;institutional++}
 const pairs={'og:type':'website','og:locale':'pt_BR','og:site_name':'EducART','og:title':title,'og:description':desc,'og:url':url,'og:image':image};
 let h=head.replace(/<meta\b[^>]*>/gi,m=>{const k=(attr(m,'property')||attr(m,'name')||'').toLowerCase();return k.startsWith('og:')||k==='twitter:card'||k==='twitter:title'||k==='twitter:description'||k==='twitter:image'?'':m});
 h=h.replace(/<\/head>/i,Object.entries(pairs).map(([k,v])=>'<meta property="'+k+'" content="'+esc(v)+'">').join('\n')+'\n<meta name="twitter:card" content="summary_large_image">\n</head>');
-const out=html.replace(head,()=>h);if(out.slice(out.search(/<body\b/i))!==body)throw Error('Body changed '+rel);const publicHtml=out.replace(/<div class="proof">\s*Ficha editorial\s*·\s*NÃO PUBLICADA\s*<\/div>/gi,'');fs.writeFileSync(f,publicHtml,'utf8');count++;
+const out=html.replace(head,()=>h);if(out.slice(out.search(/<body\b/i))!==body)throw Error('Body changed '+rel);let publicHtml=out.replace(/<div class="proof">\s*Ficha editorial\s*·\s*NÃO PUBLICADA\s*<\/div>/gi,'');
+// A barra pública é compartilhada por todas as páginas; remove somente docks legados de navegação rápida.
+publicHtml=publicHtml.replace(/<nav\b(?=[^>]*\bclass=["']dock["'])(?=[^>]*\baria-label=["']Navegação rápida["'])[^>]*>[\s\S]*?<\/nav>/gi,'');
+if(!/<script\b[^>]*\bsrc=["']\/educart-navigation-v23-1\.js["']/i.test(publicHtml)){
+  if(!/<\/body>/i.test(publicHtml))throw Error('Missing body for Houston navigation '+rel);
+  publicHtml=publicHtml.replace(/<\/body>(?=[\s\S]*$)/i,()=>'<script defer src="/educart-navigation-v23-1.js"></script></body>');
+}
+fs.writeFileSync(f,publicHtml,'utf8');count++;
 }
 walk(root);console.log('Houston social metadata: '+count+' pages, '+portraits+' artist portraits, '+institutional+' institutional covers');if(count<70)throw Error('Incomplete Houston package');
