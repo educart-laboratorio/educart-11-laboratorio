@@ -720,8 +720,8 @@
             type="search"
             id="search-input"
             class="search-input"
-            placeholder="Buscar espetáculo, teatro ou bairro..."
-            aria-label="Buscar espetáculo, teatro ou bairro"
+            placeholder="Espetáculo, local, bairro ou equipe..."
+            aria-label="Buscar espetáculo, local, bairro, companhia, profissional ou função da equipe"
           />
         </div>
       </div>
@@ -1664,18 +1664,22 @@
         bannerEl.classList.remove("active");
       }
 
-      const q = state.searchQuery.trim().toLowerCase();
-      let visibleRows = allRows.filter((row) => {
-        const isForcedTarget = deepLinkMatch && deepLinkMatch.ses.sessao_id === row.ses.sessao_id;
-        if (!row.inWindow && !isForcedTarget) return false;
-        if (!q) return true;
-        const hay = [
+      const normalize = (value) => String(value ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+      const haystack = (row) => normalize([
           row.ev.espetaculo.titulo,
           row.ev.espetaculo.companhia,
           row.ses.local.nome,
-          row.ses.local.bairro
-        ].filter(Boolean).join(" ").toLowerCase();
-        return hay.includes(q);
+          row.ses.local.bairro,
+          ...(row.ev.ficha_tecnica || []).flatMap(credit => [credit.nome_exibicao, credit.funcao])
+        ].filter(Boolean).join(" "));
+      const terms = (q) => normalize(q).split(/\s+/).filter(Boolean);
+      const q = terms(state.searchQuery);
+      let visibleRows = allRows.filter((row) => {
+        const isForcedTarget = deepLinkMatch && deepLinkMatch.ses.sessao_id === row.ses.sessao_id;
+        if (!row.inWindow && !isForcedTarget) return false;
+        if (!q.length) return true;
+        const hay = haystack(row);
+        return q.every(term => hay.includes(term));
       });
 
       if (deepLinkMatch && !visibleRows.some((r) => r.ses.sessao_id === deepLinkMatch.ses.sessao_id)) {
