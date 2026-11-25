@@ -273,6 +273,10 @@
     page=page.replace('</head>', '<link rel="stylesheet" href="./educart-design-system.css"><link rel="stylesheet" href="./educart-integracao.css"><link rel="stylesheet" href="./educart-pages.css"></head>');
     // Preserva integralmente a abertura original, sem botão administrativo.
     page=page.replace('</body>', '<script defer src="/educart-navigation-v23-1.js"></scr'+'ipt></body>');
+    // Entrada direta na Escola: suprime a abertura antes do primeiro paint.
+    if(new URLSearchParams(location.search).get('area')==='escola'){
+      page=page.replace('</head>','<style id="educart-school-entry-gate">body.welcome-pending #educartWelcomeScreen,body.welcome-pending .educart-areas-v231{visibility:hidden!important}</style></head>');
+    }
     document.open();document.write(page);document.close();
   }catch(error){const el=document.getElementById('loading');if(el)el.textContent='Não foi possível abrir o EducART. Atualize a página para tentar novamente.';console.error(error)}
 })();
