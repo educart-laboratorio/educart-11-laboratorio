@@ -24,9 +24,10 @@ const out=html.replace(head,()=>h);if(out.slice(out.search(/<body\b/i))!==body)t
 // A barra pública é compartilhada por todas as páginas; remove somente docks legados de navegação rápida.
 publicHtml=publicHtml.replace(/<nav\b(?=[^>]*\bclass=["']dock["'])(?=[^>]*\baria-label=["']Navegação rápida["'])[^>]*>[\s\S]*?<\/nav>/gi,'');
 if(!/<script\b[^>]*\bsrc=["']\/educart-navigation-v23-1\.js["']/i.test(publicHtml)){
-  if(!/<\/body>/i.test(publicHtml))throw Error('Missing body for Houston navigation '+rel);
-  publicHtml=publicHtml.replace(/<\/body>(?=[\s\S]*$)/i,()=>'<script defer src="/educart-navigation-v23-1.js"></script></body>');
+  const bodyEnd=publicHtml.toLowerCase().lastIndexOf('</body>');
+  if(bodyEnd<0)throw Error('Missing body for Houston navigation '+rel);
+  publicHtml=publicHtml.slice(0,bodyEnd)+'<script defer src="/educart-navigation-v23-1.js"></script>'+publicHtml.slice(bodyEnd);
 }
 fs.writeFileSync(f,publicHtml,'utf8');count++;
 }
-walk(root);console.log('Houston social metadata: '+count+' pages, '+portraits+' artist portraits, '+institutional+' institutional covers');if(count<70)throw Error('Incomplete Houston package');
+new (require('node:vm').Script)(fs.readFileSync(path.join(root,'educart-navigation-v23-1.js'),'utf8'));walk(root);console.log('Houston social metadata: '+count+' pages, '+portraits+' artist portraits, '+institutional+' institutional covers');if(count<70)throw Error('Incomplete Houston package');
