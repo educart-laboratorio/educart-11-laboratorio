@@ -158,50 +158,6 @@
       border-color: var(--accent-gold);
     }
 
-    .window-strip {
-      margin: 1rem auto 0.75rem;
-      background: var(--bg-board);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 0.7rem 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      font-size: 0.78rem;
-    }
-
-    .window-metrics {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .window-metrics strong {
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-    }
-
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.65rem;
-      font-size: 0.72rem;
-      color: var(--text-secondary);
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 4px;
-    }
-
     .deeplink-banner {
       display: none;
       margin: 0.75rem auto;
@@ -222,6 +178,7 @@
     }
 
     .board {
+      margin-top: 1rem;
       background: var(--bg-board);
       border: 1px solid var(--border-subtle);
       border-radius: 10px;
@@ -660,7 +617,7 @@
       pointer-events: none;
       transform: translateY(10px);
       transition: all 0.2s ease;
-      z-index: 50;
+      z-index: 19991;
     }
 
     .toast.show {
@@ -772,17 +729,6 @@
   </header>
 
   <main class="container" style="padding: 0 1rem;">
-    <section class="window-strip" aria-label="Resumo da janela temporal">
-      <div class="window-metrics" id="window-metrics"></div>
-      <div class="legend">
-        <span><i class="dot" style="background: var(--text-muted);"></i>Datas passadas (-7d)</span>
-        <span><i class="dot" style="background: var(--accent-gold);"></i>Hoje</span>
-        <span><i class="dot" style="background: var(--accent-green);"></i>Gratuito</span>
-        <span><i class="dot" style="background: var(--accent-red);"></i>Cancelado</span>
-        <span><i class="dot" style="background: var(--accent-amber);"></i>Remarcada</span>
-      </div>
-    </section>
-
     <div class="deeplink-banner" id="deeplink-banner">
       <span id="deeplink-banner-text"></span>
       <button type="button" class="btn" id="btn-clear-deeplink">Voltar à janela padrão</button>
@@ -1752,11 +1698,13 @@
         ? "Guia cultural teatral · Janela estendida até 24/12 (-7d · Hoje · Fim de ano) · Salvador, BA"
         : "Guia cultural teatral · Janela móvel (-7d · Hoje · +14d) · Salvador, BA";
 
-      metricsEl.innerHTML = `
-        <span>Janela: <strong>${minDM}</strong> a <strong>${maxDM}</strong></span>
-        <span>Hoje em Salvador: <strong>${refDM}</strong></span>
-        <span>Sessões exibidas: <strong>${visibleRows.length}</strong></span>
-      `;
+      if (metricsEl) {
+        metricsEl.innerHTML = `
+          <span>Janela: <strong>${minDM}</strong> a <strong>${maxDM}</strong></span>
+          <span>Hoje em Salvador: <strong>${refDM}</strong></span>
+          <span>Sessões exibidas: <strong>${visibleRows.length}</strong></span>
+        `;
+      }
 
       if (visibleRows.length === 0) {
         boardBody.innerHTML = `<div class="empty-state">Nenhuma sessão encontrada para os filtros atuais neste recorte da agenda.</div>`;
