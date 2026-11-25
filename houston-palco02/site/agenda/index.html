@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda Cultural EducART · Salvador, BA</title>
+  <style>
+    :root {
+      --bg-page: #0c0e12;
+      --bg-board: #131720;
+      --bg-row: #181d28;
+      --bg-row-hover: #1f2635;
+      --bg-expanded: #10141c;
+      --bg-pill: #232b3b;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text-primary: #f3f5f8;
+      --text-secondary: #a6b0c3;
+      --text-muted: #6c778d;
+      --accent-gold: #e8b339;
+      --accent-gold-soft: rgba(232, 179, 57, 0.14);
+      --accent-green: #38c172;
+      --accent-green-soft: rgba(56, 193, 114, 0.14);
+      --accent-red: #ef5350;
+      --accent-red-soft: rgba(239, 83, 80, 0.15);
+      --accent-amber: #f59e0b;
+      --accent-amber-soft: rgba(245, 158, 11, 0.15);
+      --accent-blue: #60a5fa;
+      --accent-blue-soft: rgba(96, 165, 250, 0.14);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 4rem;
+    }
+
+    .topbar {
+      background: linear-gradient(180deg, #151a24 0%, #0c0e12 100%);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1.25rem 1rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .brand-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .brand-accent {
+      width: 10px;
+      height: 28px;
+      border-radius: 3px;
+      background: var(--accent-gold);
+      flex-shrink: 0;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .control-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .btn {
+      background: var(--bg-pill);
+      color: var(--text-primary);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      padding: 0.42rem 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #2c3649;
+    }
+
+    .btn-gold {
+      background: var(--accent-gold-soft);
+      color: var(--accent-gold);
+      border-color: rgba(232, 179, 57, 0.4);
+    }
+
+    .btn-gold:hover {
+      background: rgba(232, 179, 57, 0.24);
+    }
+
+    .search-input {
+      background: var(--bg-board);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      border-radius: 6px;
+      padding: 0.45rem 0.8rem;
+      font-size: 0.82rem;
+      width: 100%;
+      max-width: 380px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-gold);
+    }
+
+    .window-strip {
+      margin: 1rem auto 0.75rem;
+      background: var(--bg-board);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+    }
+
+    .window-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .window-metrics strong {
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .deeplink-banner {
+      display: none;
+      margin: 0.75rem auto;
+      background: var(--accent-blue-soft);
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      color: #dbeafe;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-size: 0.8rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .deeplink-banner.active {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .board {
+      background: var(--bg-board);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .board-header {
+      display: grid;
+      grid-template-columns: 125px 78px minmax(220px, 1.4fr) minmax(170px, 1fr) 155px 32px;
+      gap: 0.75rem;
+      padding: 0.7rem 1rem;
+      background: #0f131a;
+      border-bottom: 1px solid var(--border-strong);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .board-row-wrapper {
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background 0.15s ease;
+    }
+
+    .board-row-wrapper:last-child {
+      border-bottom: none;
+    }
+
+    .board-row-wrapper.is-past {
+      opacity: 0.56;
+    }
+
+    .board-row-wrapper.is-past:hover,
+    .board-row-wrapper.is-past.is-open {
+      opacity: 0.94;
+    }
+
+    .board-row-wrapper.is-today {
+      background: linear-gradient(90deg, rgba(232, 179, 57, 0.09) 0%, rgba(24, 29, 40, 0.4) 100%);
+      border-left: 3px solid var(--accent-gold);
+    }
+
+    .board-row-wrapper.is-cancelled {
+      background: rgba(239, 83, 80, 0.05);
+      border-left: 3px solid var(--accent-red);
+    }
+
+    .board-row-wrapper.is-rescheduled {
+      border-left: 3px solid var(--accent-amber);
+    }
+
+    .board-row {
+      display: grid;
+      grid-template-columns: 125px 78px minmax(220px, 1.4fr) minmax(170px, 1fr) 155px 32px;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .board-row:hover {
+      background: var(--bg-row-hover);
+    }
+
+    .cell-date {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 0.18rem;
+    }
+
+    .day-tag {
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .day-tag.today-pill {
+      display: inline-block;
+      width: fit-content;
+      background: var(--accent-gold);
+      color: #111317;
+      padding: 0.08rem 0.38rem;
+      border-radius: 3px;
+    }
+
+    .cell-time {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .is-past .cell-time {
+      color: var(--text-secondary);
+    }
+
+    .cell-show {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .show-title-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .show-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .is-cancelled .show-title {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+    }
+
+    .show-company {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .cell-venue {
+      font-size: 0.82rem;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .venue-bairro {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .cell-price {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .price-free {
+      color: var(--accent-green);
+      background: var(--accent-green-soft);
+      border: 1px solid rgba(56, 193, 114, 0.3);
+      padding: 0.16rem 0.45rem;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .cell-chevron {
+      text-align: right;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      transition: transform 0.2s ease;
+    }
+
+    .is-open .cell-chevron {
+      transform: rotate(180deg);
+      color: var(--accent-gold);
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.14rem 0.42rem;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .badge-cancelled {
+      background: var(--accent-red-soft);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 83, 80, 0.45);
+    }
+
+    .badge-rescheduled {
+      background: var(--accent-amber-soft);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.45);
+    }
+
+    .badge-outwindow {
+      background: var(--accent-blue-soft);
+      color: #93c5fd;
+      border: 1px solid rgba(96, 165, 250, 0.35);
+    }
+
+    .expanded-panel {
+      display: none;
+      background: var(--bg-expanded);
+      border-top: 1px solid var(--border-subtle);
+      padding: 1.15rem 1.25rem 1.3rem;
+    }
+
+    .is-open .expanded-panel {
+      display: block;
+    }
+
+    .status-alert {
+      margin-bottom: 1rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fde68a;
+    }
+
+    .status-alert.is-red {
+      background: rgba(239, 83, 80, 0.12);
+      border-color: rgba(239, 83, 80, 0.35);
+      color: #fecaca;
+    }
+
+    .status-alert.is-info {
+      background: rgba(96, 165, 250, 0.09);
+      border-color: rgba(96, 165, 250, 0.28);
+      color: #dbeafe;
+    }
+
+    .expanded-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .detail-block {
+      margin-bottom: 0.95rem;
+    }
+
+    .detail-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .detail-text {
+      font-size: 0.86rem;
+      color: var(--text-primary);
+    }
+
+    .detail-text.muted {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.35rem;
+    }
+
+    .meta-pill {
+      background: var(--bg-row);
+      border: 1px solid var(--border-subtle);
+      border-radius: 5px;
+      padding: 0.25rem 0.55rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .credits-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      font-size: 0.8rem;
+    }
+
+    .credits-list li {
+      color: var(--text-secondary);
+    }
+
+    .credits-list strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .other-sessions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.3rem;
+    }
+
+    .session-chip {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.22rem 0.5rem;
+      border-radius: 4px;
+      background: var(--bg-row);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .session-chip.current {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+
+    .sources-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .sources-list a {
+      color: var(--accent-blue);
+      font-size: 0.75rem;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .sources-list a:hover {
+      text-decoration: underline;
+    }
+
+    .action-bar {
+      margin-top: 1rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .btn-whatsapp {
+      background: rgba(37, 211, 102, 0.14);
+      color: #6ee7b7;
+      border-color: rgba(37, 211, 102, 0.38);
+      text-decoration: none;
+    }
+
+    .btn-whatsapp:hover {
+      background: rgba(37, 211, 102, 0.24);
+    }
+
+    .btn-ticket {
+      background: var(--accent-gold);
+      color: #111317;
+      border-color: var(--accent-gold);
+      text-decoration: none;
+    }
+
+    .btn-ticket:hover {
+      background: #f0be49;
+    }
+
+    .verified-stamp {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state {
+      padding: 2.5rem 1rem;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid var(--accent-gold);
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      z-index: 50;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 820px) {
+      .board-header {
+        display: none;
+      }
+
+      .board-row {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+          "datetime price"
+          "show chevron"
+          "venue venue";
+        gap: 0.35rem 0.65rem;
+        padding: 0.85rem 0.9rem;
+      }
+
+      .cell-date {
+        grid-area: datetime;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.45rem;
+      }
+
+      .cell-time {
+        display: none;
+      }
+
+      .mobile-time-inline {
+        display: inline-block;
+        color: var(--accent-gold);
+        font-family: var(--font-mono);
+        font-weight: 700;
+      }
+
+      .cell-price {
+        grid-area: price;
+        text-align: right;
+      }
+
+      .cell-show {
+        grid-area: show;
+      }
+
+      .cell-chevron {
+        grid-area: chevron;
+      }
+
+      .cell-venue {
+        grid-area: venue;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem;
+        padding-top: 0.2rem;
+        border-top: 1px dashed rgba(255, 255, 255, 0.06);
+      }
+
+      .expanded-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-input {
+        max-width: 100%;
+      }
+    }
+
+    @media (min-width: 821px) {
+      .mobile-time-inline {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container">
+      <div class="brand-row">
+        <div class="brand-title">
+          <span class="brand-accent" aria-hidden="true"></span>
+          <div>
+            <h1>Agenda Cultural EducART · Salvador</h1>
+            <div class="subtitle" id="header-subtitle">Guia cultural teatral · Salvador, BA</div>
+          </div>
+        </div>
+        <div>
+          <button type="button" class="btn btn-gold" id="btn-go-today">Ir para HOJE</button>
+        </div>
+      </div>
+
+      <div class="controls-bar">
+        <div class="control-group">
+          <input
+            type="search"
+            id="search-input"
+            class="search-input"
+            placeholder="Buscar espetáculo, teatro ou bairro..."
+            aria-label="Buscar espetáculo, teatro ou bairro"
+          />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 0 1rem;">
+    <section class="window-strip" aria-label="Resumo da janela temporal">
+      <div class="window-metrics" id="window-metrics"></div>
+      <div class="legend">
+        <span><i class="dot" style="background: var(--text-muted);"></i>Datas passadas (-7d)</span>
+        <span><i class="dot" style="background: var(--accent-gold);"></i>Hoje</span>
+        <span><i class="dot" style="background: var(--accent-green);"></i>Gratuito</span>
+        <span><i class="dot" style="background: var(--accent-red);"></i>Cancelado</span>
+        <span><i class="dot" style="background: var(--accent-amber);"></i>Remarcada</span>
+      </div>
+    </section>
+
+    <div class="deeplink-banner" id="deeplink-banner">
+      <span id="deeplink-banner-text"></span>
+      <button type="button" class="btn" id="btn-clear-deeplink">Voltar à janela padrão</button>
+    </div>
+
+    <section class="board" aria-label="Programação teatral de Salvador">
+      <div class="board-header">
+        <div>Data</div>
+        <div>Horário</div>
+        <div>Espetáculo</div>
+        <div>Local</div>
+        <div style="text-align: right;">Ingresso</div>
+        <div></div>
+      </div>
+      <div id="board-body"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const TIMEZONE_SALVADOR = "America/Bahia";
+    const HOLIDAY_CAP_ISO = "2026-12-24";
+
+    function getSalvadorTodayISO() {
+      const formatter = new Intl.DateTimeFormat("en-CA", {
+        timeZone: TIMEZONE_SALVADOR,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      });
+      return formatter.format(new Date());
+    }
+
+    // Dataset oficial — Lote 02 (27 espetáculos, 63 sessões, 82 créditos)
+    const REAL_DATASET = {
+      "meta": {
+        "cidade": "Salvador",
+        "uf": "BA",
+        "fuso_horario": "America/Bahia",
+        "horizonte_pesquisa_dias": 30,
+        "janela_publica_dias": {
+          "passado": 7,
+          "futuro": 14,
+          "excecao_fim_de_ano_ate": "2026-12-24",
+          "retomada_padrao_em": "2026-12-11"
+        },
+        "gerado_em": "2026-11-24",
+        "total_eventos": 27,
+        "total_sessoes": 63,
+        "total_creditos": 82,
+        "versao": "02"
+      },
+      "eventos": [
+        {
+          "id": "evt-001",
+          "slug": "tarsila-a-brasileira",
+          "espetaculo": {
+            "titulo": "Tarsila, a Brasileira",
+            "companhia": "Raia Produções",
+            "resumo_editorial": "Musical biográfico sobre Tarsila do Amaral e sua contribuição à arte brasileira.",
+            "contexto_artistico": "A trajetória da pintora é apresentada em linguagem musical.",
+            "classificacao_indicativa": "10 anos",
+            "duracao_minutos": 150,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://bileto.sympla.com.br/event/126128",
+              "https://www.ba.gov.br/tca/?q=node%2F1534",
+              "https://aloalobahia.com/noticias/2026/11/24/claudia-raia-anuncia-ensaio-aberto-gratuito-de-musical-sobre-tarsila-do-amaral-em-salvador/",
+              "https://bahiasocialvip.com.br/2026/11/tarsila-a-brasileira-claudia-raia-salvador/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Elenco", "nome_exibicao": "Claudia Raia" },
+            { "funcao": "Realização", "nome_exibicao": "Raia Produções" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-001-s06", "data": "2026-11-25", "hora_inicio": "20:00", "local": { "nome": "Teatro Castro Alves – Sala Principal", "bairro": "Campo Grande" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Ensaio aberto gratuito com retirada de ingressos pela Sympla e na bilheteria do TCA.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-001-s01", "data": "2026-11-26", "hora_inicio": "20:00", "local": { "nome": "Teatro Castro Alves – Sala Principal", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 25 a R$ 350", "url_bilheteria": "https://bileto.sympla.com.br/event/126128" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-001-s02", "data": "2026-11-27", "hora_inicio": "20:00", "local": { "nome": "Teatro Castro Alves – Sala Principal", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 25 a R$ 350", "url_bilheteria": "https://bileto.sympla.com.br/event/126128" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-001-s03", "data": "2026-11-28", "hora_inicio": "15:00", "local": { "nome": "Teatro Castro Alves – Sala Principal", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 25 a R$ 350", "url_bilheteria": "https://bileto.sympla.com.br/event/126128" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-001-s04", "data": "2026-11-28", "hora_inicio": "20:00", "local": { "nome": "Teatro Castro Alves – Sala Principal", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 25 a R$ 350", "url_bilheteria": "https://bileto.sympla.com.br/event/126128" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-001-s05", "data": "2026-11-29", "hora_inicio": "18:00", "local": { "nome": "Teatro Castro Alves – Sala Principal", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 25 a R$ 350", "url_bilheteria": "https://bileto.sympla.com.br/event/126128" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-002",
+          "slug": "do-jeito-que-voce-gosta",
+          "espetaculo": {
+            "titulo": "Do Jeito Que Você Gosta",
+            "companhia": "Coletivo Deságua / Escola de Teatro da UFBA",
+            "resumo_editorial": "Releitura queer da comédia de Shakespeare, acompanhando personagens em busca de liberdade e descoberta de si.",
+            "contexto_artistico": "Montagem de pré-formatura em direção teatral da UFBA, em diálogo com ballroom e arte drag.",
+            "classificacao_indicativa": "16 anos",
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://soteroteatro.com.br/evento/2056d6eb-3f1d-4a2f-a60b-9c217263ea1c",
+              "https://www.agendartecultura.com.br/teatro/comedia-classica-shakespeare-ganha-versao-queer-entrada-gratuita-teatro-martim-goncalves/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Direção", "nome_exibicao": "Kayk Souza" },
+            { "funcao": "Texto", "nome_exibicao": "William Shakespeare" },
+            { "funcao": "Texto", "nome_exibicao": "Kayk Souza" },
+            { "funcao": "Elenco", "nome_exibicao": "abêiazinha" },
+            { "funcao": "Elenco", "nome_exibicao": "Adrián Araujo" },
+            { "funcao": "Elenco", "nome_exibicao": "Emille Barbosa" },
+            { "funcao": "Elenco", "nome_exibicao": "Keilla Almeida" },
+            { "funcao": "Elenco", "nome_exibicao": "Thiago Romero" },
+            { "funcao": "Elenco", "nome_exibicao": "RAIO" },
+            { "funcao": "Elenco", "nome_exibicao": "Raiar Santana" },
+            { "funcao": "Elenco", "nome_exibicao": "Vicky" },
+            { "funcao": "Produção", "nome_exibicao": "Coletivo Desagua" },
+            { "funcao": "Produção", "nome_exibicao": "Soanne Souza" },
+            { "funcao": "Produção", "nome_exibicao": "Letícia Mascarenhas" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-002-s01", "data": "2026-11-27", "hora_inicio": "19:00", "local": { "nome": "Teatro Martim Gonçalves", "bairro": "Canela" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Retirada de ingressos uma hora antes da sessão.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-002-s02", "data": "2026-11-28", "hora_inicio": "19:00", "local": { "nome": "Teatro Martim Gonçalves", "bairro": "Canela" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Retirada de ingressos uma hora antes da sessão.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-002-s03", "data": "2026-11-29", "hora_inicio": "19:00", "local": { "nome": "Teatro Martim Gonçalves", "bairro": "Canela" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Retirada de ingressos uma hora antes da sessão.", "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-003",
+          "slug": "rainha-vashti",
+          "espetaculo": {
+            "titulo": "Rainha Vashti",
+            "companhia": "A RODA Teatro de bonecos",
+            "resumo_editorial": "Uma rainha desafia a autoridade do marido e sofre as consequências de sua recusa.",
+            "contexto_artistico": "Teatro de sombras a partir da obra de Myriam Fraga, abordando poder e silenciamento feminino.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": 60,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://www.sympla.com.br/evento/rainha-vashti-a-roda-teatro-de-bonecos/3636735",
+              "https://agendasalvador.com.br/salvador/teatro"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Texto", "nome_exibicao": "Myriam Fraga" },
+            { "funcao": "Direção, adaptação e bonecos", "nome_exibicao": "Olga Gómez" },
+            { "funcao": "Voz", "nome_exibicao": "Rita Assemany" },
+            { "funcao": "Consultoria e desenho gráfico", "nome_exibicao": "Marcus Sampaio" },
+            { "funcao": "Direção musical", "nome_exibicao": "Uibitu" },
+            { "funcao": "Direção musical", "nome_exibicao": "Amanda Smetak" },
+            { "funcao": "Ator animador", "nome_exibicao": "Diego Neres" },
+            { "funcao": "Ator animador", "nome_exibicao": "Hannah Pfeifer" },
+            { "funcao": "Ator animador", "nome_exibicao": "Arthur Lustosa" },
+            { "funcao": "Ator animador", "nome_exibicao": "Paulo Borges" },
+            { "funcao": "Luz", "nome_exibicao": "Roberto Pedreira" },
+            { "funcao": "Som", "nome_exibicao": "Arthur Lustosa" },
+            { "funcao": "Fotos e vídeos", "nome_exibicao": "Rafael Martins" },
+            { "funcao": "Colaboração", "nome_exibicao": "Maria Iris" },
+            { "funcao": "Colaboração", "nome_exibicao": "Luan Dias" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-003-s01", "data": "2026-11-27", "hora_inicio": "19:30", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": false, "texto_exibicao": "A partir de R$ 20", "url_bilheteria": "https://www.sympla.com.br/evento/rainha-vashti-a-roda-teatro-de-bonecos/3636735" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-003-s02", "data": "2026-11-28", "hora_inicio": "19:30", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": false, "texto_exibicao": "A partir de R$ 20", "url_bilheteria": "https://www.sympla.com.br/evento/rainha-vashti-a-roda-teatro-de-bonecos/3636735" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-004",
+          "slug": "doroteia-vai-a-guerra",
+          "espetaculo": {
+            "titulo": "Dorotéia Vai à Guerra",
+            "companhia": null,
+            "resumo_editorial": "Conflitos entre mãe e filha revelam como afeto e controle podem se entrelaçar.",
+            "contexto_artistico": "A montagem combina comédia e tensão dramática a partir do texto de Carlos Alberto Ratton.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://www.sympla.com.br/evento/lgc/3655789"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Texto", "nome_exibicao": "Carlos Alberto Ratton" },
+            { "funcao": "Adaptação e direção", "nome_exibicao": "Eduardo Cabus" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-004-s01", "data": "2026-11-27", "hora_inicio": "19:30", "local": { "nome": "Espaço Cultural Eduardo Cabus", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 30 / R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/lgc/3655789" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-004-s02", "data": "2026-11-28", "hora_inicio": "19:30", "local": { "nome": "Espaço Cultural Eduardo Cabus", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 30 / R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/lgc/3655789" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-004-s03", "data": "2026-12-04", "hora_inicio": "19:30", "local": { "nome": "Espaço Cultural Eduardo Cabus", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 30 / R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/lgc/3655789" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-004-s04", "data": "2026-12-05", "hora_inicio": "19:30", "local": { "nome": "Espaço Cultural Eduardo Cabus", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 30 / R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/lgc/3655789" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-004-s05", "data": "2026-12-11", "hora_inicio": "19:30", "local": { "nome": "Espaço Cultural Eduardo Cabus", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 30 / R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/lgc/3655789" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-004-s06", "data": "2026-12-12", "hora_inicio": "19:30", "local": { "nome": "Espaço Cultural Eduardo Cabus", "bairro": "Campo Grande" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 30 / R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/lgc/3655789" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-005",
+          "slug": "humor-goela-abaixo",
+          "espetaculo": {
+            "titulo": "Humor Goela Abaixo",
+            "companhia": "Centro Cultural Ensaio",
+            "resumo_editorial": "Atores constroem situações cômicas em cena por meio de jogos de improvisação.",
+            "contexto_artistico": "A criação em tempo real e a escuta entre intérpretes estruturam a apresentação.",
+            "classificacao_indicativa": "12 anos",
+            "duracao_minutos": 50,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://www.sympla.com.br/evento/humor-goela-abaixo/3627670",
+              "https://soteroteatro.com.br/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Direção", "nome_exibicao": "Fábio Tavares" },
+            { "funcao": "Produção", "nome_exibicao": "Centro Cultural Ensaio" },
+            { "funcao": "Assessoria de imprensa", "nome_exibicao": "Augusto Barbosa" },
+            { "funcao": "Iluminação", "nome_exibicao": "Muca Ferreira" },
+            { "funcao": "Elenco", "nome_exibicao": "Alecsandro Guimarães" },
+            { "funcao": "Elenco", "nome_exibicao": "Arthur Celis" },
+            { "funcao": "Elenco", "nome_exibicao": "Guto Barbosa" },
+            { "funcao": "Elenco", "nome_exibicao": "Lara Bittencourt" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-005-s01", "data": "2026-11-21", "hora_inicio": "19:00", "local": { "nome": "Centro Cultural Ensaio", "bairro": "Garcia" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/humor-goela-abaixo/3627670" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-005-s02", "data": "2026-11-28", "hora_inicio": "19:00", "local": { "nome": "Centro Cultural Ensaio", "bairro": "Garcia" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/humor-goela-abaixo/3627670" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-005-s03", "data": "2026-12-05", "hora_inicio": "19:00", "local": { "nome": "Centro Cultural Ensaio", "bairro": "Garcia" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/humor-goela-abaixo/3627670" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-005-s04", "data": "2026-12-12", "hora_inicio": "19:00", "local": { "nome": "Centro Cultural Ensaio", "bairro": "Garcia" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 60", "url_bilheteria": "https://www.sympla.com.br/evento/humor-goela-abaixo/3627670" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-006",
+          "slug": "arrocha-aceita-esse-musical-que-doi-menos",
+          "espetaculo": {
+            "titulo": "Arrocha – Aceita Esse Musical Que Dói Menos",
+            "companhia": "Toca Criações Artísticas",
+            "resumo_editorial": "Histórias amorosas são costuradas por canções do arrocha, articulando romance, humor e drama.",
+            "contexto_artistico": "A temporada marca a reabertura do Teatro Gregório de Mattos e aproxima a música popular baiana da cena teatral.",
+            "classificacao_indicativa": "14 anos",
+            "duracao_minutos": 120,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://www.metro1.com.br/noticias/cultura/191874%2Cteatro-gregorio-de-mattos-reabre-com-musical-sobre-arrocha-em-salvador",
+              "https://doistercos.com.br/teatro-gregorio-de-mattos-reabre-com-temporada-do-musical-arrocha-aceita-esse-musical-que-doi-menos-que-chega-pela-primeira-vez-ao-centro-de-salvador/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Texto", "nome_exibicao": "Alan Miranda" },
+            { "funcao": "Texto e direção", "nome_exibicao": "Edvard Passos" },
+            { "funcao": "Elenco", "nome_exibicao": "Alan Miranda" },
+            { "funcao": "Elenco", "nome_exibicao": "Cícero Locijá" },
+            { "funcao": "Elenco", "nome_exibicao": "Danilo Cairo" },
+            { "funcao": "Elenco", "nome_exibicao": "Mariana Borges" },
+            { "funcao": "Elenco", "nome_exibicao": "Talis Castro" },
+            { "funcao": "Direção musical", "nome_exibicao": "Luciano Salvador Bahia" },
+            { "funcao": "Preparação vocal", "nome_exibicao": "Marcelo Jardim" },
+            { "funcao": "Coreografia", "nome_exibicao": "Marilza Oliveira" },
+            { "funcao": "Cenografia", "nome_exibicao": "Edy Ribeiro" },
+            { "funcao": "Figurinos e adereços", "nome_exibicao": "Agamenon de Abreu" },
+            { "funcao": "Iluminação", "nome_exibicao": "Allison de Sá" },
+            { "funcao": "Realização", "nome_exibicao": "Toca Criações Artísticas" },
+            { "funcao": "Produção local", "nome_exibicao": "Marlucia Sie Produções" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-006-s01", "data": "2026-12-03", "hora_inicio": "19:00", "local": { "nome": "Teatro Gregório de Mattos", "bairro": "Centro" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 40 / R$ 80", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-006-s02", "data": "2026-12-04", "hora_inicio": "19:00", "local": { "nome": "Teatro Gregório de Mattos", "bairro": "Centro" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 40 / R$ 80", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-006-s03", "data": "2026-12-05", "hora_inicio": "19:00", "local": { "nome": "Teatro Gregório de Mattos", "bairro": "Centro" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 40 / R$ 80", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-006-s04", "data": "2026-12-10", "hora_inicio": "19:00", "local": { "nome": "Teatro Gregório de Mattos", "bairro": "Centro" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 40 / R$ 80", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-006-s05", "data": "2026-12-11", "hora_inicio": "19:00", "local": { "nome": "Teatro Gregório de Mattos", "bairro": "Centro" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 40 / R$ 80", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-006-s06", "data": "2026-12-12", "hora_inicio": "19:00", "local": { "nome": "Teatro Gregório de Mattos", "bairro": "Centro" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 40 / R$ 80", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-007",
+          "slug": "mukuna-do-fio-a-raiz",
+          "espetaculo": {
+            "titulo": "Mukunã: do fio à raiz",
+            "companhia": null,
+            "resumo_editorial": "Solo que parte da experiência da intérprete com seu cabelo para discutir identidade negra e padrões estéticos.",
+            "contexto_artistico": "Integra a mostra Sóis Negros do Teatro SESI Rio Vermelho.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": 60,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://www.sympla.com.br/evento/lgc/3659021",
+              "https://agendasalvador.com.br/salvador/teatro"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Atuação, direção cênica e produção", "nome_exibicao": "Vika Mennezes" },
+            { "funcao": "Codireção, dramaturgia e design", "nome_exibicao": "Filêmon Cafezeiro" },
+            { "funcao": "Música", "nome_exibicao": "Filêmon Cafezeiro" },
+            { "funcao": "Música", "nome_exibicao": "Emillie Lapa" },
+            { "funcao": "Produção executiva", "nome_exibicao": "Juliana Tenório" },
+            { "funcao": "Produção executiva", "nome_exibicao": "Gabriela Carvalho" },
+            { "funcao": "Assistência de produção", "nome_exibicao": "Ícaro Piton" },
+            { "funcao": "Assistência de produção", "nome_exibicao": "Vinícius Teófilo" },
+            { "funcao": "Som", "nome_exibicao": "Ícaro Piton" },
+            { "funcao": "Iluminação", "nome_exibicao": "Allison de Sá" },
+            { "funcao": "Direção musical e preparação vocal", "nome_exibicao": "Liz Novais" },
+            { "funcao": "Direção de movimento", "nome_exibicao": "Paula Marinho" },
+            { "funcao": "Cenografia", "nome_exibicao": "Alan Aljó" },
+            { "funcao": "Figurino", "nome_exibicao": "Agamenon Abreu" },
+            { "funcao": "Redes sociais", "nome_exibicao": "Gamali Ramos" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-007-s01", "data": "2026-11-25", "hora_inicio": "19:00", "local": { "nome": "Teatro SESI Rio Vermelho", "bairro": "Rio Vermelho" }, "ingresso": { "gratuito": false, "texto_exibicao": "A partir de R$ 15", "url_bilheteria": "https://www.sympla.com.br/evento/lgc/3659021" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-008",
+          "slug": "alta-sociedade",
+          "espetaculo": {
+            "titulo": "Alta Sociedade",
+            "companhia": null,
+            "resumo_editorial": "Um casal endividado tenta escapar das consequências de seus negócios em uma noite de réveillon.",
+            "contexto_artistico": "Comédia de Mauro Rasi sobre privilégios econômicos e corrupção.",
+            "classificacao_indicativa": "16 anos",
+            "duracao_minutos": 80,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://www.jbnbahia.com.br/coluna/julia-lemmertz-e-ora-figueiredo-apresentanm-alta-sociedade-neste-final-de-semana-em-salvador",
+              "https://agendasalvador.com.br/salvador/teatro",
+              "https://tocaonde.com.br/events/252358-mirceia-jordana-teatro-sesc-casa-do-comercio-salvador"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Texto", "nome_exibicao": "Mauro Rasi" },
+            { "funcao": "Direção", "nome_exibicao": "Emilio de Mello" },
+            { "funcao": "Elenco", "nome_exibicao": "Julia Lemmertz" },
+            { "funcao": "Elenco", "nome_exibicao": "Orã Figueiredo" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-008-s01", "data": "2026-11-27", "hora_inicio": "20:00", "local": { "nome": "Teatro Sesc Casa do Comércio", "bairro": null }, "ingresso": { "gratuito": false, "texto_exibicao": "A partir de R$ 60", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-008-s02", "data": "2026-11-28", "hora_inicio": "20:00", "local": { "nome": "Teatro Sesc Casa do Comércio", "bairro": null }, "ingresso": { "gratuito": false, "texto_exibicao": "A partir de R$ 60", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-008-s03", "data": "2026-11-29", "hora_inicio": null, "local": { "nome": "Teatro Sesc Casa do Comércio", "bairro": null }, "ingresso": { "gratuito": false, "texto_exibicao": "A partir de R$ 60", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-009",
+          "slug": "disney-on-broadway-2026",
+          "espetaculo": {
+            "titulo": "Disney on Broadway 2026",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://agendasalvador.com.br/salvador/teatro"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-009-s01", "data": "2026-11-23", "hora_inicio": "19:00", "local": { "nome": "Teatro Faresi", "bairro": null }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-009-s02", "data": "2026-11-24", "hora_inicio": "19:00", "local": { "nome": "Teatro Faresi", "bairro": null }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-010",
+          "slug": "partilha-daylight-project-2026",
+          "espetaculo": {
+            "titulo": "Partilha Daylight Project 2026",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://agendasalvador.com.br/salvador/teatro"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-010-s01", "data": "2026-11-24", "hora_inicio": "19:00", "local": { "nome": "Teatro Vila Velha", "bairro": null }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-011",
+          "slug": "alem-dos-olhos",
+          "espetaculo": {
+            "titulo": "Além dos Olhos",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://agendasalvador.com.br/salvador/teatro"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-011-s01", "data": "2026-12-02", "hora_inicio": "19:00", "local": { "nome": "Teatro SESI Rio Vermelho", "bairro": null }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-012",
+          "slug": "uma-mulher-vestida-de-sol",
+          "espetaculo": {
+            "titulo": "Uma Mulher Vestida de Sol",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://agendasalvador.com.br/salvador/teatro"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-012-s01", "data": "2026-12-03", "hora_inicio": "19:00", "local": { "nome": "Teatro Martim Gonçalves", "bairro": null }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-013",
+          "slug": "confuzo-esta-escurecendo-dentro-de-mim",
+          "espetaculo": {
+            "titulo": "CONFUZO (está escurecendo dentro de mim)",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://agendasalvador.com.br/salvador/teatro"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-013-s01", "data": "2026-12-04", "hora_inicio": "19:00", "local": { "nome": "Teatro Vila Velha", "bairro": null }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-014",
+          "slug": "mundo-torajo",
+          "espetaculo": {
+            "titulo": "Mundo Torajo",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://agendasalvador.com.br/salvador/teatro"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-014-s01", "data": "2026-12-13", "hora_inicio": "18:30", "local": { "nome": "Teatro Faresi", "bairro": null }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-015",
+          "slug": "encontro-de-teatro-lambe-lambe",
+          "espetaculo": {
+            "titulo": "Encontro de Teatro Lambe-Lambe",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://agendasalvador.com.br/salvador/teatro"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-015-s01", "data": "2026-11-28", "hora_inicio": "15:30", "local": { "nome": "Praça da Sé", "bairro": null }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-016",
+          "slug": "um-rio-de-historias-e-sol-chuva-e-tapete",
+          "espetaculo": {
+            "titulo": "Um Rio de Histórias e Sol, Chuva e Tapete",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://agendasalvador.com.br/salvador/teatro"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-016-s01", "data": "2026-11-28", "hora_inicio": "10:00", "local": { "nome": "CAIXA Cultural Salvador – Carlos Gomes", "bairro": null }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-017",
+          "slug": "ato-de-4",
+          "espetaculo": {
+            "titulo": "Ato de 4",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://agendasalvador.com.br/salvador/teatro"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-017-s01", "data": "2026-11-30", "hora_inicio": "19:00", "local": { "nome": "Pavilhão de Aulas da Federação V", "bairro": null }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-018",
+          "slug": "esse-tal-de-conto-de-fadas",
+          "espetaculo": {
+            "titulo": "Esse Tal de Conto de Fadas",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": ["https://soteroteatro.com.br/"],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-018-s01", "data": "2026-11-27", "hora_inicio": "19:00", "local": { "nome": "Cineteatro Solar Boa Vista", "bairro": null }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 20", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-019",
+          "slug": "se-for-pra-ser-vote-em-mim",
+          "espetaculo": {
+            "titulo": "Se For pra Ser, Vote em Mim!",
+            "companhia": "Trupe7.com",
+            "resumo_editorial": "Um candidato à reeleição tenta recuperar popularidade por meio de alianças e promessas, expondo interesses e contradições do poder em uma comédia satírica.",
+            "contexto_artistico": "A Trupe7.com utiliza humor e referências à comunicação política para discutir a relação entre poder e sociedade.",
+            "classificacao_indicativa": "18 anos",
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://soteroteatro.com.br/",
+              "https://www.sympla.com.br/evento/se-for-pra-ser-vote-em-mim/3635940"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Criação", "nome_exibicao": "Trupe7.com" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-019-s02", "data": "2026-11-19", "hora_inicio": "19:00", "local": { "nome": "Cineteatro Solar Boa Vista", "bairro": "Engenho Velho de Brotas" }, "ingresso": { "gratuito": null, "texto_exibicao": "R$ 15–30 ou 1 kg de alimento", "url_bilheteria": "https://www.sympla.com.br/evento/se-for-pra-ser-vote-em-mim/3635940" }, "status_sessao": "programada", "aviso_publico": "Entrada gratuita mediante doação de 1 kg de alimento não perecível.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-019-s01", "data": "2026-11-26", "hora_inicio": "19:00", "local": { "nome": "Cineteatro Solar Boa Vista", "bairro": "Engenho Velho de Brotas" }, "ingresso": { "gratuito": null, "texto_exibicao": "R$ 15–30 ou 1 kg de alimento", "url_bilheteria": "https://www.sympla.com.br/evento/se-for-pra-ser-vote-em-mim/3635940" }, "status_sessao": "programada", "aviso_publico": "Entrada gratuita mediante doação de 1 kg de alimento não perecível.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-019-s03", "data": "2026-12-03", "hora_inicio": "19:00", "local": { "nome": "Cineteatro Solar Boa Vista", "bairro": "Engenho Velho de Brotas" }, "ingresso": { "gratuito": null, "texto_exibicao": "R$ 15–30 ou 1 kg de alimento", "url_bilheteria": "https://www.sympla.com.br/evento/se-for-pra-ser-vote-em-mim/3635940" }, "status_sessao": "programada", "aviso_publico": "Entrada gratuita mediante doação de 1 kg de alimento não perecível.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-019-s04", "data": "2026-12-10", "hora_inicio": "19:00", "local": { "nome": "Cineteatro Solar Boa Vista", "bairro": "Engenho Velho de Brotas" }, "ingresso": { "gratuito": null, "texto_exibicao": "R$ 15–30 ou 1 kg de alimento", "url_bilheteria": "https://www.sympla.com.br/evento/se-for-pra-ser-vote-em-mim/3635940" }, "status_sessao": "programada", "aviso_publico": "Entrada gratuita mediante doação de 1 kg de alimento não perecível.", "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-020",
+          "slug": "o-motociclista-no-globo-da-morte",
+          "espetaculo": {
+            "titulo": "O Motociclista no Globo da Morte",
+            "companhia": null,
+            "resumo_editorial": null,
+            "contexto_artistico": null,
+            "classificacao_indicativa": "14 anos",
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://agendasalvador.com.br/salvador/teatro",
+              "https://soteroteatro.com.br/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-020-s01", "data": "2026-11-28", "hora_inicio": "20:00", "local": { "nome": "Teatro Faresi", "bairro": null }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 50 / R$ 180", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-020-s02", "data": "2026-11-29", "hora_inicio": null, "local": { "nome": "Teatro Faresi", "bairro": null }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 50 / R$ 180", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-021",
+          "slug": "um-fio-para-liberdade",
+          "espetaculo": {
+            "titulo": "Um Fio Para Liberdade",
+            "companhia": null,
+            "resumo_editorial": "Uma adolescente procura espaço para expressar sua poesia e afirmar sua autonomia.",
+            "contexto_artistico": "Espetáculo desenvolvido a partir de oficinas teatrais.",
+            "classificacao_indicativa": "14 anos",
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://www.sympla.com.br/evento/um-fio-para-liberdade-espaco-cultural-alagados/3657745",
+              "https://soteroteatro.com.br/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-021-s01", "data": "2026-11-21", "hora_inicio": "19:00", "local": { "nome": "Espaço Cultural Alagados", "bairro": null }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": "https://www.sympla.com.br/evento/um-fio-para-liberdade-espaco-cultural-alagados/3657745" }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-021-s02", "data": "2026-11-28", "hora_inicio": "19:00", "local": { "nome": "Galpão Wilson Melo", "bairro": null }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 30", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-021-s03", "data": "2026-11-29", "hora_inicio": "16:00", "local": { "nome": "Museu de Arte da Bahia", "bairro": null }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 30", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-022",
+          "slug": "1798-lucas-dantas-um-heroi-de-buzios",
+          "espetaculo": {
+            "titulo": "1798 — Lucas Dantas: Um Herói de Búzios",
+            "companhia": null,
+            "resumo_editorial": "Um solo revisita a trajetória de Lucas Dantas, participante da Conjuração Baiana, articulando sua luta por igualdade com questões contemporâneas de memória e racismo.",
+            "contexto_artistico": "O trabalho de Everton Machado aproxima pesquisa histórica e interpretação teatral, no contexto do teatro negro baiano.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://rapana.com.br/salvador/eventos/1979-1798-lucas-dantas-um-heroi-de-buzios-05-12-2026-12-05",
+              "https://agenda.salvador.br/evento/1798-lucas-dantas-um-heroi-de-buzios-0512-3663589"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Atuação", "nome_exibicao": "Everton Machado" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-022-s01", "data": "2026-12-05", "hora_inicio": "20:00", "local": { "nome": "Casa Preta Espaço de Cultura", "bairro": "Dois de Julho" }, "ingresso": { "gratuito": false, "texto_exibicao": "R$ 20 / R$ 40", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": null, "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-023",
+          "slug": "brincando-com-a-turma-da-monica",
+          "espetaculo": {
+            "titulo": "Brincando com a Turma da Mônica",
+            "companhia": "Avatar Cia de Teatro",
+            "resumo_editorial": "Montagem infantojuvenil inspirada no universo da Turma da Mônica.",
+            "contexto_artistico": "Resultado do percurso formativo anual da Avatar Cia de Teatro.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://aloalobahia.com/noticias/2026/11/12/avatar-cia-de-teatro-apresenta-quatro-espetaculos-gratuitos-no-pelourinho-em-dezembro/",
+              "https://www.agendartecultura.com.br/teatro/avatar-cia-teatro-apresenta-quatro-espetaculos-gratuitos-teatro-sesc-pelourinho/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Direção", "nome_exibicao": "Sérgio Mício" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-023-s01", "data": "2026-12-09", "hora_inicio": "16:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-023-s02", "data": "2026-12-10", "hora_inicio": "16:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-024",
+          "slug": "bullying-se-correr-o-bicho-pega",
+          "espetaculo": {
+            "titulo": "Bullying: Se Correr o Bicho Pega",
+            "companhia": "Avatar Cia de Teatro",
+            "resumo_editorial": "Peça que aborda o bullying a partir da experiência teatral de crianças e adolescentes.",
+            "contexto_artistico": "Integra a mostra de formação da companhia, com questões sociais próximas ao cotidiano escolar.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://aloalobahia.com/noticias/2026/11/12/avatar-cia-de-teatro-apresenta-quatro-espetaculos-gratuitos-no-pelourinho-em-dezembro/",
+              "https://www.agendartecultura.com.br/teatro/avatar-cia-teatro-apresenta-quatro-espetaculos-gratuitos-teatro-sesc-pelourinho/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Direção", "nome_exibicao": "Sérgio Mício" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-024-s01", "data": "2026-12-09", "hora_inicio": "18:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-024-s02", "data": "2026-12-10", "hora_inicio": "18:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-025",
+          "slug": "lei-10639-que-historia-e-essa",
+          "espetaculo": {
+            "titulo": "Lei 10639: Que História É Essa?",
+            "companhia": "Avatar Cia de Teatro",
+            "resumo_editorial": "A montagem percorre referências da história e da cultura negra, incluindo manifestações afro-baianas, e discute seu ensino nas escolas.",
+            "contexto_artistico": "O texto de Sérgio Mício dialoga com a Lei 10.639 e a valorização da memória afro-brasileira.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://aloalobahia.com/noticias/2026/11/12/avatar-cia-de-teatro-apresenta-quatro-espetaculos-gratuitos-no-pelourinho-em-dezembro/",
+              "https://www.agendartecultura.com.br/teatro/avatar-cia-teatro-apresenta-quatro-espetaculos-gratuitos-teatro-sesc-pelourinho/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Direção", "nome_exibicao": "Sérgio Mício" },
+            { "funcao": "Texto", "nome_exibicao": "Sérgio Mício" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-025-s01", "data": "2026-12-10", "hora_inicio": "19:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-025-s02", "data": "2026-12-11", "hora_inicio": "18:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-026",
+          "slug": "o-pequeno-principe-na-amazonia",
+          "espetaculo": {
+            "titulo": "O Pequeno Príncipe na Amazônia",
+            "companhia": "Avatar Cia de Teatro",
+            "resumo_editorial": "Uma adaptação de O Pequeno Príncipe transporta a narrativa para um contexto brasileiro.",
+            "contexto_artistico": "A proposta integra uma mostra infantojuvenil que também aborda questões ambientais.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://aloalobahia.com/noticias/2026/11/12/avatar-cia-de-teatro-apresenta-quatro-espetaculos-gratuitos-no-pelourinho-em-dezembro/",
+              "https://www.agendartecultura.com.br/teatro/avatar-cia-teatro-apresenta-quatro-espetaculos-gratuitos-teatro-sesc-pelourinho/"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [
+            { "funcao": "Direção", "nome_exibicao": "Sérgio Mício" }
+          ],
+          "sessoes": [
+            { "sessao_id": "evt-026-s01", "data": "2026-12-11", "hora_inicio": "15:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-026-s02", "data": "2026-12-11", "hora_inicio": "16:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-026-s03", "data": "2026-12-12", "hora_inicio": "10:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" },
+            { "sessao_id": "evt-026-s04", "data": "2026-12-12", "hora_inicio": "11:00", "local": { "nome": "Teatro Sesc-Senac Pelourinho", "bairro": "Pelourinho" }, "ingresso": { "gratuito": true, "texto_exibicao": "Gratuito", "url_bilheteria": null }, "status_sessao": "programada", "aviso_publico": "Apresentação gratuita na Mostra de Teatro Infantojuvenil 2026.", "verificado_em": "2026-11-24" }
+          ]
+        },
+        {
+          "id": "evt-027",
+          "slug": "os-miseraveis-mudanca-de-habito",
+          "espetaculo": {
+            "titulo": "Os Miseráveis / Mudança de Hábito",
+            "companhia": "Cia Geringonça",
+            "resumo_editorial": "Duas montagens musicais apresentadas em sequência por alunos adultos: uma aborda justiça e resistência, a outra a transformação coletiva por meio da música.",
+            "contexto_artistico": "Mostra de formação em teatro musical; um ingresso dá acesso às duas apresentações.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": { "url": null, "autorizado": false },
+            "fontes_verificadas": [
+              "https://www.sympla.com.br/evento/cia-geringonca-os-miseraveis-mudanca-de-habito/3637186",
+              "https://rapana.com.br/salvador/eventos/1745-cia-geringonca-os-miseraveis-mudanca-de-habito-2026-12-17"
+            ],
+            "verificado_em": "2026-11-24"
+          },
+          "ficha_tecnica": [],
+          "sessoes": [
+            { "sessao_id": "evt-027-s01", "data": "2026-12-17", "hora_inicio": "18:00", "local": { "nome": "Teatro da Cidade", "bairro": "Paralela" }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": "https://www.sympla.com.br/evento/cia-geringonca-os-miseraveis-mudanca-de-habito/3637186" }, "status_sessao": "programada", "aviso_publico": "Programação conjunta das duas montagens com previsão até 22h30; ingresso único.", "verificado_em": "2026-11-24" }
+          ]
+        }
+      ]
+    };
+
+    const initialToday = getSalvadorTodayISO();
+
+    let state = {
+      refDate: initialToday,
+      searchQuery: "",
+      expandedSessaoId: null,
+      forcedDeepLinkParam: null
+    };
+
+    const WEEKDAYS_PT = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
+    const MONTHS_PT = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
+
+    function parseISODate(iso) {
+      const [y, m, d] = iso.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function addDays(iso, delta) {
+      const dt = parseISODate(iso);
+      dt.setDate(dt.getDate() + delta);
+      const y = dt.getFullYear();
+      const m = String(dt.getMonth() + 1).padStart(2, "0");
+      const d = String(dt.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function maxISODate(a, b) {
+      return a >= b ? a : b;
+    }
+
+    // Regra temporal: início em Hoje - 7d; fim em max(Hoje + 14d, 2026-12-24) (retomando +14d automaticamente a partir de 11/12/2026)
+    function getWindowBounds(refIso) {
+      const minDate = addDays(refIso, -7);
+      const standardFuture = addDays(refIso, 14);
+      const maxDate = maxISODate(standardFuture, HOLIDAY_CAP_ISO);
+      const holidayExceptionActive = HOLIDAY_CAP_ISO > standardFuture;
+      return { minDate, maxDate, standardFuture, holidayExceptionActive };
+    }
+
+    function diffDays(targetIso, refIso) {
+      const a = parseISODate(targetIso);
+      const b = parseISODate(refIso);
+      return Math.round((a - b) / (1000 * 60 * 60 * 24));
+    }
+
+    function formatShortDate(iso) {
+      const dt = parseISODate(iso);
+      const day = String(dt.getDate()).padStart(2, "0");
+      const mon = MONTHS_PT[dt.getMonth()];
+      const wd = WEEKDAYS_PT[dt.getDay()];
+      return { dayMonth: `${day} ${mon}`, weekday: wd };
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function readDeepLinkFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const sessao = params.get("sessao");
+      const evento = params.get("evento");
+      if (sessao) return { type: "sessao", value: sessao };
+      if (evento) return { type: "evento", value: evento };
+      if (window.location.hash && window.location.hash.length > 1) {
+        return { type: "hash", value: decodeURIComponent(window.location.hash.slice(1)) };
+      }
+      return null;
+    }
+
+    function buildShareUrl(slug, sessaoId) {
+      const url = new URL(window.location.href.split("#")[0]);
+      url.searchParams.set("evento", slug);
+      url.searchParams.set("sessao", sessaoId);
+      return url.toString();
+    }
+
+    function buildWhatsAppUrl(ev, ses, shareUrl) {
+      const { dayMonth, weekday } = formatShortDate(ses.data);
+      const hora = ses.hora_inicio || "Horário não informado";
+      const local = ses.local.nome + (ses.local.bairro ? ` (${ses.local.bairro})` : "");
+      const valor = ses.ingresso.texto_exibicao || "Ingresso não informado";
+      const text = [
+        `*${ev.espetaculo.titulo}*`,
+        `📅 ${weekday}, ${dayMonth} · 🕒 ${hora}`,
+        `📍 ${local}`,
+        `🎟️ ${valor}`,
+        ``,
+        `Confira na Agenda Cultural EducART:`,
+        shareUrl
+      ].join("\n");
+      return `https://wa.me/?text=${encodeURIComponent(text)}`;
+    }
+
+    function renderBoard(autoScrollToday = false) {
+      const boardBody = document.getElementById("board-body");
+      const metricsEl = document.getElementById("window-metrics");
+      const subtitleEl = document.getElementById("header-subtitle");
+      const bannerEl = document.getElementById("deeplink-banner");
+      const bannerTextEl = document.getElementById("deeplink-banner-text");
+
+      const { minDate, maxDate, holidayExceptionActive } = getWindowBounds(state.refDate);
+      const events = REAL_DATASET.eventos;
+
+      const allRows = [];
+      events.forEach((ev) => {
+        ev.sessoes.forEach((ses) => {
+          const delta = diffDays(ses.data, state.refDate);
+          const inWindow = ses.data >= minDate && ses.data <= maxDate;
+          allRows.push({ ev, ses, delta, inWindow });
+        });
+      });
+
+      let deepLinkMatch = null;
+      if (state.forcedDeepLinkParam) {
+        for (const ev of events) {
+          for (const ses of ev.sessoes) {
+            const matchBySes = state.forcedDeepLinkParam.type === "sessao" && ses.sessao_id === state.forcedDeepLinkParam.value;
+            const matchByEv = (state.forcedDeepLinkParam.type === "evento" || state.forcedDeepLinkParam.type === "hash") &&
+              (ev.slug === state.forcedDeepLinkParam.value || ev.id === state.forcedDeepLinkParam.value || ses.sessao_id === state.forcedDeepLinkParam.value);
+            if (matchBySes || matchByEv) {
+              const delta = diffDays(ses.data, state.refDate);
+              const inWindow = ses.data >= minDate && ses.data <= maxDate;
+              deepLinkMatch = { ev, ses, delta, inWindow };
+              break;
+            }
+          }
+          if (deepLinkMatch) break;
+        }
+      }
+
+      if (deepLinkMatch) {
+        state.expandedSessaoId = deepLinkMatch.ses.sessao_id;
+        if (!deepLinkMatch.inWindow) {
+          bannerEl.classList.add("active");
+          bannerTextEl.textContent = `Link direto aberto: "${deepLinkMatch.ev.espetaculo.titulo}" (${deepLinkMatch.ses.data}) — exibido a partir do acervo.`;
+        } else {
+          bannerEl.classList.remove("active");
+        }
+      } else {
+        bannerEl.classList.remove("active");
+      }
+
+      const q = state.searchQuery.trim().toLowerCase();
+      let visibleRows = allRows.filter((row) => {
+        const isForcedTarget = deepLinkMatch && deepLinkMatch.ses.sessao_id === row.ses.sessao_id;
+        if (!row.inWindow && !isForcedTarget) return false;
+        if (!q) return true;
+        const hay = [
+          row.ev.espetaculo.titulo,
+          row.ev.espetaculo.companhia,
+          row.ses.local.nome,
+          row.ses.local.bairro
+        ].filter(Boolean).join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+
+      if (deepLinkMatch && !visibleRows.some((r) => r.ses.sessao_id === deepLinkMatch.ses.sessao_id)) {
+        visibleRows.push(deepLinkMatch);
+      }
+
+      visibleRows.sort((a, b) => {
+        if (a.ses.data !== b.ses.data) return a.ses.data.localeCompare(b.ses.data);
+        const ha = a.ses.hora_inicio || "99:99";
+        const hb = b.ses.hora_inicio || "99:99";
+        if (ha !== hb) return ha.localeCompare(hb);
+        return a.ev.espetaculo.titulo.localeCompare(b.ev.espetaculo.titulo);
+      });
+
+      const { dayMonth: refDM } = formatShortDate(state.refDate);
+      const { dayMonth: minDM } = formatShortDate(minDate);
+      const { dayMonth: maxDM } = formatShortDate(maxDate);
+
+      subtitleEl.textContent = holidayExceptionActive
+        ? "Guia cultural teatral · Janela estendida até 24/12 (-7d · Hoje · Fim de ano) · Salvador, BA"
+        : "Guia cultural teatral · Janela móvel (-7d · Hoje · +14d) · Salvador, BA";
+
+      metricsEl.innerHTML = `
+        <span>Janela: <strong>${minDM}</strong> a <strong>${maxDM}</strong></span>
+        <span>Hoje em Salvador: <strong>${refDM}</strong></span>
+        <span>Sessões exibidas: <strong>${visibleRows.length}</strong></span>
+      `;
+
+      if (visibleRows.length === 0) {
+        boardBody.innerHTML = `<div class="empty-state">Nenhuma sessão encontrada para os filtros atuais neste recorte da agenda.</div>`;
+        return;
+      }
+
+      let todayAnchorAssigned = false;
+
+      boardBody.innerHTML = visibleRows.map(({ ev, ses, delta, inWindow }) => {
+        const isPast = delta < 0;
+        const isToday = delta === 0;
+        const isOpen = state.expandedSessaoId === ses.sessao_id;
+        const { dayMonth, weekday } = formatShortDate(ses.data);
+
+        let anchorAttr = "";
+        if (!todayAnchorAssigned && delta >= 0) {
+          todayAnchorAssigned = true;
+          anchorAttr = `id="today-anchor"`;
+        }
+
+        const wrapperClasses = [
+          "board-row-wrapper",
+          isPast ? "is-past" : "",
+          isToday ? "is-today" : "",
+          ses.status_sessao === "cancelada" ? "is-cancelled" : "",
+          ses.status_sessao === "remarcada" ? "is-rescheduled" : "",
+          isOpen ? "is-open" : ""
+        ].filter(Boolean).join(" ");
+
+        // Sinaliza somente cancelamentos e remarcações comprovados (sem selos NÃO CONFIRMADA / A CONFIRMAR)
+        const badges = [];
+        if (!inWindow) {
+          badges.push(`<span class="badge badge-outwindow">Fora da janela</span>`);
+        }
+        if (ses.status_sessao === "cancelada") {
+          badges.push(`<span class="badge badge-cancelled">Cancelado</span>`);
+        } else if (ses.status_sessao === "remarcada") {
+          badges.push(`<span class="badge badge-rescheduled">Remarcada</span>`);
+        }
+
+        const horaDisplay = ses.hora_inicio || "—";
+        const priceHtml = ses.ingresso.gratuito === true
+          ? `<span class="price-free">${escapeHtml(ses.ingresso.texto_exibicao || "Gratuito")}</span>`
+          : escapeHtml(ses.ingresso.texto_exibicao || "—");
+
+        const shareUrl = buildShareUrl(ev.slug, ses.sessao_id);
+        const waUrl = buildWhatsAppUrl(ev, ses, shareUrl);
+
+        const otherSessionsHtml = ev.sessoes.map((s) => {
+          const fmt = formatShortDate(s.data);
+          const isCur = s.sessao_id === ses.sessao_id;
+          return `<button type="button" class="session-chip ${isCur ? "current" : ""}" data-jump-ses="${escapeHtml(s.sessao_id)}">${fmt.dayMonth} · ${s.hora_inicio || "s/h"}</button>`;
+        }).join("");
+
+        const creditsHtml = ev.ficha_tecnica && ev.ficha_tecnica.length > 0
+          ? `<ul class="credits-list">${ev.ficha_tecnica.map((c) => `<li><strong>${escapeHtml(c.funcao)}:</strong> ${escapeHtml(c.nome_exibicao)}</li>`).join("")}</ul>`
+          : `<div class="detail-text muted">Ficha técnica não informada na fonte.</div>`;
+
+        const combinedSources = Array.from(new Set(ev.espetaculo.fontes_verificadas || []));
+        const sourcesHtml = combinedSources.length > 0
+          ? `<div class="sources-list">${combinedSources.map((u) => `<a href="${escapeHtml(u)}" target="_blank" rel="noopener noreferrer">${escapeHtml(u)}</a>`).join("")}</div>`
+          : `<div class="detail-text muted">Fontes não informadas.</div>`;
+
+        const alertClass = ses.status_sessao === "cancelada"
+          ? "is-red"
+          : (ses.status_sessao === "remarcada" ? "" : "is-info");
+
+        return `
+          <article class="${wrapperClasses}" ${anchorAttr} data-ses-id="${escapeHtml(ses.sessao_id)}">
+            <div class="board-row" role="button" tabindex="0" aria-expanded="${isOpen}" data-toggle-ses="${escapeHtml(ses.sessao_id)}">
+              <div class="cell-date">
+                <span>${dayMonth}</span>
+                <span class="mobile-time-inline">· ${escapeHtml(horaDisplay)}</span>
+                ${isToday
+                  ? `<span class="day-tag today-pill">HOJE · ${weekday}</span>`
+                  : `<span class="day-tag">${weekday}</span>`}
+              </div>
+
+              <div class="cell-time">${escapeHtml(horaDisplay)}</div>
+
+              <div class="cell-show">
+                <div class="show-title-line">
+                  <span class="show-title">${escapeHtml(ev.espetaculo.titulo)}</span>
+                  ${badges.join("")}
+                </div>
+                ${ev.espetaculo.companhia ? `<span class="show-company">${escapeHtml(ev.espetaculo.companhia)}</span>` : ""}
+              </div>
+
+              <div class="cell-venue">
+                <span>${escapeHtml(ses.local.nome)}</span>
+                ${ses.local.bairro ? `<span class="venue-bairro">${escapeHtml(ses.local.bairro)}</span>` : ""}
+              </div>
+
+              <div class="cell-price">${priceHtml}</div>
+
+              <div class="cell-chevron" aria-hidden="true">▼</div>
+            </div>
+
+            <div class="expanded-panel">
+              ${ses.aviso_publico ? `
+                <div class="status-alert ${alertClass}">
+                  <strong>Aviso:</strong> ${escapeHtml(ses.aviso_publico)}
+                </div>
+              ` : ""}
+
+              <div class="expanded-grid">
+                <div>
+                  <div class="detail-block">
+                    <div class="detail-label">Resumo Editorial EducART</div>
+                    ${ev.espetaculo.resumo_editorial
+                      ? `<p class="detail-text">${escapeHtml(ev.espetaculo.resumo_editorial)}</p>`
+                      : `<p class="detail-text muted">Resumo não informado na fonte.</p>`}
+                  </div>
+
+                  ${ev.espetaculo.contexto_artistico ? `
+                    <div class="detail-block">
+                      <div class="detail-label">Contexto e Proposta Artística</div>
+                      <p class="detail-text">${escapeHtml(ev.espetaculo.contexto_artistico)}</p>
+                    </div>
+                  ` : ""}
+
+                  <div class="detail-block">
+                    <div class="detail-label">Serviço</div>
+                    <div class="meta-pills">
+                      <span class="meta-pill">Classificação: ${escapeHtml(ev.espetaculo.classificacao_indicativa || "Não informada")}</span>
+                      <span class="meta-pill">Duração: ${ev.espetaculo.duracao_minutos ? `${ev.espetaculo.duracao_minutos} min` : "Não informada"}</span>
+                      <span class="meta-pill">Acessibilidade: ${escapeHtml(ev.espetaculo.acessibilidade || "Não informada")}</span>
+                    </div>
+                  </div>
+
+                  <div class="detail-block">
+                    <div class="detail-label">Sessões deste Espetáculo (${ev.sessoes.length})</div>
+                    <div class="other-sessions">${otherSessionsHtml}</div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="detail-block">
+                    <div class="detail-label">Ficha Técnica</div>
+                    ${creditsHtml}
+                  </div>
+
+                  <div class="detail-block">
+                    <div class="detail-label">Fontes Consultadas</div>
+                    ${sourcesHtml}
+                  </div>
+                </div>
+              </div>
+
+              <div class="action-bar">
+                <div class="action-buttons">
+                  ${ses.ingresso.url_bilheteria ? `
+                    <a class="btn btn-ticket" href="${escapeHtml(ses.ingresso.url_bilheteria)}" target="_blank" rel="noopener noreferrer">
+                      Bilheteria oficial ↗
+                    </a>
+                  ` : ""}
+                  <a class="btn btn-whatsapp" href="${escapeHtml(waUrl)}" target="_blank" rel="noopener noreferrer">
+                    Compartilhar no WhatsApp
+                  </a>
+                  <button type="button" class="btn" data-copy-link="${escapeHtml(shareUrl)}">
+                    Copiar link direto
+                  </button>
+                </div>
+                <span class="verified-stamp">Atualizado em ${escapeHtml(ses.verificado_em)}</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      if (autoScrollToday) {
+        const anchor = document.getElementById("today-anchor");
+        if (anchor) {
+          anchor.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    }
+
+    document.getElementById("board-body").addEventListener("click", (e) => {
+      const copyBtn = e.target.closest("[data-copy-link]");
+      if (copyBtn) {
+        e.stopPropagation();
+        const link = copyBtn.getAttribute("data-copy-link");
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(link).then(() => showToast("Link direto copiado para a área de transferência!"));
+        } else {
+          showToast(link);
+        }
+        return;
+      }
+
+      const jumpChip = e.target.closest("[data-jump-ses]");
+      if (jumpChip) {
+        e.stopPropagation();
+        const targetSes = jumpChip.getAttribute("data-jump-ses");
+        state.forcedDeepLinkParam = { type: "sessao", value: targetSes };
+        state.expandedSessaoId = targetSes;
+        renderBoard(false);
+        const el = document.querySelector(`[data-ses-id="${targetSes}"]`);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      const rowTrigger = e.target.closest("[data-toggle-ses]");
+      if (rowTrigger) {
+        const sesId = rowTrigger.getAttribute("data-toggle-ses");
+        state.expandedSessaoId = state.expandedSessaoId === sesId ? null : sesId;
+        renderBoard(false);
+      }
+    });
+
+    document.getElementById("board-body").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        const rowTrigger = e.target.closest("[data-toggle-ses]");
+        if (rowTrigger) {
+          e.preventDefault();
+          const sesId = rowTrigger.getAttribute("data-toggle-ses");
+          state.expandedSessaoId = state.expandedSessaoId === sesId ? null : sesId;
+          renderBoard(false);
+        }
+      }
+    });
+
+    document.getElementById("search-input").addEventListener("input", (e) => {
+      state.searchQuery = e.target.value;
+      renderBoard(false);
+    });
+
+    document.getElementById("btn-go-today").addEventListener("click", () => {
+      const anchor = document.getElementById("today-anchor");
+      if (anchor) {
+        anchor.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        showToast("Nenhuma sessão a partir de hoje.");
+      }
+    });
+
+    document.getElementById("btn-clear-deeplink").addEventListener("click", () => {
+      state.forcedDeepLinkParam = null;
+      state.expandedSessaoId = null;
+      const cleanUrl = window.location.href.split("?")[0].split("#")[0];
+      window.history.replaceState({}, "", cleanUrl);
+      renderBoard(true);
+    });
+
+    (function init() {
+      const deep = readDeepLinkFromURL();
+      if (deep) {
+        state.forcedDeepLinkParam = deep;
+      }
+      renderBoard(!deep);
+      if (deep && state.expandedSessaoId) {
+        const targetEl = document.querySelector(`[data-ses-id="${state.expandedSessaoId}"]`);
+        if (targetEl) targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    })();
+  </script>
+</body>
+</html>
