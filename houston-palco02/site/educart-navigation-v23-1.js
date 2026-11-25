@@ -36,3 +36,31 @@ if(school&&welcome){
  e.preventDefault();e.stopImmediatePropagation();location.assign(b.hasAttribute('data-artists-school')?'/?area=escola':'/');},true);
 }
 })();
+
+/* EducART · destaque de experiência docente: Eloquence, 2025. */
+(function(){'use strict';
+  const person=Array.from(document.querySelectorAll('.conhecaPerson')).find(el=>el.querySelector('h3')?.textContent.trim()==='Aline Nepomuceno');
+  const bio=person?.querySelector('.conhecaBio');
+  if(!bio||bio.querySelector('.educart-docente-destaque'))return;
+  const style=document.createElement('style');
+  style.id='educart-docente-destaque-estilo';
+  style.textContent='.educart-docente-destaque{box-sizing:border-box;min-width:0;margin:14px 0;padding:13px;border:1px solid rgba(233,200,143,.36);border-radius:14px;background:linear-gradient(135deg,rgba(233,200,143,.09),rgba(10,18,34,.28));color:inherit}.educart-docente-destaque .ed-kicker{display:block;font:800 10px/1.4 system-ui,sans-serif;letter-spacing:.08em;color:#f7d79d}.educart-docente-destaque .ed-title{display:block;font:800 18px/1.25 system-ui,sans-serif;color:inherit;margin-top:6px}.educart-docente-destaque .ed-sub{display:block;margin-top:4px;font:700 12px/1.4 system-ui,sans-serif;color:#f7d79d}.educart-docente-destaque .ed-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:11px 0}.educart-docente-destaque .ed-grid a{box-sizing:border-box;display:block;min-width:0;margin:0;padding:9px 8px;border:1px solid rgba(233,200,143,.25);border-radius:10px;background:rgba(255,255,255,.045);text-decoration:none;font:700 12px/1.4 system-ui,sans-serif;overflow-wrap:anywhere;color:#f0c985}.educart-docente-destaque .ed-grid small{display:block;margin-top:4px;font-weight:400;color:#cbd3e2}.educart-docente-destaque .ed-total{font:600 12px/1.4 system-ui,sans-serif;color:#cbd3e2}.educart-docente-destaque a.ed-cta{display:block;margin:10px 0 0;padding:10px;text-align:center;border:1px solid #d8b474;border-radius:10px;color:#f7d79d;text-decoration:none;font:800 12px/1.4 system-ui,sans-serif}.educart-docente-destaque a:focus-visible{outline:2px solid #f7d79d;outline-offset:2px}@media(max-width:340px){.educart-docente-destaque .ed-grid{grid-template-columns:1fr}}';
+  document.head.append(style);
+  const section=document.createElement('section');
+  section.className='educart-docente-destaque';
+  section.setAttribute('aria-label','Experiência docente em destaque: EducART e Eloquence');
+  section.innerHTML='<span class="ed-kicker">EXPERIÊNCIAS EM DESTAQUE · 2025</span><strong class="ed-title">EducART &amp; Eloquence</strong><span class="ed-sub">Teatro na prática</span><p>Uma experiência de formação teatral com Aline Nepomuceno, reunindo ensaios, construção de personagens e apresentação cênica.</p>';
+  const grid=document.createElement('div');grid.className='ed-grid';
+  const records=[
+    ['Falas da professora','5 registros','1qOUWky3mdsN-vWv4cV3KZICp82L08cKw'],
+    ['Construção de personagens','4 registros','1GzXEtzHOGxxWsAA9nwQV_7LeGYliEJO-'],
+    ['Ensaios e processos','1 registro','1Y7-nM-IYlgTbFZxPkGo7lhPzz3Js5AD8'],
+    ['Apresentação final','1 registro','1GiQ2abnb-IJthibcZ1a4W1z7t3OBViVe']
+  ];
+  function link(label,id,cls){const a=document.createElement('a');a.textContent=label;a.href='https://drive.google.com/drive/folders/'+id;a.target='_blank';a.rel='noopener noreferrer';if(cls)a.className=cls;return a}
+  records.forEach(([label,count,id])=>{const a=link(label,id);const small=document.createElement('small');small.textContent=count+' · acervo';a.append(small);grid.append(a)});
+  section.append(grid);
+  const total=link('26 registros fotográficos','1fpdDjkwmah24_wsCvxJXjlI1nhEag8sD','ed-total');section.append(total);
+  section.append(link('Conhecer a experiência ↗','1MFBkQavSuk0yhqtIm2XDepa0wHFw4Bg-','ed-cta'));
+  const intro=bio.querySelector('p');if(intro)intro.after(section);else bio.append(section);
+})();
