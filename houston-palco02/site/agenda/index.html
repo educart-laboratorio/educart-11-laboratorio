@@ -641,7 +641,7 @@
 
     .toast {
       position: fixed;
-      bottom: 1.25rem;
+      bottom: calc(70px + env(safe-area-inset-bottom));
       right: 1.25rem;
       background: #1e293b;
       color: #f8fafc;
@@ -2008,5 +2008,6 @@
       }
     })();
   </script>
+  <script defer src="/educart-navigation-v23-1.js"></script>
 </body>
 </html>
