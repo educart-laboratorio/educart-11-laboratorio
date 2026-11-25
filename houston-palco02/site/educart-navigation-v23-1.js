@@ -100,7 +100,17 @@ if(school&&welcome){
     #educartWelcomeScreen .card-agenda .icon-wrapper{display:grid;place-items:center;color:#dceaff;background:linear-gradient(135deg,#557cb9,#294678)}
     #educartWelcomeScreen .card-agenda .icon-wrapper svg{opacity:1;width:68%;height:68%}
     #educartWelcomeScreen .card-agenda .arrow-wrapper{color:#a8c6f9}
-    @media(max-width:420px){#educartWelcomeScreen .educart-door-pair{gap:7px}#educartWelcomeScreen .educart-door-pair .card-subtitle{display:none}#educartWelcomeScreen .educart-door-pair .card-content{padding:4px 5px;gap:3px}}
+    @media(max-width:600px){
+      #educartWelcomeScreen .educart-door-pair{gap:7px}
+      #educartWelcomeScreen .educart-door-pair .educart-card{height:68px;min-height:68px}
+      #educartWelcomeScreen .educart-door-pair .card-content{height:100%;min-height:0;padding:5px 5px;gap:4px}
+      #educartWelcomeScreen .educart-door-pair .card-subtitle{display:block;font-size:clamp(9px,2.35vw,11px);line-height:1.15;white-space:normal;overflow-wrap:normal}
+    }
+    @media(max-width:350px){
+      #educartWelcomeScreen .educart-door-pair .educart-card{height:65px;min-height:65px}
+      #educartWelcomeScreen .educart-door-pair .card-content{grid-template-columns:18px minmax(0,1fr);gap:3px;padding:4px}
+      #educartWelcomeScreen .educart-door-pair .icon-wrapper{width:18px;height:18px}
+    }
   `;
   document.head.append(style);
   const agenda=shows.cloneNode(true);agenda.classList.remove('card-espetaculos');agenda.classList.add('card-agenda');
