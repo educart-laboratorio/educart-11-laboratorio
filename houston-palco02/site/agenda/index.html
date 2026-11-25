@@ -300,6 +300,28 @@
       gap: 0.18rem;
     }
 
+    /* Realce discreto da data, sem competir com o indicador HOJE. */
+    .cell-date > span:first-child {
+      align-self: flex-start;
+      width: fit-content;
+      color: #efdaad;
+      background: rgba(232, 179, 57, 0.075);
+      border-radius: 4px;
+      padding: 0.08rem 0.32rem;
+    }
+
+    .is-past .cell-date > span:first-child {
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    @media (max-width: 820px) {
+      .cell-date > span:first-child {
+        align-self: center;
+        white-space: nowrap;
+      }
+    }
+
     .day-tag {
       font-size: 0.64rem;
       font-weight: 700;
