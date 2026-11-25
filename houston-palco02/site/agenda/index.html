@@ -1887,6 +1887,39 @@
       }
     }
 
+    // Mantém a sessão selecionada no campo de visão, mesmo após reconstruir a lista.
+    function focusSession(sesId, expanded, restoreFocus = false) {
+      requestAnimationFrame(() => {
+        const article = Array.from(document.querySelectorAll("[data-ses-id]"))
+          .find(el => el.getAttribute("data-ses-id") === sesId);
+        if (!article) return;
+        const row = article.querySelector("[data-toggle-ses]");
+        if (!row) return;
+        if (restoreFocus) row.focus({ preventScroll: true });
+        const target = expanded ? article : row;
+        const viewportHeight = window.innerHeight;
+        const header = document.querySelector(".topbar");
+        const dock = document.querySelector(".educart-areas-v231");
+        const top = (header ? Math.max(0, header.getBoundingClientRect().bottom) : 0) + 12;
+        const bottom = (dock ? Math.min(viewportHeight, dock.getBoundingClientRect().top) : viewportHeight - 76) - 12;
+        const available = Math.max(1, bottom - top);
+        const rect = target.getBoundingClientRect();
+        // Centraliza o bloco quando cabe; detalhes longos começam pelo título, nunca pelo meio.
+        const desiredTop = top + Math.max(0, (available - rect.height) / 2);
+        window.scrollTo({
+          top: Math.max(0, window.scrollY + rect.top - desiredTop),
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+        });
+      });
+    }
+
+    function toggleSession(sesId) {
+      const expanded = state.expandedSessaoId !== sesId;
+      state.expandedSessaoId = expanded ? sesId : null;
+      renderBoard(false);
+      focusSession(sesId, expanded, true);
+    }
+
     document.getElementById("board-body").addEventListener("click", (e) => {
       const copyBtn = e.target.closest("[data-copy-link]");
       if (copyBtn) {
@@ -1907,16 +1940,14 @@
         state.forcedDeepLinkParam = { type: "sessao", value: targetSes };
         state.expandedSessaoId = targetSes;
         renderBoard(false);
-        const el = document.querySelector(`[data-ses-id="${targetSes}"]`);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+        focusSession(targetSes, true, true);
         return;
       }
 
       const rowTrigger = e.target.closest("[data-toggle-ses]");
       if (rowTrigger) {
         const sesId = rowTrigger.getAttribute("data-toggle-ses");
-        state.expandedSessaoId = state.expandedSessaoId === sesId ? null : sesId;
-        renderBoard(false);
+        toggleSession(sesId);
       }
     });
 
@@ -1926,8 +1957,7 @@
         if (rowTrigger) {
           e.preventDefault();
           const sesId = rowTrigger.getAttribute("data-toggle-ses");
-          state.expandedSessaoId = state.expandedSessaoId === sesId ? null : sesId;
-          renderBoard(false);
+          toggleSession(sesId);
         }
       }
     });
@@ -1961,8 +1991,7 @@
       }
       renderBoard(!deep);
       if (deep && state.expandedSessaoId) {
-        const targetEl = document.querySelector(`[data-ses-id="${state.expandedSessaoId}"]`);
-        if (targetEl) targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        focusSession(state.expandedSessaoId, true);
       }
     })();
   </script>
