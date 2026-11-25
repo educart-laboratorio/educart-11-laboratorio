@@ -90,7 +90,8 @@ if(school&&welcome){
     #educartWelcomeScreen .educart-door-pair .card-content{grid-template-columns:clamp(18px,5vw,35px) minmax(0,1fr);gap:5px;padding:5px 7px}
     #educartWelcomeScreen .educart-door-pair .icon-wrapper{width:clamp(18px,5vw,35px);height:clamp(18px,5vw,35px)}
     #educartWelcomeScreen .educart-door-pair .arrow-wrapper{display:none}
-    #educartWelcomeScreen .educart-nav-cards .educart-card .card-title{font-size:clamp(12px,3.5vw,18px);font-weight:800;line-height:1.12;letter-spacing:-.025em}
+    #educartWelcomeScreen .educart-nav-cards .educart-card .card-title{font-size:clamp(16px,4.9vw,20px);font-weight:800;line-height:1.12;letter-spacing:-.025em}
+    @media(min-width:601px){#educartWelcomeScreen .educart-nav-cards .educart-card .card-title{font-size:24px}}
     #educartWelcomeScreen .educart-door-pair .card-title{white-space:normal;overflow-wrap:normal}
     #educartWelcomeScreen .educart-door-pair .card-subtitle{font-size:clamp(8px,2vw,10px)}
     #educartWelcomeScreen .card-agenda{--ref-left:rgba(52,83,139,.75);--ref-right:rgba(46,74,128,.70);--ref-border:rgba(168,164,154,.55);--ref-glow:rgba(223,171,74,.24);--ref-subtitle:#d2e2fc;animation:educart-agenda-glow 4s ease-in-out infinite alternate}
@@ -107,10 +108,13 @@ if(school&&welcome){
       #educartWelcomeScreen .educart-door-pair .card-content{height:100%;min-height:0;padding:5px 5px;gap:4px}
       #educartWelcomeScreen .educart-door-pair .card-subtitle{display:block;font-size:clamp(9px,2.35vw,11px);line-height:1.15;white-space:normal;overflow-wrap:normal}
     }
-    @media(max-width:350px){
-      #educartWelcomeScreen .educart-door-pair .educart-card{height:65px;min-height:65px}
-      #educartWelcomeScreen .educart-door-pair .card-content{grid-template-columns:18px minmax(0,1fr);gap:3px;padding:4px}
-      #educartWelcomeScreen .educart-door-pair .icon-wrapper{width:18px;height:18px}
+    @media(max-width:480px){
+      #educartWelcomeScreen .educart-door-pair .educart-card{height:auto;min-height:68px;overflow:visible}
+      #educartWelcomeScreen .educart-door-pair .card-content{display:flex;flex-direction:column;justify-content:center;align-items:center;height:auto;min-height:66px;gap:2px;padding:4px 3px}
+      #educartWelcomeScreen .educart-door-pair .icon-wrapper{flex:0 0 auto;width:17px;height:17px}
+      #educartWelcomeScreen .educart-door-pair .text-group{width:100%;align-items:center;text-align:center}
+      #educartWelcomeScreen .educart-door-pair .card-title{max-width:100%;white-space:normal}
+      #educartWelcomeScreen .educart-door-pair .card-subtitle{text-align:center}
     }
   `;
   document.head.append(style);
