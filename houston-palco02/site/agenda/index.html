@@ -249,6 +249,12 @@
       transition: background 0.15s ease;
     }
 
+    /* Alternância visual de 10% entre sessões, preservando os estados especiais. */
+    .board-row-wrapper:nth-child(even):not(.is-today):not(.is-cancelled) {
+      background-color: #292d36;
+      background-color: color-mix(in srgb, var(--bg-board) 90%, var(--text-primary) 10%);
+    }
+
     .board-row-wrapper:last-child {
       border-bottom: none;
     }
