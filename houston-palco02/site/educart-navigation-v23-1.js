@@ -17,7 +17,7 @@ function enterSchool(){if(!school||!welcome)return;
  const portal=document.getElementById('portalView'),form=document.getElementById('formacaoView'),bar=document.querySelector('body > .experienceBar');
  if(portal){portal.hidden=false;portal.inert=false;}if(form){form.hidden=true;form.inert=false;}if(bar)bar.inert=false;
  const expanded=document.getElementById('expandedJourney');if(expanded&&'open' in expanded)expanded.open=false;
- welcome.hidden=true;document.body.classList.remove('welcome-pending');window.scrollTo(0,0);}
+ welcome.hidden=true;document.body.classList.remove('welcome-pending');document.getElementById('educart-school-entry-gate')?.remove();window.scrollTo(0,0);}
 function enterHome(){if(!school||!welcome)return;
  document.querySelectorAll('dialog[open]').forEach(d=>{try{d.close()}catch(_){}});
  const portal=document.getElementById('portalView'),form=document.getElementById('formacaoView'),bar=document.querySelector('body > .experienceBar');
