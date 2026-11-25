@@ -2,7 +2,7 @@
 (function(){'use strict';
 const school=location.pathname==='/'||location.pathname==='/index.html';
 const welcome=document.getElementById('educartWelcomeScreen');
-const here=school?'escola':location.pathname.startsWith('/espetaculos')?'espetaculos':'artistas';
+const here=school?'escola':location.pathname.startsWith('/agenda')?'agenda':location.pathname.startsWith('/espetaculos')?'espetaculos':'artistas';
 const s=document.createElement('style');s.id='educart-navigation-v231';
 s.textContent='.educart-areas-v231{position:fixed;z-index:19990;bottom:max(8px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 16px));display:flex;gap:3px;padding:5px;border:1px solid #f7d56a;border-radius:18px;background:#fbbf24;box-shadow:0 6px 26px #0009;backdrop-filter:blur(12px)}.educart-areas-v231 a{flex:1;min-width:0;text-align:center;padding:9px 0;color:#16191f;text-decoration:none;border-radius:13px;font:600 11px/1.3 system-ui,sans-serif;white-space:nowrap}.educart-areas-v231 a[aria-current="page"]{background:#e8a317;color:#16191f}.educart-areas-v231 a:focus-visible,.experienceBar .expBrand--nine:focus-visible{outline:3px solid #ffc56f;outline-offset:3px}body:not(.welcome-pending){padding-bottom:70px!important}body.welcome-pending .educart-areas-v231{display:none!important}.experienceBar .expBrand--nine{cursor:pointer!important}';
 document.head.appendChild(s);
