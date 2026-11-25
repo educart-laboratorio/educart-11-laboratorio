@@ -1592,7 +1592,7 @@
     }
 
     function buildShareUrl(slug, sessaoId) {
-      const url = new URL(window.location.href.split("#")[0]);
+      const url = new URL("https://educart.pro/agenda/");
       url.searchParams.set("evento", slug);
       url.searchParams.set("sessao", sessaoId);
       return url.toString();
