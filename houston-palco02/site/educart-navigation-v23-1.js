@@ -76,3 +76,34 @@ if(school&&welcome){
   const badges=document.createElement('div');badges.className='u-badges';badges.setAttribute('data-educart-coordenadora','');
   const badge=document.createElement('span');badge.textContent='Coordenadora';badges.append(badge);title.after(badges);
 })();
+
+/* EducART · Agenda Cultural Lote 02: terceira posição, Artistas e Espetáculos na segunda linha. */
+(function(){'use strict';
+  const nav=document.querySelector('#educartWelcomeScreen .educart-nav-cards');
+  const artists=nav?.querySelector('a.card-artistas');
+  const shows=nav?.querySelector('a.card-espetaculos');
+  if(!artists||!shows||nav.querySelector('.card-agenda'))return;
+  const style=document.createElement('style');style.id='educart-agenda-home';
+  style.textContent=`
+    #educartWelcomeScreen .educart-nav-cards .educart-door-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;min-width:0;width:100%}
+    #educartWelcomeScreen .educart-door-pair .educart-card{min-width:0}
+    #educartWelcomeScreen .educart-door-pair .card-content{grid-template-columns:clamp(18px,5vw,35px) minmax(0,1fr);gap:5px;padding:5px 7px}
+    #educartWelcomeScreen .educart-door-pair .icon-wrapper{width:clamp(18px,5vw,35px);height:clamp(18px,5vw,35px)}
+    #educartWelcomeScreen .educart-door-pair .arrow-wrapper{display:none}
+    #educartWelcomeScreen .educart-door-pair .card-title{font-size:clamp(10px,3.2vw,17px);white-space:nowrap;letter-spacing:-.025em}
+    #educartWelcomeScreen .educart-door-pair .card-subtitle{font-size:clamp(8px,2vw,10px)}
+    #educartWelcomeScreen .card-agenda{--ref-left:rgba(52,83,139,.75);--ref-right:rgba(46,74,128,.70);--ref-border:rgba(123,155,220,.78);--ref-glow:rgba(84,122,208,.27);--ref-subtitle:#bed3f3}
+    #educartWelcomeScreen .card-agenda .icon-wrapper{display:grid;place-items:center;color:#dceaff;background:linear-gradient(135deg,#557cb9,#294678)}
+    #educartWelcomeScreen .card-agenda .icon-wrapper svg{opacity:1;width:68%;height:68%}
+    #educartWelcomeScreen .card-agenda .arrow-wrapper{color:#a8c6f9}
+    @media(max-width:420px){#educartWelcomeScreen .educart-door-pair{gap:7px}#educartWelcomeScreen .educart-door-pair .card-subtitle{display:none}#educartWelcomeScreen .educart-door-pair .card-content{padding:4px 5px;gap:3px}}
+  `;
+  document.head.append(style);
+  const agenda=shows.cloneNode(true);agenda.classList.remove('card-espetaculos');agenda.classList.add('card-agenda');
+  agenda.href='/agenda/';agenda.setAttribute('aria-label','Acessar Agenda Cultural: programação teatral de Salvador');
+  agenda.querySelector('.card-title').textContent='Agenda Cultural';
+  agenda.querySelector('.card-subtitle').textContent='Programação teatral de Salvador';
+  agenda.querySelector('.icon-wrapper').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path stroke-linecap="round" d="M16 3v4M8 3v4M3 10h18M8 14h2m4 0h2m-8 3h2m4 0h2"/></svg>';
+  const pair=document.createElement('div');pair.className='educart-door-pair';
+  artists.before(pair);pair.append(artists,shows);pair.after(agenda);
+})();
