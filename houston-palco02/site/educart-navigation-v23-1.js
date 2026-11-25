@@ -64,3 +64,15 @@ if(school&&welcome){
   section.append(link('Conhecer a experiência ↗','1MFBkQavSuk0yhqtIm2XDepa0wHFw4Bg-','ed-cta'));
   const intro=bio.querySelector('p');if(intro)intro.after(section);else bio.append(section);
 })();
+
+/* EducART · insígnia de coordenadora, no padrão de insígnias dos perfis. */
+(function(){'use strict';
+  const person=Array.from(document.querySelectorAll('.conhecaPerson')).find(el=>el.querySelector('h3')?.textContent.trim()==='Aline Nepomuceno');
+  const title=person?.querySelector('h3');
+  if(!title||person.querySelector('[data-educart-coordenadora]'))return;
+  const style=document.createElement('style');
+  style.textContent='.conhecaPerson .u-badges[data-educart-coordenadora]{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}.conhecaPerson .u-badges[data-educart-coordenadora] span{border:1px solid #ffffff30;color:#f5d49f;border-radius:20px;padding:4px 10px;font-size:12px}';
+  document.head.append(style);
+  const badges=document.createElement('div');badges.className='u-badges';badges.setAttribute('data-educart-coordenadora','');
+  const badge=document.createElement('span');badge.textContent='Coordenadora';badges.append(badge);title.after(badges);
+})();
