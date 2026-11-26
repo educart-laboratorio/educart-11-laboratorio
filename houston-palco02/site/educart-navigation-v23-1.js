@@ -233,12 +233,27 @@ if(school&&welcome){
     #educart-oportunidades .op-whatsapp:focus-visible{outline:2px solid #9affbd;outline-offset:3px}
     #educart-oportunidades .op-note{margin:10px 0 0;color:#b9c7d9;font:12px/1.5 system-ui,sans-serif}
     #educart-money-button{position:fixed;left:max(8px,env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:19995;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:0;appearance:none;background:none;box-shadow:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    #educart-money-button[hidden]{display:none!important}
     #educart-money-button span{display:block;font:900 36px/1 system-ui,sans-serif;color:#54ff82;text-shadow:0 -1px 0 #c4ffd2,0 2px 1px #135c2d,0 0 6px #45f875b3,0 0 14px #39e86b66;pointer-events:none}
     #educart-money-button:focus-visible{outline:2px solid #7dff9b;outline-offset:2px}
     @media(max-width:680px){#educart-money-button{bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
     @media(hover:hover){#educart-money-button:hover span{filter:brightness(1.18)}}
   `;
+  function syncMoneyVisibility(){
+    const pathname=location.pathname.replace(/\/index\.html$/,'').replace(/\/+$/,'')||'/';
+    const home=document.getElementById('educartWelcomeScreen');
+    const isHome=pathname==='/'&&document.body.classList.contains('welcome-pending')&&!!home&&!home.hidden;
+    const isArtists=pathname==='/artistas';
+    money.hidden=!(isHome||isArtists);
+  }
+  money.hidden=true;
   document.body.append(money);
+  syncMoneyVisibility();
+  new MutationObserver(syncMoneyVisibility).observe(document.body,{attributes:true,attributeFilter:['class']});
+  const homeScreen=document.getElementById('educartWelcomeScreen');
+  if(homeScreen)new MutationObserver(syncMoneyVisibility).observe(homeScreen,{attributes:true,attributeFilter:['hidden','class']});
+  window.addEventListener('popstate',syncMoneyVisibility);
+  window.addEventListener('pageshow',syncMoneyVisibility);
   let opener=link;
   function openOpportunities(event){event.preventDefault();if(dialog.open)return;opener=event.currentTarget;dialog.showModal()}
   link.addEventListener('click',openOpportunities);
