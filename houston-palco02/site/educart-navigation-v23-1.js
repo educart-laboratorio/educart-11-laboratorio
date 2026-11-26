@@ -157,14 +157,20 @@ if(school&&welcome){
   trigger.innerHTML='<span class="card-content"><span class="formadores-heart" aria-hidden="true"><svg class="formadores-heart-art" viewBox="4 8 92 84" aria-hidden="true" focusable="false"><defs><clipPath id="educart-heart-silhouette" clipPathUnits="userSpaceOnUse"><path d="M50 22.8 C43.8 13.5 37.6 9.8 29.2 9.8 C15.5 9.8 5.1 21.4 5.1 36.7 C5.1 55.4 19.8 71.3 50 90.7 C80.2 71.3 94.9 55.4 94.9 36.7 C94.9 21.4 84.5 9.8 70.8 9.8 C62.4 9.8 56.2 13.5 50 22.8Z"/></clipPath><linearGradient id="educart-heart-polish" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6d7" stop-opacity=".24"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#071226" stop-opacity=".18"/></linearGradient></defs><g clip-path="url(#educart-heart-silhouette)"><image href="/assets/coracao-formadores-educart.webp" width="100" height="100" preserveAspectRatio="none"/><path d="M50 22.8 C43.8 13.5 37.6 9.8 29.2 9.8 C15.5 9.8 5.1 21.4 5.1 36.7 C5.1 55.4 19.8 71.3 50 90.7 C80.2 71.3 94.9 55.4 94.9 36.7 C94.9 21.4 84.5 9.8 70.8 9.8 C62.4 9.8 56.2 13.5 50 22.8Z" fill="url(#educart-heart-polish)"/></g></svg></span><span class="text-group"><span class="card-title">Quem somos</span></span></span>';
   style.textContent+=`
     #educartWelcomeScreen #educart-formadores-button{display:block;box-sizing:border-box;appearance:none;flex:0 0 auto;width:100%;height:auto;margin:0;padding:1px;background:none;border:0;box-shadow:none;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:left;font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
-    #educartWelcomeScreen #educart-formadores-button .card-content{width:100%;height:auto;min-height:48px;grid-template-columns:36px minmax(0,1fr) 18px}
-    #educartWelcomeScreen #educart-formadores-button .text-group{grid-column:2 / -1}
-    #educartWelcomeScreen #educart-formadores-button .formadores-heart{display:grid;place-items:center;width:100%;aspect-ratio:1;isolation:isolate;animation:educart-formadores-heartbeat 1.8s ease-in-out infinite;transform-origin:center;filter:drop-shadow(0 2px 1px #090c16b3) drop-shadow(0 4px 4px #0008) drop-shadow(0 0 3px #f2cc8d66)}
+    #educartWelcomeScreen #educart-formadores-button .card-content{display:flex;width:100%;height:auto;min-height:48px;justify-content:center;align-items:center;gap:10px;padding-inline:0}
+    #educartWelcomeScreen #educart-formadores-button .text-group{flex:0 1 auto;min-width:0}
+    #educartWelcomeScreen #educart-formadores-button .card-title{white-space:nowrap}
+    #educartWelcomeScreen #educart-formadores-button .formadores-heart{position:relative;flex:0 0 36px;width:36px}
+    #educartWelcomeScreen #educart-formadores-button .formadores-heart::before,#educartWelcomeScreen #educart-formadores-button .formadores-heart::after{content:'';position:absolute;z-index:2;pointer-events:none;width:9px;height:9px;background:linear-gradient(135deg,#fff 10%,#fff2d0 45%,#e0b76a 80%);clip-path:polygon(50% 0,61% 38%,100% 50%,61% 62%,50% 100%,39% 62%,0 50%,39% 38%);filter:drop-shadow(0 0 2px #fff0b5);animation:educart-heart-sparkle 4s ease-in-out infinite}
+    #educartWelcomeScreen #educart-formadores-button .formadores-heart::before{top:-2px;right:-4px}
+    #educartWelcomeScreen #educart-formadores-button .formadores-heart::after{bottom:1px;left:-3px;width:6px;height:6px;animation-delay:1.4s}
+    @keyframes educart-heart-sparkle{0%,100%{opacity:.45;transform:scale(.82)}45%{opacity:1;transform:scale(1.12)}70%{opacity:.65;transform:scale(.94)}}
+    #educartWelcomeScreen #educart-formadores-button .formadores-heart{display:grid;place-items:center;aspect-ratio:1;isolation:isolate;animation:educart-formadores-heartbeat 1.8s ease-in-out infinite;transform-origin:center;filter:drop-shadow(0 2px 1px #090c16b3) drop-shadow(0 4px 4px #0008) drop-shadow(0 0 3px #f2cc8d66)}
     #educartWelcomeScreen #educart-formadores-button .formadores-heart-art{display:block;width:112%;max-width:none;height:auto;aspect-ratio:92/84;overflow:visible;filter:saturate(1.1) contrast(1.06)}
     @keyframes educart-formadores-heartbeat{0%,35%,70%,100%{transform:scale(1)}15%{transform:scale(1.14)}48%{transform:scale(1.07)}}
-    @media(max-width:350px){#educartWelcomeScreen #educart-formadores-button .card-content{grid-template-columns:33px minmax(0,1fr) 16px}}
-    @media(min-width:601px){#educartWelcomeScreen #educart-formadores-button .card-content{grid-template-columns:49px minmax(0,1fr) 26px}}
-    @media(prefers-reduced-motion:reduce){#educartWelcomeScreen #educart-formadores-button .formadores-heart{animation:none}}
+    @media(max-width:350px){#educartWelcomeScreen #educart-formadores-button .formadores-heart{flex-basis:33px;width:33px}}
+    @media(min-width:601px){#educartWelcomeScreen #educart-formadores-button .formadores-heart{flex-basis:49px;width:49px}}
+    @media(prefers-reduced-motion:reduce){#educartWelcomeScreen #educart-formadores-button .formadores-heart,#educartWelcomeScreen #educart-formadores-button .formadores-heart::before,#educartWelcomeScreen #educart-formadores-button .formadores-heart::after{animation:none}}
   `;
   const calendar=doors.querySelector('.card-agenda');
   if(calendar)calendar.after(trigger);else doors.append(trigger);
@@ -210,12 +216,29 @@ if(school&&welcome){
   const dialog=document.createElement('dialog');
   dialog.id='educart-oportunidades';
   dialog.setAttribute('aria-labelledby','educart-oportunidades-title');
-  dialog.innerHTML='<header><h2 id="educart-oportunidades-title">Oportunidades EducART</h2><button class="op-close" type="button" aria-label="Fechar" autofocus>×</button></header><p>Painel de embarque profissional para os artistas.</p><article aria-label="Primeiro chamamento"><span class="op-kicker">PRIMEIRO CHAMAMENTO · CASTING</span><h3>Colab Talents</h3><dl><div><dt>Testes</dt><dd>Salvador, Bahia</dd></div><div><dt>Gravação</dt><dd>Rio de Janeiro</dd></div></dl></article>';
+  dialog.innerHTML='<header><h2 id="educart-oportunidades-title">Oportunidades EducART</h2><button class="op-close" type="button" aria-label="Fechar" autofocus>×</button></header><p>Painel de embarque profissional para os artistas.</p><article aria-label="Primeira oportunidade"><span class="op-kicker">PRIMEIRA OPORTUNIDADE · CASTING</span><h3>Colab Talents</h3><dl><div><dt>Testes</dt><dd>Salvador, Bahia</dd></div><div><dt>Gravação</dt><dd>Rio de Janeiro</dd></div></dl></article>';
   document.body.append(dialog);
   link.setAttribute('aria-haspopup','dialog');
   link.setAttribute('aria-controls',dialog.id);
-  link.addEventListener('click',event=>{event.preventDefault();if(!dialog.open)dialog.showModal()});
+  const money=document.createElement('button');
+  money.type='button';money.id='educart-money-button';
+  money.setAttribute('aria-label','Abrir Oportunidades EducART');
+  money.setAttribute('aria-haspopup','dialog');money.setAttribute('aria-controls',dialog.id);
+  money.title='Oportunidades EducART';
+  money.innerHTML='<span aria-hidden="true">$</span>';
+  style.textContent+=`
+    #educart-money-button{position:fixed;left:max(8px,env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:19995;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:0;appearance:none;background:none;box-shadow:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    #educart-money-button span{display:block;font:900 36px/1 system-ui,sans-serif;color:#54ff82;text-shadow:0 -1px 0 #c4ffd2,0 2px 1px #135c2d,0 0 6px #45f875b3,0 0 14px #39e86b66;pointer-events:none}
+    #educart-money-button:focus-visible{outline:2px solid #7dff9b;outline-offset:2px}
+    @media(max-width:680px){#educart-money-button{bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
+    @media(hover:hover){#educart-money-button:hover span{filter:brightness(1.18)}}
+  `;
+  document.body.append(money);
+  let opener=link;
+  function openOpportunities(event){event.preventDefault();if(dialog.open)return;opener=event.currentTarget;dialog.showModal()}
+  link.addEventListener('click',openOpportunities);
+  money.addEventListener('click',openOpportunities);
   dialog.querySelector('.op-close').addEventListener('click',()=>dialog.close());
-  dialog.addEventListener('close',()=>link.focus());
+  dialog.addEventListener('close',()=>opener.focus());
   dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()}});
 })();
