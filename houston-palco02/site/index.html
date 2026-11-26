@@ -157,7 +157,14 @@
     const visualReferenceStyle=`<style id="educart-reference-v16">
     /* FIDELIDADE VISUAL: cards da imagem aprovada pela direção (259120.jpg).
        NAV HTML do usuário absolutamente inalterado. Ícones derivam da imagem de referência. */
-    @media(max-width:600px){#educartWelcomeScreen .welcomeContent{transform:translateY(-2.9vh)}}
+    /* Home mobile: elevação do conjunto aprovado, sem redimensionar cards ou alterar ações. */
+    @media(max-width:600px){
+      #educartWelcomeScreen .welcomeContent{transform:translateY(-6.7vh);transform:translateY(-6.7svh)}
+      #educartWelcomeScreen .educart-nav-cards{margin-top:8px}
+    }
+    @media(max-width:600px) and (max-height:640px){
+      #educartWelcomeScreen .welcomeContent{transform:translateY(-4.2vh);transform:translateY(-4.2svh)}
+    }
     #educartWelcomeScreen .educart-nav-cards{
       display:flex;flex-direction:column;align-items:stretch;
       gap:10px;width:min(66.5vw,430px);max-width:calc(100vw - 24px);
