@@ -151,12 +151,23 @@ if(school&&welcome){
   document.head.append(style);
   const trigger=document.createElement('button');
   trigger.type='button';trigger.id='educart-formadores-button';
-  trigger.setAttribute('aria-label','Conheça os artistas formadores');
+  trigger.setAttribute('aria-label','Artistas formadores');
   trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls','educart-formadores-modal');
-  trigger.title='Conheça os artistas formadores';
-  trigger.innerHTML='<img src="/assets/coracao-formadores-educart.webp" width="64" height="64" alt="" aria-hidden="true" decoding="async">';
-  style.textContent+='\n#educartWelcomeScreen #educart-formadores-button{width:64px;height:64px;background:transparent;border:0;box-shadow:none;border-radius:12px}#educart-formadores-button img{display:block;width:100%;height:100%;object-fit:contain;border-radius:12px}';
-  doors.after(trigger);
+  trigger.title='Artistas formadores';
+  trigger.innerHTML='<span class="card-content"><span class="formadores-heart" aria-hidden="true"><img src="/assets/coracao-formadores-educart.webp" width="64" height="64" alt="" decoding="async"></span><span class="text-group"><span class="card-title">Artistas formadores</span></span></span>';
+  style.textContent+=`
+    #educartWelcomeScreen #educart-formadores-button{display:block;box-sizing:border-box;appearance:none;flex:0 0 auto;width:100%;height:auto;margin:0;padding:1px;background:none;border:0;box-shadow:none;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:left;font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+    #educartWelcomeScreen #educart-formadores-button .card-content{width:100%;height:auto;min-height:48px;grid-template-columns:36px minmax(0,1fr) 18px}
+    #educartWelcomeScreen #educart-formadores-button .text-group{grid-column:2 / -1}
+    #educartWelcomeScreen #educart-formadores-button .formadores-heart{display:grid;place-items:center;width:100%;aspect-ratio:1;animation:educart-formadores-heartbeat 1.8s ease-in-out infinite;transform-origin:center}
+    #educartWelcomeScreen #educart-formadores-button img{display:block;width:100%;height:100%;object-fit:contain;border-radius:0}
+    @keyframes educart-formadores-heartbeat{0%,35%,70%,100%{transform:scale(1)}15%{transform:scale(1.13)}48%{transform:scale(1.07)}}
+    @media(max-width:350px){#educartWelcomeScreen #educart-formadores-button .card-content{grid-template-columns:33px minmax(0,1fr) 16px}}
+    @media(min-width:601px){#educartWelcomeScreen #educart-formadores-button .card-content{grid-template-columns:49px minmax(0,1fr) 26px}}
+    @media(prefers-reduced-motion:reduce){#educartWelcomeScreen #educart-formadores-button .formadores-heart{animation:none}}
+  `;
+  const calendar=doors.querySelector('.card-agenda');
+  if(calendar)calendar.after(trigger);else doors.append(trigger);
   const dialog=document.createElement('dialog');dialog.id='educart-formadores-modal';
   dialog.setAttribute('aria-labelledby','educart-formadores-title');
   dialog.innerHTML='<header class="formadores-header"><h2 id="educart-formadores-title">Conheça os artistas formadores</h2><button type="button" class="formadores-close" aria-label="Fechar" autofocus>×</button></header><div class="formadores-content"></div>';
