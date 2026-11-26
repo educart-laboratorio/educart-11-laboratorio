@@ -216,7 +216,7 @@ if(school&&welcome){
   const dialog=document.createElement('dialog');
   dialog.id='educart-oportunidades';
   dialog.setAttribute('aria-labelledby','educart-oportunidades-title');
-  dialog.innerHTML='<header><h2 id="educart-oportunidades-title">Oportunidades EducART</h2><button class="op-close" type="button" aria-label="Fechar" autofocus>×</button></header><p>Painel de embarque profissional para os artistas.</p><article aria-label="Primeira oportunidade"><span class="op-kicker">PRIMEIRA OPORTUNIDADE · CASTING</span><h3>Colab Talents Agency</h3><p class="op-intro">Unidade Salvador · Captação de elenco para um filme a ser gravado no Rio de Janeiro, com testes presenciais em Salvador.</p><dl><div><dt>Perfil buscado</dt><dd><ul class="op-profile"><li>Homem nordestino, de 20 a 25 anos</li><li>Corpo atlético</li><li>Que saiba nadar e não tenha medo de mar</li></ul></dd></div><div><dt>Etapa de seleção</dt><dd>Testes presenciais em Salvador, Bahia</dd></div><div><dt>Gravação</dt><dd>Rio de Janeiro</dd></div><div><dt>Contato direto</dt><dd>Ana Rosa · Scouter da Colab Talents Agency, Unidade Salvador. Consulte datas, condições e orientações de envio de material diretamente com a agência.</dd></div></dl><a class="op-whatsapp" href="https://wa.me/5571999019003?text=Ol%C3%A1%2C%20Ana%20Rosa!%20Vi%20a%20oportunidade%20de%20casting%20da%20Colab%20Talents%20no%20portal%20EducART%20e%20tenho%20interesse%20em%20participar.%20Gostaria%20de%20saber%20como%20enviar%20meu%20material%20e%20participar%20da%20sele%C3%A7%C3%A3o." target="_blank" rel="noopener noreferrer" aria-label="Tenho interesse no casting da Colab Talents — abrir WhatsApp"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3 20.5l1.3-4.7A8.5 8.5 0 1 1 20.5 11.7Z"/><path d="M8.4 7.8c.5-.4 1.1-.1 1.3.4l.8 1.8c.2.4-.2.8-.6 1.2.8 1.6 1.8 2.6 3.4 3.3.4-.4.8-1 1.2-.8l1.8.8c.5.2.7.7.4 1.2-.4.8-1.1 1.2-2.1 1.1-3.9-.5-7.7-4.2-7.7-7.4 0-.7.5-1.3 1.5-1.6Z"/></svg><span>Tenho interesse · WhatsApp</span></a><p class="op-contact-number">(71) 99901-9003</p><a class="op-secondary" href="mailto:anarosa@collabtalents.com.br?subject=Casting%20Colab%20Talents%20%E2%80%94%20Interesse%20via%20EducART">Enviar material por e-mail</a><p class="op-contact-number">anarosa@collabtalents.com.br</p><div class="op-agency"><a href="https://www.instagram.com/collabtalents/" target="_blank" rel="noopener noreferrer">@collabtalents</a><a href="https://www.collabtalents.com.br/" target="_blank" rel="noopener noreferrer">Site da agência</a></div><p class="op-note">Oportunidade divulgada pela EducART a partir do chamamento da agência. O contato e a seleção são conduzidos pela Colab Talents. A mensagem do WhatsApp pode ser revisada antes do envio; a manifestação de interesse não garante seleção.</p></article>';
+  dialog.innerHTML='<header><h2 id="educart-oportunidades-title">Oportunidades EducART</h2><button class="op-close" type="button" aria-label="Fechar" autofocus>×</button></header><p>Painel de embarque profissional para os artistas.</p><article aria-label="Primeira oportunidade"><span class="op-kicker">PRIMEIRA OPORTUNIDADE · CASTING</span><h3>Colab Talents Agency</h3><p class="op-intro">Unidade Salvador · Captação de elenco para um filme a ser gravado no Rio de Janeiro, com testes presenciais em Salvador.</p><dl><div><dt>Perfil buscado</dt><dd><ul class="op-profile"><li>Homem nordestino, de 20 a 25 anos</li><li>Corpo atlético</li><li>Que saiba nadar e não tenha medo de mar</li></ul></dd></div><div><dt>Etapa de seleção</dt><dd>Testes presenciais em Salvador, Bahia</dd></div><div><dt>Gravação</dt><dd>Rio de Janeiro</dd></div><div><dt>Contato direto</dt><dd>Ana Rosa · Scouter da Colab Talents Agency, Unidade Salvador. Consulte datas, condições e orientações de envio de material diretamente com a agência.</dd></div></dl><a class="op-whatsapp" href="https://wa.me/5571999019003?text=Ol%C3%A1%2C%20Ana%20Rosa!%20Vi%20a%20oportunidade%20de%20casting%20da%20Colab%20Talents%20no%20portal%20EducART%20e%20tenho%20interesse%20em%20participar.%20Gostaria%20de%20saber%20como%20enviar%20meu%20material%20e%20participar%20da%20sele%C3%A7%C3%A3o." target="_blank" rel="noopener noreferrer" aria-label="Tenho interesse no casting da Colab Talents — abrir WhatsApp"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3 20.5l1.3-4.7A8.5 8.5 0 1 1 20.5 11.7Z"/><path d="M8.4 7.8c.5-.4 1.1-.1 1.3.4l.8 1.8c.2.4-.2.8-.6 1.2.8 1.6 1.8 2.6 3.4 3.3.4-.4.8-1 1.2-.8l1.8.8c.5.2.7.7.4 1.2-.4.8-1.1 1.2-2.1 1.1-3.9-.5-7.7-4.2-7.7-7.4 0-.7.5-1.3 1.5-1.6Z"/></svg><span>Tenho interesse · WhatsApp</span></a><p class="op-contact-number">(71) 99901-9003</p><a class="op-secondary" href="mailto:anarosa@collabtalents.com.br?subject=Casting%20Colab%20Talents%20%E2%80%94%20Interesse%20via%20EducART">Enviar material por e-mail</a><p class="op-contact-number">anarosa@collabtalents.com.br</p><div class="op-agency"><a href="https://www.instagram.com/collabtalents/" target="_blank" rel="noopener noreferrer">@collabtalents</a><a href="https://www.collabtalents.com.br/" target="_blank" rel="noopener noreferrer">Site da agência</a></div><div class="op-share-actions"><button type="button" class="op-share">Compartilhar oportunidade</button><button type="button" class="op-copy">Copiar link</button></div><p class="op-share-status" role="status" aria-live="polite"></p><p class="op-note">Oportunidade divulgada pela EducART a partir do chamamento da agência. O contato e a seleção são conduzidos pela Colab Talents. A mensagem do WhatsApp pode ser revisada antes do envio; a manifestação de interesse não garante seleção.</p></article>';
   document.body.append(dialog);
   link.setAttribute('aria-haspopup','dialog');
   link.setAttribute('aria-controls',dialog.id);
@@ -238,6 +238,10 @@ if(school&&welcome){
     #educart-oportunidades .op-whatsapp{display:flex;align-items:center;justify-content:center;gap:9px;box-sizing:border-box;min-height:48px;margin-top:18px;padding:11px 12px;border:1px solid #74eca0;border-radius:12px;background:linear-gradient(160deg,#17663b,#103e2a);color:#d9ffe6;font:750 14px/1.35 system-ui,sans-serif;text-align:center;text-decoration:none;box-shadow:0 4px 14px #0005,inset 0 1px 1px #a0ffc63d,0 0 12px #45f87524;touch-action:manipulation}
     #educart-oportunidades .op-whatsapp svg{flex:0 0 23px}
     #educart-oportunidades .op-whatsapp:focus-visible{outline:2px solid #9affbd;outline-offset:3px}
+    #educart-oportunidades .op-share-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    #educart-oportunidades .op-share-actions button{flex:1 1 auto;min-height:44px;padding:8px 12px;border:1px solid #e8ce9f66;border-radius:12px;background:linear-gradient(160deg,#293448,#172235);color:#f5dfb1;font:700 13px/1.35 system-ui,sans-serif;cursor:pointer;touch-action:manipulation}
+    #educart-oportunidades .op-share-actions button:focus-visible{outline:2px solid #ffe2a4;outline-offset:3px}
+    #educart-oportunidades .op-share-status{margin:6px 0 0;color:#baffce;font:12px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}
     #educart-oportunidades .op-note{margin:10px 0 0;color:#b9c7d9;font:12px/1.5 system-ui,sans-serif}
     #educart-money-button{position:fixed!important;left:max(9px,env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:2147483000!important;place-items:center;width:92px;height:92px;padding:0;border:0;border-radius:0;appearance:none;background:none;box-shadow:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
     #educart-money-button:not([hidden]){display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
@@ -268,11 +272,33 @@ if(school&&welcome){
   if(homeScreen)new MutationObserver(syncMoneyVisibility).observe(homeScreen,{attributes:true,attributeFilter:['hidden','class']});
   window.addEventListener('popstate',syncMoneyVisibility);
   window.addEventListener('pageshow',syncMoneyVisibility);
+  const shareUrl='https://educart.pro/?oportunidade=colab-talents';
+  const shareStatus=dialog.querySelector('.op-share-status');
+  async function copyOpportunity(){
+    try{
+      if(!navigator.clipboard?.writeText)throw Error('clipboard');
+      await navigator.clipboard.writeText(shareUrl);
+      shareStatus.textContent='Link copiado!';
+    }catch(_){shareStatus.textContent=shareUrl;}
+  }
+  dialog.querySelector('.op-copy').addEventListener('click',copyOpportunity);
+  dialog.querySelector('.op-share').addEventListener('click',async()=>{
+    if(navigator.share){try{await navigator.share({title:'Casting Colab Talents | Oportunidades EducART',text:'Primeira oportunidade EducART — testes presenciais em Salvador e gravação no Rio de Janeiro.',url:shareUrl});return}catch(e){if(e.name==='AbortError')return}}
+    await copyOpportunity();
+  });
   let opener=link;
-  function openOpportunities(event){event.preventDefault();if(dialog.open)return;opener=event.currentTarget;dialog.showModal()}
+  function openOpportunities(event){
+    if(event){event.preventDefault();opener=event.currentTarget;}
+    if(!dialog.open)dialog.showModal();
+  }
   link.addEventListener('click',openOpportunities);
   money.addEventListener('click',openOpportunities);
   dialog.querySelector('.op-close').addEventListener('click',()=>dialog.close());
-  dialog.addEventListener('close',()=>opener.focus());
+  dialog.addEventListener('close',()=>{
+    const u=new URL(location.href);
+    if(u.searchParams.get('oportunidade')==='colab-talents'){u.searchParams.delete('oportunidade');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}
+    if(opener?.isConnected&&!opener.hidden)opener.focus();
+  });
+  if(new URLSearchParams(location.search).get('oportunidade')==='colab-talents')openOpportunities();
   dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()}});
 })();
