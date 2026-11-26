@@ -1,0 +1,154 @@
+{
+  "meta": {
+    "ano_referencia": 2027,
+    "versao": "01",
+    "tipo": "fixtures-sinteticas",
+    "total_oportunidades": 8
+  },
+  "oportunidades": [
+    {
+      "id": "teste-01",
+      "titulo": "Teste — Destaque prioritário",
+      "instituicao": "Instituição fictícia de validação",
+      "resumo": "Registro sintético para homologação visual e funcional. Não é oportunidade real.",
+      "categoria": "edital",
+      "area_artistica": [
+        "Teatro"
+      ],
+      "territorio": "Salvador",
+      "ano_referencia": 2027,
+      "publico_alvo": "Público fictício para teste da expansão.",
+      "prazo_inscricao": "2027-01-12",
+      "status": "aberta",
+      "destaque_prioritario": true,
+      "url_oficial": "https://example.org/",
+      "data_verificacao": "2026-11-26"
+    },
+    {
+      "id": "teste-02",
+      "titulo": "Teste — Prazo mais próximo",
+      "instituicao": "Instituição fictícia de validação",
+      "resumo": "Registro sintético para homologação visual e funcional. Não é oportunidade real.",
+      "categoria": "audicao",
+      "area_artistica": [
+        "Audiovisual"
+      ],
+      "territorio": "Bahia",
+      "ano_referencia": 2027,
+      "publico_alvo": "Público fictício para teste da expansão.",
+      "prazo_inscricao": "2027-01-05",
+      "status": "prorrogada",
+      "destaque_prioritario": false,
+      "url_oficial": "https://example.org/",
+      "data_verificacao": "2026-11-26"
+    },
+    {
+      "id": "teste-03",
+      "titulo": "Teste — Residência artística",
+      "instituicao": "Instituição fictícia de validação",
+      "resumo": "Registro sintético para homologação visual e funcional. Não é oportunidade real.",
+      "categoria": "residencia",
+      "area_artistica": [
+        "Multilinguagem"
+      ],
+      "territorio": "Nacional",
+      "ano_referencia": 2027,
+      "publico_alvo": "Público fictício para teste da expansão.",
+      "prazo_inscricao": "2027-02-20",
+      "status": "aberta",
+      "destaque_prioritario": false,
+      "url_oficial": "https://example.org/",
+      "data_verificacao": "2026-11-26"
+    },
+    {
+      "id": "teste-04",
+      "titulo": "Teste — Formação prevista",
+      "instituicao": "Instituição fictícia de validação",
+      "resumo": "Registro sintético para homologação visual e funcional. Não é oportunidade real.",
+      "categoria": "curso",
+      "area_artistica": [
+        "Formação Artística"
+      ],
+      "territorio": "Salvador",
+      "ano_referencia": 2027,
+      "publico_alvo": "Público fictício para teste da expansão.",
+      "prazo_inscricao": null,
+      "status": "prevista",
+      "destaque_prioritario": false,
+      "url_oficial": "https://example.org/",
+      "data_verificacao": "2026-11-26"
+    },
+    {
+      "id": "teste-05",
+      "titulo": "Teste — Prazo expirado automaticamente",
+      "instituicao": "Instituição fictícia de validação",
+      "resumo": "Registro sintético para homologação visual e funcional. Não é oportunidade real.",
+      "categoria": "festival",
+      "area_artistica": [
+        "Teatro"
+      ],
+      "territorio": "Bahia",
+      "ano_referencia": 2027,
+      "publico_alvo": "Público fictício para teste da expansão.",
+      "prazo_inscricao": "2026-11-20",
+      "status": "aberta",
+      "destaque_prioritario": true,
+      "url_oficial": "https://example.org/",
+      "data_verificacao": "2026-11-26"
+    },
+    {
+      "id": "teste-06",
+      "titulo": "Teste — Bolsa encerrada",
+      "instituicao": "Instituição fictícia de validação",
+      "resumo": "Registro sintético para homologação visual e funcional. Não é oportunidade real.",
+      "categoria": "bolsa",
+      "area_artistica": [
+        "Audiovisual"
+      ],
+      "territorio": "Salvador",
+      "ano_referencia": 2027,
+      "publico_alvo": "Público fictício para teste da expansão.",
+      "prazo_inscricao": "2026-11-15",
+      "status": "encerrada",
+      "destaque_prioritario": false,
+      "url_oficial": "https://example.org/",
+      "data_verificacao": "2026-11-26"
+    },
+    {
+      "id": "teste-07",
+      "titulo": "Teste — Destaque anterior",
+      "instituicao": "Instituição fictícia de validação",
+      "resumo": "Registro sintético para homologação visual e funcional. Não é oportunidade real.",
+      "categoria": "bolsa",
+      "area_artistica": [
+        "Formação Artística"
+      ],
+      "territorio": "Salvador",
+      "ano_referencia": 2027,
+      "publico_alvo": "Público fictício para teste da expansão.",
+      "prazo_inscricao": "2027-01-08",
+      "status": "prorrogada",
+      "destaque_prioritario": true,
+      "url_oficial": "https://example.org/",
+      "data_verificacao": "2026-11-26"
+    },
+    {
+      "id": "teste-08",
+      "titulo": "Teste — URL inválida",
+      "instituicao": "Instituição fictícia de validação",
+      "resumo": "Registro sintético para homologação visual e funcional. Não é oportunidade real.",
+      "categoria": "edital",
+      "area_artistica": [
+        "Teatro"
+      ],
+      "territorio": "Salvador",
+      "ano_referencia": 2027,
+      "publico_alvo": "Público fictício para teste da expansão.",
+      "prazo_inscricao": "2027-01-01",
+      "status": "aberta",
+      "destaque_prioritario": false,
+      "url_oficial": "javascript:alert(1)",
+      "data_verificacao": "2026-11-26"
+    }
+  ]
+}

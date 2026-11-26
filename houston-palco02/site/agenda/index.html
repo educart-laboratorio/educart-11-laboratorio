@@ -696,6 +696,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="./editais-2027.css" />
 </head>
 <body>
 
@@ -714,7 +715,11 @@
         </div>
       </div>
 
-      <div class="controls-bar">
+      <div class="agenda-tabs" role="tablist" aria-label="Agenda Cultural">
+        <button id="tab-espetaculos" class="agenda-tab" role="tab" type="button" aria-selected="true" aria-controls="panel-espetaculos">Espetáculos em Cartaz</button>
+        <button id="tab-editais" class="agenda-tab" role="tab" type="button" aria-selected="false" aria-controls="panel-editais" tabindex="-1">Editais de Arte 2027</button>
+      </div>
+      <div class="controls-bar" id="agenda-show-controls">
         <div class="control-group">
           <input
             type="search"
@@ -729,6 +734,7 @@
   </header>
 
   <main class="container" style="padding: 0 1rem;">
+    <div id="panel-espetaculos" role="tabpanel" aria-labelledby="tab-espetaculos">
     <div class="deeplink-banner" id="deeplink-banner">
       <span id="deeplink-banner-text"></span>
       <button type="button" class="btn" id="btn-clear-deeplink">Voltar à janela padrão</button>
@@ -744,6 +750,19 @@
         <div></div>
       </div>
       <div id="board-body"></div>
+    </section>
+    </div>
+    <section id="panel-editais" role="tabpanel" aria-labelledby="tab-editais" hidden>
+      <div class="ed-filters" aria-label="Filtrar editais">
+        <label>Área artística<select id="ed-area"><option value="">Todas</option><option>Teatro</option><option>Audiovisual</option><option>Formação Artística</option><option>Multilinguagem</option></select></label>
+        <label>Localização<select id="ed-territorio"><option value="">Todas</option><option>Salvador</option><option>Bahia</option><option>Nacional</option></select></label>
+        <label>Categoria<select id="ed-categoria"><option value="">Todas</option><option value="edital">Edital</option><option value="festival">Festival</option><option value="audicao">Audição</option><option value="bolsa">Bolsa</option><option value="curso">Curso</option><option value="residencia">Residência</option></select></label>
+        <label>Situação<select id="ed-status"><option value="">Vigentes e previstas</option><option value="aberta">Abertas</option><option value="prorrogada">Prorrogadas</option><option value="prevista">Previstas</option><option value="encerrada">Encerradas</option></select></label>
+      </div>
+      <section class="board ed-board" aria-label="Editais de Arte 2027">
+        <div class="ed-board-header"><span>Situação</span><span>Chamada / instituição</span><span>Área / território</span><span>Prazo</span><span></span></div>
+        <div id="ed-list" aria-live="polite"><div class="empty-state">Carregando editais…</div></div>
+      </section>
     </section>
   </main>
 
@@ -1989,12 +2008,13 @@
       if (deep) {
         state.forcedDeepLinkParam = deep;
       }
-      renderBoard(!deep);
+      renderBoard(!deep && new URLSearchParams(window.location.search).get("aba") !== "editais");
       if (deep && state.expandedSessaoId) {
         focusSession(state.expandedSessaoId, true);
       }
     })();
   </script>
+  <script defer src="./editais-2027.js"></script>
   <script defer src="/educart-navigation-v23-1.js"></script>
 </body>
 </html>
