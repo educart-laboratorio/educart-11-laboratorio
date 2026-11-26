@@ -151,17 +151,17 @@ if(school&&welcome){
   document.head.append(style);
   const trigger=document.createElement('button');
   trigger.type='button';trigger.id='educart-formadores-button';
-  trigger.setAttribute('aria-label','Artistas formadores');
+  trigger.setAttribute('aria-label','Quem somos');
   trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls','educart-formadores-modal');
-  trigger.title='Artistas formadores';
-  trigger.innerHTML='<span class="card-content"><span class="formadores-heart" aria-hidden="true"><img src="/assets/coracao-formadores-educart.webp" width="64" height="64" alt="" decoding="async"></span><span class="text-group"><span class="card-title">Artistas formadores</span></span></span>';
+  trigger.title='Quem somos';
+  trigger.innerHTML='<span class="card-content"><span class="formadores-heart" aria-hidden="true"><svg class="formadores-heart-art" viewBox="4 8 92 84" aria-hidden="true" focusable="false"><defs><clipPath id="educart-heart-silhouette" clipPathUnits="userSpaceOnUse"><path d="M50 22.8 C43.8 13.5 37.6 9.8 29.2 9.8 C15.5 9.8 5.1 21.4 5.1 36.7 C5.1 55.4 19.8 71.3 50 90.7 C80.2 71.3 94.9 55.4 94.9 36.7 C94.9 21.4 84.5 9.8 70.8 9.8 C62.4 9.8 56.2 13.5 50 22.8Z"/></clipPath><linearGradient id="educart-heart-polish" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6d7" stop-opacity=".24"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#071226" stop-opacity=".18"/></linearGradient></defs><g clip-path="url(#educart-heart-silhouette)"><image href="/assets/coracao-formadores-educart.webp" width="100" height="100" preserveAspectRatio="none"/><path d="M50 22.8 C43.8 13.5 37.6 9.8 29.2 9.8 C15.5 9.8 5.1 21.4 5.1 36.7 C5.1 55.4 19.8 71.3 50 90.7 C80.2 71.3 94.9 55.4 94.9 36.7 C94.9 21.4 84.5 9.8 70.8 9.8 C62.4 9.8 56.2 13.5 50 22.8Z" fill="url(#educart-heart-polish)"/></g></svg></span><span class="text-group"><span class="card-title">Quem somos</span></span></span>';
   style.textContent+=`
     #educartWelcomeScreen #educart-formadores-button{display:block;box-sizing:border-box;appearance:none;flex:0 0 auto;width:100%;height:auto;margin:0;padding:1px;background:none;border:0;box-shadow:none;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:left;font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
     #educartWelcomeScreen #educart-formadores-button .card-content{width:100%;height:auto;min-height:48px;grid-template-columns:36px minmax(0,1fr) 18px}
     #educartWelcomeScreen #educart-formadores-button .text-group{grid-column:2 / -1}
-    #educartWelcomeScreen #educart-formadores-button .formadores-heart{display:grid;place-items:center;width:100%;aspect-ratio:1;animation:educart-formadores-heartbeat 1.8s ease-in-out infinite;transform-origin:center}
-    #educartWelcomeScreen #educart-formadores-button img{display:block;width:100%;height:100%;object-fit:contain;border-radius:0}
-    @keyframes educart-formadores-heartbeat{0%,35%,70%,100%{transform:scale(1)}15%{transform:scale(1.13)}48%{transform:scale(1.07)}}
+    #educartWelcomeScreen #educart-formadores-button .formadores-heart{display:grid;place-items:center;width:100%;aspect-ratio:1;isolation:isolate;animation:educart-formadores-heartbeat 1.8s ease-in-out infinite;transform-origin:center;filter:drop-shadow(0 2px 1px #090c16b3) drop-shadow(0 4px 4px #0008) drop-shadow(0 0 3px #f2cc8d66)}
+    #educartWelcomeScreen #educart-formadores-button .formadores-heart-art{display:block;width:112%;max-width:none;height:auto;aspect-ratio:92/84;overflow:visible;filter:saturate(1.1) contrast(1.06)}
+    @keyframes educart-formadores-heartbeat{0%,35%,70%,100%{transform:scale(1)}15%{transform:scale(1.14)}48%{transform:scale(1.07)}}
     @media(max-width:350px){#educartWelcomeScreen #educart-formadores-button .card-content{grid-template-columns:33px minmax(0,1fr) 16px}}
     @media(min-width:601px){#educartWelcomeScreen #educart-formadores-button .card-content{grid-template-columns:49px minmax(0,1fr) 26px}}
     @media(prefers-reduced-motion:reduce){#educartWelcomeScreen #educart-formadores-button .formadores-heart{animation:none}}
