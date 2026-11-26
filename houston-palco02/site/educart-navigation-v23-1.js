@@ -154,7 +154,7 @@ if(school&&welcome){
   trigger.setAttribute('aria-label','Quem somos');
   trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls','educart-formadores-modal');
   trigger.title='Quem somos';
-  trigger.innerHTML='<span class="card-content"><span class="formadores-heart" aria-hidden="true"><svg class="formadores-heart-art" viewBox="4 8 92 84" aria-hidden="true" focusable="false"><defs><clipPath id="educart-heart-silhouette" clipPathUnits="userSpaceOnUse"><path d="M50 22.8 C43.8 13.5 37.6 9.8 29.2 9.8 C15.5 9.8 5.1 21.4 5.1 36.7 C5.1 55.4 19.8 71.3 50 90.7 C80.2 71.3 94.9 55.4 94.9 36.7 C94.9 21.4 84.5 9.8 70.8 9.8 C62.4 9.8 56.2 13.5 50 22.8Z"/></clipPath><linearGradient id="educart-heart-polish" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6d7" stop-opacity=".24"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#071226" stop-opacity=".18"/></linearGradient></defs><g clip-path="url(#educart-heart-silhouette)"><image href="/assets/coracao-formadores-educart.webp" width="100" height="100" preserveAspectRatio="none"/><path d="M50 22.8 C43.8 13.5 37.6 9.8 29.2 9.8 C15.5 9.8 5.1 21.4 5.1 36.7 C5.1 55.4 19.8 71.3 50 90.7 C80.2 71.3 94.9 55.4 94.9 36.7 C94.9 21.4 84.5 9.8 70.8 9.8 C62.4 9.8 56.2 13.5 50 22.8Z" fill="url(#educart-heart-polish)"/></g></svg></span><span class="text-group"><span class="card-title">Quem somos</span></span></span>';
+  trigger.innerHTML='<span class="card-content"><span class="formadores-heart" aria-hidden="true"><svg class="formadores-heart-art" viewBox="4 8 92 84" aria-hidden="true" focusable="false"><defs><clipPath id="educart-heart-silhouette" clipPathUnits="userSpaceOnUse"><path d="M50 22.8 C43.8 13.5 37.6 9.8 29.2 9.8 C15.5 9.8 5.1 21.4 5.1 36.7 C5.1 55.4 19.8 71.3 50 90.7 C80.2 71.3 94.9 55.4 94.9 36.7 C94.9 21.4 84.5 9.8 70.8 9.8 C62.4 9.8 56.2 13.5 50 22.8Z"/></clipPath><linearGradient id="educart-heart-polish" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6d7" stop-opacity=".24"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#071226" stop-opacity=".18"/></linearGradient></defs><g clip-path="url(#educart-heart-silhouette)"><image href="/assets/coracao-formadores-educart.webp" width="100" height="100" preserveAspectRatio="none"/><path d="M50 22.8 C43.8 13.5 37.6 9.8 29.2 9.8 C15.5 9.8 5.1 21.4 5.1 36.7 C5.1 55.4 19.8 71.3 50 90.7 C80.2 71.3 94.9 55.4 94.9 36.7 C94.9 21.4 84.5 9.8 70.8 9.8 C62.4 9.8 56.2 13.5 50 22.8Z" fill="url(#educart-heart-polish)"/></g></svg></span></span><svg class="formadores-orbit" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><path id="educart-formadores-orbit-path" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs><text><textPath href="#educart-formadores-orbit-path" startOffset="0%" textLength="228" lengthAdjust="spacing">QUEM SOMOS ✦ QUEM SOMOS ✦ </textPath></text></svg>';
   style.textContent+=`
     #educartWelcomeScreen #educart-formadores-button{display:block;box-sizing:border-box;appearance:none;flex:0 0 auto;width:100%;height:auto;margin:0;padding:1px;background:none;border:0;box-shadow:none;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none;text-align:left;font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
     #educartWelcomeScreen #educart-formadores-button .card-content{display:flex;width:100%;height:auto;min-height:48px;justify-content:center;align-items:center;gap:10px;padding-inline:0}
@@ -172,8 +172,21 @@ if(school&&welcome){
     @media(min-width:601px){#educartWelcomeScreen #educart-formadores-button .formadores-heart{flex-basis:49px;width:49px}}
     @media(prefers-reduced-motion:reduce){#educartWelcomeScreen #educart-formadores-button .formadores-heart,#educartWelcomeScreen #educart-formadores-button .formadores-heart::before,#educartWelcomeScreen #educart-formadores-button .formadores-heart::after{animation:none}}
   `;
-  const calendar=doors.querySelector('.card-agenda');
-  if(calendar)calendar.after(trigger);else doors.append(trigger);
+  style.textContent+=`
+    #educartWelcomeScreen #educart-formadores-button{position:fixed!important;left:auto;right:max(9px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:2147483000!important;place-items:center;width:92px;height:92px;padding:0;margin:0;border:0;border-radius:0;appearance:none;background:none;box-shadow:none;text-align:center;touch-action:manipulation}
+    #educartWelcomeScreen #educart-formadores-button:not([hidden]){display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+    #educartWelcomeScreen #educart-formadores-button[hidden]{display:none!important}
+    #educartWelcomeScreen #educart-formadores-button .card-content{grid-area:1/1;display:grid;place-items:center;width:auto;height:auto;min-height:0;padding:0;gap:0;pointer-events:none}
+    #educartWelcomeScreen #educart-formadores-button .formadores-heart{width:36px;flex:none}
+    #educartWelcomeScreen #educart-formadores-button .formadores-orbit{grid-area:1/1;width:100%;height:100%;overflow:visible;pointer-events:none;animation:educart-formadores-orbit 20s linear infinite;transform-origin:center}
+    #educartWelcomeScreen #educart-formadores-button .formadores-orbit text{fill:#ffe4ac;font:800 10.5px system-ui,sans-serif;letter-spacing:.5px;filter:drop-shadow(0 0 2px #edca83)}
+    @keyframes educart-formadores-orbit{to{transform:rotate(360deg)}}
+    #educartWelcomeScreen #educart-formadores-button:focus-visible{outline:2px solid #ffe2a4;outline-offset:2px}
+    @media(max-width:680px){#educartWelcomeScreen #educart-formadores-button{bottom:calc(72px + env(safe-area-inset-bottom,0px));width:82px;height:82px}}
+    @media(prefers-reduced-motion:reduce){#educartWelcomeScreen #educart-formadores-button .formadores-orbit{animation:none}}
+  `;
+  trigger.hidden=true;
+  home.append(trigger);
   const dialog=document.createElement('dialog');dialog.id='educart-formadores-modal';
   dialog.setAttribute('aria-labelledby','educart-formadores-title');
   dialog.innerHTML='<header class="formadores-header"><h2 id="educart-formadores-title">Conheça os artistas formadores</h2><button type="button" class="formadores-close" aria-label="Fechar" autofocus>×</button></header><div class="formadores-content"></div>';
@@ -263,6 +276,8 @@ if(school&&welcome){
     const host=isHome?home:document.body;
     if(money.parentElement!==host)host.append(money);
     money.hidden=!(isHome||isArtists);
+    const about=home?.querySelector('#educart-formadores-button');
+    if(about)about.hidden=!isHome;
   }
   money.hidden=true;
   document.body.append(money);
