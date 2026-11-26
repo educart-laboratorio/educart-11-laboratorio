@@ -2142,8 +2142,7 @@ const shareIds=new Map([["Sala do Coro — Teatro Castro Alves","sala-do-coro-tc
 const share=document.getElementById('radar-summary-share');
 function shareUrl(card){
   const id=card.dataset.editalId;
-  const url=new URL('https://educart.pro/agenda/');
-  url.searchParams.set('radar','1');url.searchParams.set('edital',id);
+  const url=new URL('https://educart.pro/agenda/editais/'+encodeURIComponent(id)+'.html');
   const message=['🎭 *Radar de Editais · EducART*','*'+card.querySelector('h3').textContent+'*',card.querySelector('.radar-meta').textContent,card.querySelector('.radar-deadline').textContent,card.querySelector('strong').textContent,card.querySelector('.radar-state').textContent,'','Confira o resumo, as orientações e a fonte:',url.href].join('\n');
   return 'https://wa.me/?text='+encodeURIComponent(message);
 }
