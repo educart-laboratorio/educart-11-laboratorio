@@ -130,6 +130,25 @@ if(school&&welcome){
   artists.before(pair);pair.append(artists,shows);pair.after(agenda);
 })();
 
+/* EducART · HOME: elevação de 15% do conjunto slogan, título e portas. */
+(function(){'use strict';
+  const home=document.getElementById('educartWelcomeScreen');
+  const content=home?.querySelector('.welcomeContent');
+  const kicker=content?.querySelector('.welcomeKicker');
+  const title=content?.querySelector('.welcomeTitle');
+  const cards=content?.querySelector('.educart-nav-cards');
+  if(!content||!kicker||!title||!cards||content.querySelector('.educart-hero-stack'))return;
+  if([kicker,title,cards].some(el=>el.parentElement!==content))return;
+  const style=document.createElement('style');
+  style.id='educart-hero-stack-position';
+  style.textContent='#educartWelcomeScreen .educart-hero-stack{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;min-width:0;flex:0 0 auto;transform:translateY(-15%)}';
+  document.head.append(style);
+  const stack=document.createElement('div');
+  stack.className='educart-hero-stack';
+  kicker.before(stack);
+  stack.append(kicker,title,cards);
+})();
+
 /* EducART · HOME: artistas formadores, com os cartões docentes já existentes. */
 (function(){'use strict';
   const home=document.getElementById('educartWelcomeScreen');
