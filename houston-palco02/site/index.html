@@ -1,15 +1,15 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCART | Núcleo de Formação de Atores</title>
+<title>EducART | Núcleo de Formação de Atores</title>
 <style>html,body{margin:0;min-height:100%;background:#070c17;color:#fff;font-family:system-ui,sans-serif}#loading{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:20px}</style>
 
-<meta name="description" content="Seu lugar na arte começa aqui. Conheça o EduCART, Núcleo de Formação de Atores em Salvador.">
+<meta name="description" content="Seu lugar na arte começa aqui. Conheça o EducART, Núcleo de Formação de Atores em Salvador.">
 <link rel="canonical" href="https://educart.pro/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:site_name" content="EduCART">
+<meta property="og:site_name" content="EducART">
 <meta property="og:url" content="https://educart.pro/">
-<meta property="og:title" content="EduCART | Núcleo de Formação de Atores">
+<meta property="og:title" content="EducART | Núcleo de Formação de Atores">
 <meta property="og:description" content="Seu lugar na arte começa aqui. Oficina de Atores em Salvador.">
 <meta property="og:image" content="https://educart.pro/educart-whatsapp-og.jpg">
 <meta property="og:image:secure_url" content="https://educart.pro/educart-whatsapp-og.jpg">
@@ -25,6 +25,7 @@
     const response=await fetch('./educart-base.html');
     if(!response.ok) throw new Error('Conteúdo EducART indisponível');
     let page=await response.text();
+    page=page.replace(/<head\b[^>]*>[\s\S]*?<\/head>/i,h=>h.replace(/<title\b[^>]*>[\s\S]*?<\/title>|<meta\b[^>]*>/gi,t=>t.replace(/\bEduCART\b|\bEducart\b/gi,m=>m===m.toLowerCase()?m:'EducART')));
     page=page.replace('','');
     page=page.replace('</head>', '<link rel="stylesheet" href="/educart-brand-lockup.css"></head>');
     const head='</head><body class="welcome-pending">';

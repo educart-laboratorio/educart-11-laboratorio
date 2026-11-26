@@ -272,7 +272,7 @@ if(school&&welcome){
   if(homeScreen)new MutationObserver(syncMoneyVisibility).observe(homeScreen,{attributes:true,attributeFilter:['hidden','class']});
   window.addEventListener('popstate',syncMoneyVisibility);
   window.addEventListener('pageshow',syncMoneyVisibility);
-  const shareUrl='https://educart.pro/?oportunidade=colab-talents';
+  const shareUrl='https://educart.pro/oportunidades/colab-talents/';
   const shareStatus=dialog.querySelector('.op-share-status');
   async function copyOpportunity(){
     try{

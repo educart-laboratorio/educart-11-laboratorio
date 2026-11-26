@@ -1,4 +1,4 @@
 {
   "outputDirectory": "houston-palco02/site",
-  "buildCommand": "node houston-palco02/site/assets/prepare-drive-gallery.cjs && node houston-palco02/site/build-social-metadata.cjs"
+  "buildCommand": "npm install --prefix houston-palco02/social-render --no-audit --no-fund --ignore-scripts && node houston-palco02/social-render/render.cjs && node houston-palco02/site/assets/prepare-drive-gallery.cjs && node houston-palco02/site/build-social-metadata.cjs"
 }
