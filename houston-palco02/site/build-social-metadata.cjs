@@ -35,7 +35,8 @@ fs.writeFileSync(f,publicHtml,'utf8');count++;
 // Padronização pontual da nomenclatura no catálogo de formações adicionais.
 const catalogFile=path.join(root,'educart-base.html');
 let catalogHtml=fs.readFileSync(catalogFile,'utf8');
-for(const [before,after] of [
+// Only normalize legacy entries when present; the preview deliberately retires them.
+if(catalogHtml.includes('"id":"SOL-023"')) for(const [before,after] of [
   ['"id":"SOL-023","title":"Leitura Dramática"','"id":"SOL-023","title":"Leituras dramatizadas"'],
   ['"summary":"Leitura dramática, circunstâncias, subtexto, objetivos e experimentações em dupla."','"summary":"Leituras dramatizadas, circunstâncias, subtexto, objetivos e experimentações em dupla."']
 ]){
@@ -43,5 +44,9 @@ for(const [before,after] of [
   if(catalogHtml.split(before).length!==2)throw Error('Unexpected catalog entry: '+before);
   catalogHtml=catalogHtml.replace(before,after);
 }
+const offerSource=catalogHtml.match(/const items=(\[[\s\S]*?\]);\s*const categories=/)?.[1];
+if(!offerSource)throw Error('Missing catalog array');
+const offers=JSON.parse(offerSource);
+if(offers.length!==2||offers[0].id!=='SOL-032'||!offers[0].waitlist||offers[1].id!=='SOL-033'||!offers[1].draft)throw Error('Unexpected preview catalog');
 fs.writeFileSync(catalogFile,catalogHtml,'utf8');
 new (require('node:vm').Script)(fs.readFileSync(path.join(root,'educart-navigation-v23-1.js'),'utf8'));walk(root);console.log('Houston social metadata: '+count+' pages, '+portraits+' artist portraits, '+institutional+' institutional covers');if(count<70)throw Error('Incomplete Houston package');
