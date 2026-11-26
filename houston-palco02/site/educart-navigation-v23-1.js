@@ -216,7 +216,7 @@ if(school&&welcome){
   const dialog=document.createElement('dialog');
   dialog.id='educart-oportunidades';
   dialog.setAttribute('aria-labelledby','educart-oportunidades-title');
-  const opportunities=[{title:'Colab Talents Agency',label:'Primeira oportunidade · Casting',cover:'/og/colab-talents.png',url:'/oportunidades/colab-talents/'}];
+  const opportunities=[{title:'Collab Talents Agency',label:'Primeira oportunidade · Casting',cover:'/og/colab-talents.png',url:'/oportunidades/colab-talents/'}];
   dialog.innerHTML='<header><h2 id="educart-oportunidades-title">Oportunidades EducART</h2><button class="op-close" type="button" aria-label="Fechar" autofocus>×</button></header><p>Painel de embarque profissional para os artistas.</p><div class="op-cards" aria-label="Oportunidades disponíveis"></div>';
   const cards=dialog.querySelector('.op-cards');
   for(const opportunity of opportunities){
