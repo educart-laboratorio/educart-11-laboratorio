@@ -222,28 +222,35 @@ if(school&&welcome){
   link.setAttribute('aria-controls',dialog.id);
   const money=document.createElement('button');
   money.type='button';money.id='educart-money-button';
-  money.setAttribute('aria-label','Abrir Oportunidades EducART');
+  money.setAttribute('aria-label','Primeira oportunidade — abrir Oportunidades EducART');
   money.setAttribute('aria-haspopup','dialog');money.setAttribute('aria-controls',dialog.id);
   money.title='Oportunidades EducART';
-  money.innerHTML='<span aria-hidden="true">$</span>';
+  money.innerHTML='<svg class="op-orbit" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><defs><path id="educart-op-orbit-path" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"/></defs><text><textPath href="#educart-op-orbit-path" startOffset="0%" textLength="228" lengthAdjust="spacing">PRIMEIRA OPORTUNIDADE ✦ </textPath></text></svg><span class="op-money-symbol" aria-hidden="true">$</span>';
   style.textContent+=`
     #educart-oportunidades .op-intro{color:#e1e7ef;margin:0 0 16px}
     #educart-oportunidades .op-whatsapp{display:flex;align-items:center;justify-content:center;gap:9px;box-sizing:border-box;min-height:48px;margin-top:18px;padding:11px 12px;border:1px solid #74eca0;border-radius:12px;background:linear-gradient(160deg,#17663b,#103e2a);color:#d9ffe6;font:750 14px/1.35 system-ui,sans-serif;text-align:center;text-decoration:none;box-shadow:0 4px 14px #0005,inset 0 1px 1px #a0ffc63d,0 0 12px #45f87524;touch-action:manipulation}
     #educart-oportunidades .op-whatsapp svg{flex:0 0 23px}
     #educart-oportunidades .op-whatsapp:focus-visible{outline:2px solid #9affbd;outline-offset:3px}
     #educart-oportunidades .op-note{margin:10px 0 0;color:#b9c7d9;font:12px/1.5 system-ui,sans-serif}
-    #educart-money-button{position:fixed;left:max(8px,env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:19995;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:0;appearance:none;background:none;box-shadow:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    #educart-money-button{position:fixed!important;left:max(9px,env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:2147483000!important;place-items:center;width:92px;height:92px;padding:0;border:0;border-radius:0;appearance:none;background:none;box-shadow:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    #educart-money-button:not([hidden]){display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
     #educart-money-button[hidden]{display:none!important}
-    #educart-money-button span{display:block;font:900 36px/1 system-ui,sans-serif;color:#54ff82;text-shadow:0 -1px 0 #c4ffd2,0 2px 1px #135c2d,0 0 6px #45f875b3,0 0 14px #39e86b66;pointer-events:none}
+    #educart-money-button .op-money-symbol{display:block;grid-area:1/1;font:900 38px/1 system-ui,sans-serif;color:#54ff82;text-shadow:0 -1px 0 #c4ffd2,0 2px 1px #135c2d,0 0 6px #45f875b3,0 0 14px #39e86b66;pointer-events:none}
+    #educart-money-button .op-orbit{grid-area:1/1;width:100%;height:100%;overflow:visible;pointer-events:none;animation:educart-op-orbit 20s linear infinite;transform-origin:center}
+    #educart-money-button .op-orbit text{fill:#baffce;font:800 10.5px system-ui,sans-serif;letter-spacing:.5px;filter:drop-shadow(0 0 2px #3ef675)}
+    @keyframes educart-op-orbit{to{transform:rotate(360deg)}}
     #educart-money-button:focus-visible{outline:2px solid #7dff9b;outline-offset:2px}
-    @media(max-width:680px){#educart-money-button{bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
-    @media(hover:hover){#educart-money-button:hover span{filter:brightness(1.18)}}
+    @media(max-width:680px){#educart-money-button{bottom:calc(72px + env(safe-area-inset-bottom,0px));width:82px;height:82px}}
+    @media(hover:hover){#educart-money-button:hover .op-money-symbol{filter:brightness(1.18)}}
+    @media(prefers-reduced-motion:reduce){#educart-money-button .op-orbit{animation:none}}
   `;
   function syncMoneyVisibility(){
     const pathname=location.pathname.replace(/\/index\.html$/,'').replace(/\/+$/,'')||'/';
     const home=document.getElementById('educartWelcomeScreen');
-    const isHome=pathname==='/'&&document.body.classList.contains('welcome-pending')&&!!home&&!home.hidden;
+    const isHome=pathname==='/'&&!!home&&!home.hidden&&(document.body.classList.contains('welcome-pending')||getComputedStyle(home).display!=='none');
     const isArtists=pathname==='/artistas';
+    const host=isHome?home:document.body;
+    if(money.parentElement!==host)host.append(money);
     money.hidden=!(isHome||isArtists);
   }
   money.hidden=true;
