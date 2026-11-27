@@ -143,3 +143,22 @@ function runtime(rank){
  if(reviewed!==49||cards<1||sources.size!==cards||fallbacks.size!==cards)throw Error('Auditoria de capas incompleta');
  console.log('EducART capas audiovisuais: '+reviewed+' perfis revisados; '+withVideo+' com vídeos; '+cards+' cartões; '+youtube+' YouTube; '+drive+' Drive; '+editorial+' editoriais diretas; '+replaced+' fontes alteradas; '+sources.size+' fontes únicas; '+fallbacks.size+' capas editoriais únicas; zero avatares como capa.');
 })();
+
+
+/* Garante o mesmo cabeçalho e navegação em todos os perfis publicados. */
+(function verifyPortfolioStandard(){
+ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+ const dir=path.join(__dirname,'artistas','perfil'),css='/artistas/assets/portfolio-casting-v1.css',js='/artistas/assets/portfolio-casting-v1.js';
+ new vm.Script(fs.readFileSync(path.join(__dirname,js.slice(1)),'utf8'));
+ let count=0,added=0;
+ for(const slug of fs.readdirSync(dir)){
+  const file=path.join(dir,slug,'index.html');if(!fs.existsSync(file))continue;
+  let h=fs.readFileSync(file,'utf8'),before=h;
+  if(!h.includes(css))h=h.replace(/<\/head>/i,'<link rel="stylesheet" href="'+css+'"></head>');
+  if(!h.includes(js))h=h.replace(/<\/body>/i,'<script defer src="'+js+'"></script></body>');
+  if(!h.includes(css)||!h.includes(js))throw Error('Padrão de portfólio ausente: '+slug);
+  if(h!==before){fs.writeFileSync(file,h,'utf8');added++}count++;
+ }
+ if(count!==49)throw Error('Quantidade de perfis inesperada: '+count);
+ console.log('EducART padrão de portfólio: '+count+'/49 perfis com CSS e JS comuns; '+added+' inclusões; JavaScript válido.');
+})();
