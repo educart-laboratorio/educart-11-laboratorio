@@ -709,6 +709,8 @@
   .radar-intro,.radar-kit,.radar-guide,.radar-watch{background:var(--bg-board);border:1px solid var(--border-subtle);border-radius:10px;padding:1rem;display:grid;gap:.65rem}
   .radar-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
   .radar-card{min-width:0;background:var(--bg-board);border:1px solid var(--border-subtle);border-radius:10px;padding:1rem;display:flex;flex-direction:column;gap:.45rem}
+  /* Alternância de 10% entre painéis sequenciais, como na Agenda de Eventos. */
+  .radar-grid > .radar-card:nth-child(even of :not([hidden])), .radar-kit, .radar-watch {background-color:#292d36;background-color:color-mix(in srgb,var(--bg-board) 90%,var(--text-primary) 10%)}
   .radar-card .radar-meta,.radar-note{font-size:.75rem;color:var(--text-secondary)}
   .radar-card .radar-deadline{font:700 .8rem var(--font-mono);color:var(--accent-gold)}
   .radar-card .radar-state{color:var(--accent-green);font-size:.72rem;font-weight:700}
@@ -726,6 +728,27 @@
   .radar-filter{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
   .radar-filter select{padding:.45rem;border-radius:6px;background:var(--bg-pill);border:1px solid var(--border-strong);color:var(--text-primary);font:inherit;font-size:.8rem}
   @media(max-width:620px){.radar-grid,.radar-kit-list{grid-template-columns:1fr}.radar-switch button{font-size:.82rem;padding:.55rem}.radar-panel{padding:.8rem .75rem 3rem}}
+</style>
+<style id="radar-resumo-css">
+.radar-card{cursor:pointer}
+.radar-card:focus-within{outline:1px solid var(--accent-gold);outline-offset:2px}
+.radar-card:hover{border-color:var(--border-strong)}
+.radar-card .radar-card-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:auto}
+.radar-card .radar-card-actions a{margin:0}
+.radar-summary{background:var(--bg-board);color:var(--text-primary);border:1px solid var(--border-strong);border-radius:14px;width:min(640px,calc(100% - 24px));max-height:calc(100dvh - 36px);padding:0;margin:auto;overflow:auto;overscroll-behavior:contain;box-shadow:0 24px 80px #0009}
+.radar-summary::backdrop{background:#05070bd9;backdrop-filter:blur(4px)}
+.radar-summary-head{position:sticky;top:0;z-index:1;background:var(--bg-board);border-bottom:1px solid var(--border-strong);padding:1rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.radar-summary-head h2{font-size:1.1rem;line-height:1.3;margin:.35rem 0}
+.radar-summary-head .btn{flex-shrink:0;min-height:40px}
+.radar-summary-body{display:grid;gap:.55rem;padding:1rem}
+.radar-summary-detail{background:var(--bg-row);border:1px solid var(--border-subtle);padding:.8rem;border-radius:8px}
+.radar-summary-detail:nth-child(even){background:#292d36;background:color-mix(in srgb,var(--bg-board) 90%,var(--text-primary) 10%)}
+.radar-summary-detail h3{font-size:.8rem;color:var(--accent-gold);margin-bottom:.3rem}
+.radar-summary-detail p{font-size:.88rem;color:var(--text-primary);line-height:1.55}
+.radar-summary-foot{padding:0 1rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.radar-summary-foot a{text-decoration:none}
+.radar-summary-note{font-size:.73rem;color:var(--text-secondary);width:100%}
+@media(max-width:620px){.radar-summary{max-height:calc(100dvh - 24px)}.radar-summary-head,.radar-summary-body{padding:.8rem}}
 </style>
 </head>
 <body>
@@ -808,6 +831,11 @@
   <div class="radar-guide"><h2>Central de orientação</h2><ol><li>Defina sua ideia, público e território.</li><li>Escreva objetivo, justificativa, metodologia e resultados.</li><li>Monte orçamento, cronograma e plano de acessibilidade.</li><li>Confirme requisitos, anexos, contrapartidas e prazo de cada edital.</li><li>Guarde o comprovante de inscrição e acompanhe a seleção.</li></ol><p>Ideias para atores e formadores: monólogos, oficinas, teatro infantil, dramaturgia, audiovisual, performance, teatro musical e memória artística.</p></div>
   <div class="radar-watch"><h2>No radar · próximos ciclos</h2><p>Acompanhe novas chamadas; não são inscrições abertas confirmadas.</p><ul><li>Usinas Criativas da Bahia · próxima etapa anunciada para dezembro.</li><li>PNAB Bahia, FazCultura, Salvador Circula e Viva Cultura.</li><li>Amô pelo Pelô, Cursos Livres Funceb, CineTeatro 2 de Julho e Instituto Sacatar.</li><li>Lei Rouanet e chamadas nacionais Funarte.</li></ul><p>Fontes permanentes: <a href="https://www.ba.gov.br/fundacaocultural/editais" target="_blank" rel="noopener noreferrer">Funceb</a> · <a href="https://www.ba.gov.br/cultura/106/editais" target="_blank" rel="noopener noreferrer">Secult-BA</a> · <a href="https://www.gov.br/funarte/pt-br/fomento/chamadas-abertas" target="_blank" rel="noopener noreferrer">Funarte</a> · <a href="https://prosas.com.br/" target="_blank" rel="noopener noreferrer">Prosas</a></p></div>
 </section>
+<dialog class="radar-summary" id="radar-summary" aria-labelledby="radar-summary-title">
+<header class="radar-summary-head"><div><div class="radar-note" id="radar-summary-meta"></div><h2 id="radar-summary-title"></h2><div class="radar-deadline" id="radar-summary-state"></div></div><button type="button" class="btn" id="radar-summary-close" aria-label="Fechar resumo" autofocus>Fechar ×</button></header>
+<div class="radar-summary-body" id="radar-summary-body"></div>
+<footer class="radar-summary-foot"><a class="btn btn-gold" id="radar-summary-source" target="_blank" rel="noopener noreferrer">Consultar fonte ↗</a><a class="btn btn-whatsapp" id="radar-summary-share" target="_blank" rel="noopener noreferrer">Compartilhar no WhatsApp</a><button type="button" class="btn" id="radar-summary-back">Voltar ao edital</button><p class="radar-summary-note">Resumo editorial EducART · 26/11/2026. As orientações de preparação são sugestões, não substituem o regulamento. Confira retificações e anexos antes de se inscrever.</p></footer>
+</dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
@@ -2193,6 +2221,66 @@
     const text=boxes.map(box=>(box.checked?'☑ ':'☐ ')+box.nextElementSibling.textContent).join('\n');
     try{await navigator.clipboard.writeText(text);status.textContent='Checklist copiado.';}catch(e){const field=document.createElement('textarea');field.value=text;field.setAttribute('aria-label','Checklist para copiar');status.replaceChildren(field);field.select();}
   });
+})();
+</script>
+<script id="radar-resumo-js">
+(function(){
+'use strict';
+const summaries=new Map([["Sala do Coro — Teatro Castro Alves",["Seleção de produções baianas para ocupar a Sala do Coro do TCA de 1º de março a 20 de junho de 2027. O espaço privilegia trabalhos experimentais e de pequeno porte; admite teatro, música, dança, artes visuais e outras linguagens, inéditas ou já apresentadas.","MEI ou pessoa jurídica de natureza artístico-cultural, com ou sem fins lucrativos. Até três propostas por agente.","Uso da sala sem cobrança de pauta e suporte da equipe do espaço no período definido. Não equivale a cachê ou financiamento integral.","30/11/2026, 23h59, horário de Brasília. Inscrição gratuita por formulário on-line.","Organize sinopse, ficha técnica, portfólio, registro audiovisual, necessidades de palco, cronograma e orçamento próprio. Monólogos e espetáculos compactos são boas possibilidades.","Confirme os anexos e as responsabilidades técnicas e financeiras no edital 027/2026.","https://www.ba.gov.br/fundacaocultural/convocatoria-para-sala-do-coro-do-teatro-castro-alves-20271"]],["Festival Internacional de Artistas de Rua da Bahia 2027",["Festival de apresentações gratuitas em espaços públicos, de 6 a 14 de março de 2027: Dom Macedo Costa (6 e 7), Jequié (9 e 10) e Salvador (12 a 14). Valoriza a interação entre artistas e plateia e os encontros entre participantes.","Artistas individuais e grupos com propostas para espaços abertos, especialmente teatro de rua, circo, palhaçaria, música e performance.","Circulação, intercâmbio artístico e visibilidade. O festival é gratuito para o público; isso não determina a remuneração do artista.","Até 30/11/2026. Baixe o formulário no site da organização e siga as instruções.","Prepare vídeo do trabalho, duração, quantidade de integrantes, necessidades técnicas e descrição da relação com o público. Considere adaptações para espaços abertos.","Verifique cachê, hospedagem, transporte e demais condições diretamente com a organização.","https://www.festivalderua.com/"]],["Ativação Cultural — Camaçari",["Credenciamento da Secretaria da Cultura de Camaçari para possíveis contratações de apresentações artísticas e culturais em diferentes linguagens. Não é uma seleção de projetos com repasse automático de recursos.","Artistas, grupos e agentes culturais com experiência; confirme requisitos de residência ou vínculo com o município e a categoria de inscrição.","Cachês por contratação de serviços; o valor de R$ 766 mil divulgado refere-se ao programa global estimado, não a cada inscrito.","Prazo informado: 08/12/2026. Procure o edital 005/2025 no portal municipal e confira eventuais retificações.","Prepare portfólio com comprovações, proposta de apresentação, ficha técnica, documentos fiscais e comprovante territorial se exigido.","A habilitação não assegura contratação. Regulamento integral e tabela de cachês precisam ser confirmados na fonte municipal.","https://editalcultural.com.br/edital/pg-d2bbbb3054ea"]],["São João de Caruaru 2027",["Chamamento de atrações para a programação do São João de Caruaru 2027, com editais separados para música e demais linguagens. Oportunidade de circular trabalhos com identidade nordestina.","Artistas e grupos com propostas enquadráveis nas categorias do regulamento de demais linguagens, como teatro e cultura popular. Confira os requisitos para proponentes de outros estados.","Possível contratação para apresentação, de acordo com seleção, categoria e condições do edital; não há valor único informado aqui.","Até 11/12/2026, conforme divulgação. Consulte o formulário e a versão atualizada do edital no Mapa Cultural; a divulgação indica o aplicativo Minha Caruaru como canal de inscrição.","Prepare sinopse, vídeo, histórico, ficha técnica, disponibilidade, proposta de cachê e custos de deslocamento Salvador–Caruaru.","Confirme modalidade, documentação, horário limite, pagamentos e regras de representação no regulamento vigente.","https://mapacultural.caruaru.pe.gov.br/oportunidades"]],["XVIII Seleção Funarte Marc Ferrez de Fotografia",["Fomento nacional à fotografia com 15 propostas contempladas em três modalidades: criação autoral, documentação/fotojornalismo e reflexão crítica. Nas modalidades de criação e documentação, o resultado inclui exposição presencial gratuita com ao menos 15 imagens por 30 dias; na pesquisa crítica, livro impresso de distribuição gratuita.","Pessoa física maior de 18 anos, pessoa jurídica cultural, EI ou MEI, observadas as regras específicas. O projeto deve ter a fotografia como eixo central.","R$ 60 mil por proposta selecionada, num total de R$ 900 mil. Há previsão de distribuição regional e ações afirmativas.","18/12/2026, às 18h de Brasília. Inscrição exclusivamente pela plataforma indicada pela Funarte.","Para artistas da cena, pense em ensaio documental sobre teatro de Salvador, retratos autorais ou pesquisa de linguagem fotográfica. Estruture a exposição ou publicação, direitos de imagem, equipe e orçamento.","Não basta apresentar um espetáculo ou vídeo: a proposta precisa atender à modalidade fotográfica e às entregas do regulamento.","https://www.gov.br/funarte/pt-br/fomento/chamadas-2026/xviii-selecao-funarte-marc-ferrez-de-fotografia"]],["Bolsa Funarte Solange Zúñiga",["Bolsa de pesquisa voltada à conservação de fotografias: restauração, digitalização, preservação digital, processos históricos e gestão de acervos. Os trabalhos devem gerar texto técnico de 80 a 100 laudas, em formato compatível com os cadernos da Funarte.","Pessoas físicas maiores de 18 anos, pessoas jurídicas culturais, EI e MEI, conforme as condições de participação. Recomendada a pesquisadores ou profissionais com competência técnica em acervos.","12 bolsas de R$ 47 mil, total de R$ 564 mil. O trabalho poderá integrar publicação técnica da Funarte.","18/12/2026, às 18h de Brasília, via plataforma indicada na página da bolsa.","Exemplo: pesquisa de conservação do acervo fotográfico de uma companhia teatral baiana, com diagnóstico, metodologia, referências e autorização de acesso. Considere parceria com conservador ou arquivista.","Não é verba para fotografar um espetáculo novo; o foco é pesquisa de preservação e produção de conhecimento técnico.","https://www.gov.br/cultura/pt-br/assuntos/noticias/funarte-lanca-duas-chamadas-publicas-para-a-fotografia-brasileira/"]],["Festival Internacional de Teatro de Guaranésia — FETEG",["Décima edição do Festival Internacional de Teatro de Guaranésia, prevista para 17 a 30 de maio de 2027, em Minas Gerais. Busca intercâmbio de grupos nacionais e ibero-americanos, com categorias para público adulto, infância e teatro de rua.","Grupos e companhias teatrais com trabalhos de palco, espaços não convencionais ou rua; a categoria adulta inclui monólogos e linguagens experimentais.","Circulação e intercâmbio; cachê, hospedagem, transporte e alimentação devem ser conferidos no regulamento da organização.","Prazo divulgado: 30/12/2026. Consulte o link de inscrição e a hora limite no anúncio da convocatória.","Separe vídeo integral, sinopse, ficha técnica, fotos, mapa de palco, duração e logística da equipe. Pense em obras adaptáveis a diferentes espaços.","A divulgação consultada é secundária. Confirme os critérios oficiais e contrapartidas com o Grupo Máscaras.","https://merda.substack.com/p/inscricoes-abertas-para-o-festival-5d1"]],["Pareceristas — Camaçari",["Credenciamento para prestação de serviço de avaliação de propostas culturais da Política Nacional Aldir Blanc em Camaçari. A atividade divulgada é remota, com análise de candidaturas e emissão de pareceres.","Profissionais de cultura com experiência demonstrável em projetos, avaliação, produção, formação ou áreas previstas no regulamento. Confira escolaridade, experiência mínima e impedimentos.","Remuneração informada de R$ 4.600 por parecerista contratado. O credenciamento não garante convocação nem pagamento automático.","Prazo informado: 31/12/2026. Procure edital 003/2026 no site oficial da Secretaria da Cultura.","Formadores e diretores podem organizar currículo, comprovantes de atuação, pareceres anteriores quando disponíveis e documentos de habilitação. Verifique a disponibilidade para cumprir os prazos.","Confirme requisitos, volume de avaliações, condições de contratação e regras de conflito de interesses. Informações financeiras provêm de divulgação secundária.","https://editalcultural.com.br/edital/pg-1ae074fd7e85"]],["Programa Funarte Aberta",["Chamadas para utilização de espaços culturais da Funarte em diferentes cidades, com programação artística, formação, pesquisa, ensaios e residências. A prorrogação foi anunciada para 31 de agosto de 2027; cada espaço possui regras próprias.","Artistas, grupos e agentes culturais que atendam à chamada do equipamento escolhido. Verifique linguagem admitida, porte e forma jurídica exigida.","Possibilidade de ocupação de espaço cultural; não é automaticamente uma bolsa, cachê ou custeio de viagem.","Até 31/08/2027 nas chamadas prorrogadas. Consulte o regulamento do espaço, as janelas de ocupação e a disponibilidade.","Identifique o equipamento adequado ao seu espetáculo ou oficina, monte proposta artística, necessidades técnicas, calendário, orçamento de viagem e plano de acesso ao público.","Confirme taxas, bilheteria, responsabilidades, anexos e critérios específicos. Não assuma que o mesmo regulamento vale para todos os espaços.","https://www.gov.br/funarte/pt-br/fomento/chamadas-2026/programa-funarte-aberta/programa-funarte-aberta-2026-2013-ocupacao-dos-espacos-culturais-da-funarte-complexo-funarte-sao-paulo"]]]);
+const labels=["O que é","Quem pode participar","Benefício e condições","Prazo e inscrição","Como preparar sua proposta","Atenção antes de se inscrever"];
+const dialog=document.getElementById('radar-summary'), close=document.getElementById('radar-summary-close'), body=document.getElementById('radar-summary-body'), source=document.getElementById('radar-summary-source');
+const shareIds=new Map([["Sala do Coro — Teatro Castro Alves","sala-do-coro-tca-2027"],["Festival Internacional de Artistas de Rua da Bahia 2027","festival-artistas-de-rua-bahia-2027"],["Ativação Cultural — Camaçari","ativacao-cultural-camacari-005-2025"],["São João de Caruaru 2027","sao-joao-caruaru-2027"],["XVIII Seleção Funarte Marc Ferrez de Fotografia","funarte-marc-ferrez-xviii"],["Bolsa Funarte Solange Zúñiga","funarte-solange-zuniga-iv"],["Festival Internacional de Teatro de Guaranésia — FETEG","feteg-guaranesia-2027"],["Pareceristas — Camaçari","pareceristas-camacari-003-2026"],["Programa Funarte Aberta","funarte-aberta-2026-2027"]]);
+const share=document.getElementById('radar-summary-share');
+function shareUrl(card){
+  const id=card.dataset.editalId;
+  const url=new URL('https://educart.pro/agenda/editais/'+encodeURIComponent(id)+'.html');
+  const message=['🎭 *Radar de Editais · EducART*','*'+card.querySelector('h3').textContent+'*',card.querySelector('.radar-meta').textContent,card.querySelector('.radar-deadline').textContent,card.querySelector('strong').textContent,card.querySelector('.radar-state').textContent,'','Confira o resumo, as orientações e a fonte:',url.href].join('\n');
+  return 'https://wa.me/?text='+encodeURIComponent(message);
+}
+let opener=null, originScroll=0, previousOverflow='';
+function show(card,trigger){
+  if(dialog.open)return;
+  const title=card.querySelector('h3').textContent, entry=summaries.get(title);
+  if(!entry)return;
+  opener=trigger;originScroll=window.scrollY;previousOverflow=document.body.style.overflow;
+  document.getElementById('radar-summary-title').textContent=title;
+  document.getElementById('radar-summary-meta').textContent=card.querySelector('.radar-meta').textContent;
+  document.getElementById('radar-summary-state').textContent=card.querySelector('.radar-state').textContent+' · '+card.querySelector('.radar-deadline').textContent;
+  body.replaceChildren(...labels.map((label,i)=>{const section=document.createElement('section');section.className='radar-summary-detail';const h=document.createElement('h3'),p=document.createElement('p');h.textContent=label;p.textContent=entry[i];section.append(h,p);return section}));
+  source.href=entry[6];source.textContent=card.dataset.verified==='true'?'Consultar fonte oficial ↗':'Consultar divulgação e regulamento ↗';
+  share.href=shareUrl(card);
+  dialog.showModal();document.body.style.overflow='hidden';dialog.scrollTop=0;close.focus({preventScroll:true});
+}
+document.querySelectorAll('#agenda-radar-panel .radar-card').forEach(card=>{
+  const title=card.querySelector('h3').textContent;
+  if(!summaries.has(title)||!shareIds.has(title))return;
+  card.dataset.editalId=shareIds.get(title);
+  const link=card.querySelector('a'),actions=document.createElement('div'),btn=document.createElement('button'),wa=document.createElement('a');
+  actions.className='radar-card-actions';btn.type='button';btn.className='btn btn-gold';btn.textContent='Ver resumo ↗';btn.setAttribute('aria-label','Ver resumo: '+title);btn.setAttribute('aria-haspopup','dialog');btn.setAttribute('aria-controls','radar-summary');
+  wa.className='btn btn-whatsapp';wa.target='_blank';wa.rel='noopener noreferrer';wa.href=shareUrl(card);wa.textContent='Compartilhar no WhatsApp';wa.setAttribute('aria-label','Compartilhar no WhatsApp: '+title);
+  link.classList.remove('btn-gold');link.before(actions);actions.append(btn,link,wa);
+  btn.addEventListener('click',()=>show(card,btn));
+  card.addEventListener('click',event=>{if(!event.target.closest('a,button,input,select,label'))show(card,btn)});
+});
+close.addEventListener('click',()=>dialog.close());
+document.getElementById('radar-summary-back').addEventListener('click',()=>dialog.close());
+dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()}});
+dialog.addEventListener('close',()=>{
+  document.body.style.overflow=previousOverflow;
+  if(opener?.isConnected&&!opener.closest('[hidden]'))opener.focus({preventScroll:true});
+  window.scrollTo({top:originScroll,behavior:'instant'});
+  opener=null;
+  const u=new URL(location.href);if(u.searchParams.has('edital')){u.searchParams.delete('edital');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}
+});
+const requested=new URLSearchParams(location.search).get('edital');
+if(requested){
+  const target=Array.from(document.querySelectorAll('#agenda-radar-panel .radar-card')).find(card=>card.dataset.editalId===requested);
+  if(target){
+    if(document.getElementById('agenda-radar-panel').hidden)document.getElementById('agenda-mode-radar').click();
+    const trigger=target.querySelector('button[aria-haspopup="dialog"]');
+    requestAnimationFrame(()=>{target.scrollIntoView({block:'center',behavior:'instant'});show(target,trigger)});
+  }
+}
 })();
 </script>
   <script defer src="/educart-navigation-v23-1.js"></script>
