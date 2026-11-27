@@ -327,3 +327,37 @@ if(school&&welcome){
   else if(requestedOpportunity==='marcela-altberg')location.replace(opportunities[1].url);
   dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close()}});
 })();
+
+/* EducART · revisão de coesão: navegação, acessibilidade e miniaturas originais. */
+(function(){'use strict';
+  if(document.getElementById('educart-coesao-visual-v1'))return;
+  const style=document.createElement('style');style.id='educart-coesao-visual-v1';
+  style.textContent=`
+    .educart-areas-v231 a .area-label{min-width:0;max-width:100%;text-align:center;white-space:normal;overflow-wrap:anywhere}
+    @media(max-width:560px){
+      .educart-areas-v231 a{min-height:48px;line-height:1.15;padding-inline:1px}
+      .educart-areas-v231 a[data-educart-area="oportunidades"] .area-label{font-size:clamp(9px,2.25vw,11px);line-height:1.15;overflow-wrap:anywhere}
+    }
+    @media(max-width:360px){.educart-areas-v231 a{font-size:9px;min-height:50px}.educart-areas-v231 a .area-label{line-height:1.12}}
+    a.photo:focus-visible,a.drive-thumbnail:focus-visible,.educart-media-grid a:focus-visible,.u-tabs button:focus-visible{outline:2px solid #f0c787;outline-offset:3px}
+    .educart-media-grid .photo img[hidden],a.photo img[data-educart-unavailable]{display:none!important}
+    .educart-media-grid .photo img[hidden]+.media-fallback{display:flex}
+    .educart-original-fallback{display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:16/11;box-sizing:border-box;padding:12px;text-align:center;font:700 12px/1.35 system-ui,sans-serif;color:#f0c787;background:#17283e}
+    @media(max-width:730px){.educart-original-fallback,.educart-media-grid .photo .media-fallback{aspect-ratio:4/3}}
+    .educart-media-grid .media-label{line-height:1.35;word-break:break-word}
+    @media(prefers-reduced-motion:reduce){.educart-areas-v231 a,.educart-media-grid a{transition:none!important}}
+  `;
+  document.head.append(style);
+  // A imagem falhou: o clique permanece no arquivo exato, sem trocar de fonte.
+  function preserveOriginal(img){
+    if(!(img instanceof HTMLImageElement))return;
+    const a=img.closest('a.photo[href^="https://drive.google.com/file/d/"]');
+    if(!a||a.querySelector('.media-fallback,.educart-original-fallback')||img.hasAttribute('data-album-fallback'))return;
+    img.hidden=true;img.setAttribute('data-educart-unavailable','');
+    const fallback=document.createElement('span');fallback.className='educart-original-fallback';fallback.textContent='Abrir original no Drive ↗';img.after(fallback);
+  }
+  document.addEventListener('error',event=>preserveOriginal(event.target),true);
+  document.querySelectorAll('a.photo[href^="https://drive.google.com/file/d/"] img').forEach(img=>{
+    if(img.complete&&img.naturalWidth===0)preserveOriginal(img);
+  });
+})();
