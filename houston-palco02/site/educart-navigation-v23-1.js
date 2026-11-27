@@ -339,6 +339,15 @@ if(school&&welcome){
       .educart-areas-v231 a[data-educart-area="oportunidades"] .area-label{font-size:clamp(9px,2.25vw,11px);line-height:1.15;overflow-wrap:anywhere}
     }
     @media(max-width:360px){.educart-areas-v231 a{font-size:9px;min-height:50px}.educart-areas-v231 a .area-label{line-height:1.12}}
+    /* Correção global de responsividade: centralização independente dos efeitos glass. */
+    html body .u-video>button{position:absolute!important;inset:0!important;margin:auto!important;width:max-content!important;height:max-content!important;max-width:calc(100% - 24px)!important;max-height:calc(100% - 24px);min-width:0!important;min-height:44px;box-sizing:border-box;transform:none!important;translate:none!important;white-space:normal!important;overflow-wrap:normal;text-align:center;line-height:1.2!important;padding:9px 16px!important}
+    @media(max-width:730px){html body .u-video>button{font-size:clamp(11px,3.2vw,13px)!important;padding:8px 12px!important}}
+    @media(max-width:560px){
+      html body nav.educart-areas-v231{display:grid!important;grid-template-columns:minmax(0,.85fr) minmax(0,.85fr) minmax(0,.95fr) minmax(0,1.15fr) minmax(0,.85fr) minmax(0,1.4fr);gap:2px;padding-inline:4px}
+      html body nav.educart-areas-v231 a{min-width:0;padding-inline:0!important;font-size:clamp(8.5px,2.3vw,11px)!important}
+      html body nav.educart-areas-v231 a .area-label{max-width:100%;white-space:nowrap!important;overflow-wrap:normal!important;word-break:normal!important;letter-spacing:-.025em}
+      html body nav.educart-areas-v231 a[data-educart-area="oportunidades"] .area-label{font-size:clamp(8px,2.15vw,11px)!important;white-space:nowrap!important;overflow-wrap:normal!important;word-break:normal!important}
+    }
     a.photo:focus-visible,a.drive-thumbnail:focus-visible,.educart-media-grid a:focus-visible,.u-tabs button:focus-visible{outline:2px solid #f0c787;outline-offset:3px}
     .educart-media-grid .photo img[hidden],a.photo img[data-educart-unavailable]{display:none!important}
     .educart-media-grid .photo img[hidden]+.media-fallback{display:flex}
