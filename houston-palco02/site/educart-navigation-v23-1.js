@@ -97,7 +97,7 @@ if(school&&welcome){
     @media(min-width:601px){#educartWelcomeScreen .educart-nav-cards .educart-card .card-title{font-size:24px}}
     #educartWelcomeScreen .educart-door-pair .card-title{white-space:normal;overflow-wrap:normal}
     #educartWelcomeScreen .educart-door-pair .card-subtitle{font-size:clamp(8px,2vw,10px)}
-    #educartWelcomeScreen .card-agenda{--ref-left:#fff;--ref-right:#fff;--ref-border:rgba(255,255,255,.90);--ref-glow:rgba(223,171,74,.24);--ref-subtitle:#394150;background:#fff!important;color:#172033!important;border-color:#fff!important;animation:educart-agenda-glow 4s ease-in-out infinite alternate}
+    #educartWelcomeScreen .card-agenda{--ref-left:rgba(255,255,255,.88);--ref-right:rgba(255,255,255,.88);--ref-border:rgba(255,255,255,.78);--ref-glow:rgba(223,171,74,.24);--ref-subtitle:#394150;background:rgba(255,255,255,.88)!important;color:#172033!important;border-color:rgba(255,255,255,.78)!important;animation:educart-agenda-glow 4s ease-in-out infinite alternate}
     #educartWelcomeScreen .educart-nav-cards .card-agenda .card-title{color:#172033!important;text-shadow:none!important}
     #educartWelcomeScreen .educart-nav-cards .card-agenda .card-subtitle{color:#394150!important;text-shadow:none!important}
     @keyframes educart-agenda-glow{from{box-shadow:0 0 10px 1px rgba(226,174,75,.18),0 0 1px 0 rgba(248,205,120,.23),inset 0 2px 4px rgba(255,231,173,.18),0 7px 14px rgba(0,0,0,.20)}to{box-shadow:0 0 16px 2px rgba(242,187,81,.32),0 0 2px 0 rgba(255,216,137,.34),inset 0 2px 6px rgba(255,223,153,.28),0 7px 14px rgba(0,0,0,.20)}}
