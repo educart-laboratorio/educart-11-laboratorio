@@ -750,6 +750,44 @@
 .radar-summary-note{font-size:.73rem;color:var(--text-secondary);width:100%}
 @media(max-width:620px){.radar-summary{max-height:calc(100dvh - 24px)}.radar-summary-head,.radar-summary-body{padding:.8rem}}
 </style>
+<style id="educart-agenda-azul-3d-v1">
+/* Identidade EducART: azul institucional #164b91, acabamento acetinado e relevo. Escopo exclusivo do painel superior da Agenda. */
+.topbar {
+  background:
+    radial-gradient(ellipse at 22% 0%, rgba(125,186,255,.23), transparent 63%),
+    linear-gradient(165deg,#235caa 0%,#164b91 36%,#11396f 76%,#102c51 100%);
+  border-bottom:1px solid #739bd0;
+  box-shadow:inset 0 1px 0 #a9c9ee55,inset 0 -3px 8px #071c3b66,0 9px 24px #0007;
+}
+.topbar .subtitle {color:#e0ebfb;text-shadow:0 1px 2px #092a50}
+.topbar h1 {color:#fff;text-shadow:0 2px 3px #08264d88}
+.topbar .brand-accent {background:linear-gradient(150deg,#ffe39a,#efb93e 60%,#c88d20);box-shadow:inset 0 1px 1px #fff8,0 2px 5px #06162e80}
+.topbar #btn-go-today,.topbar .radar-switch button {
+  border-radius:11px;
+  border:1px solid #7cb0e9;
+  background:linear-gradient(180deg,#ffffff2b 0%,#ffffff09 46%,#0000000c 49%,#00000022 100%),linear-gradient(130deg,#3578c4,#164b91 66%,#11396d);
+  color:#f7fbff;
+  text-shadow:0 1px 2px #07264f;
+  box-shadow:inset 0 1px 2px #ffffff66,inset 0 -3px 5px #071e4a88,0 4px 0 #092a54,0 6px 12px #06162d66;
+  transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;
+}
+.topbar #btn-go-today {color:#ffe4a2;border-color:#e7c37e;min-height:40px}
+.topbar .radar-switch {gap:.65rem;margin-bottom:1rem}
+.topbar .radar-switch small {color:#e2edfc}
+.topbar .radar-switch button[aria-pressed="true"] {
+  color:#ffe5a4;
+  border-color:#f3ce7b;
+  background:linear-gradient(180deg,#ffffff32 0%,#ffffff0d 47%,#00000012 50%,#00000030 100%),linear-gradient(125deg,#367bbd,#164b91 60%,#103b75);
+  box-shadow:inset 0 1px 2px #ffffff88,inset 0 -3px 6px #0c2a5c99,0 3px 0 #b88b40,0 5px 12px #071d3c80;
+}
+.topbar .controls-bar {border-color:#a5c3e74a}
+.topbar .search-input {background:linear-gradient(180deg,#0e2b50,#143964);border:1px solid #7198c6;color:#fff;box-shadow:inset 0 2px 5px #061a35a0,0 1px 0 #ffffff26}
+.topbar .search-input::placeholder {color:#ceddf0;opacity:1}
+.topbar #btn-go-today:focus-visible,.topbar .radar-switch button:focus-visible,.topbar .search-input:focus-visible {outline:2px solid #ffe4a2;outline-offset:3px}
+@media(hover:hover){.topbar #btn-go-today:hover,.topbar .radar-switch button:hover{filter:brightness(1.13);transform:translateY(-1px)}}
+.topbar #btn-go-today:active,.topbar .radar-switch button:active {transform:translateY(2px);box-shadow:inset 0 2px 5px #071e4a88,0 1px 0 #092a54}
+@media(prefers-reduced-motion:reduce){.topbar #btn-go-today,.topbar .radar-switch button{transition:none;transform:none}}
+</style>
 </head>
 <body>
 
