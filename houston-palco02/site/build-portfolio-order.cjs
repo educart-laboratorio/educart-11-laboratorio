@@ -86,3 +86,60 @@ function runtime(rank){
  console.log('EducART primeiros: '+entries.slice(0,6).map(e=>e.name+' ('+e.photos+' fotos/'+e.videos+' vídeos)').join(' | '));
  console.log('EducART prioridade de complementação: '+entries.filter(e=>!e.photos).map(e=>e.name).join(' | '));
 })();
+
+
+/* Houston: capas audiovisuais individuais, sem reutilizar retratos. */
+(function buildVideoCovers(){
+ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+ const root=__dirname,profiles=path.join(root,'artistas','perfil'),dest=path.join(root,'artistas','assets','video-covers');
+ fs.mkdirSync(dest,{recursive:true});
+ const attr=(tag,key)=>tag.match(new RegExp('\\b'+key+'\\s*=\\s*(?:"([^"]*)"|\\x27([^\\x27]*)\\x27)','i'))?.slice(1).find(x=>x!==undefined)||'';
+ const plain=s=>s.replace(/<[^>]*>/g,' ').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/\s+/g,' ').trim();
+ const esc=s=>String(s).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
+ const palettes=[['#0c203a','#32658c','#f5ce8c'],['#261629','#903e58','#ffc69e'],['#112b29','#376f63','#f3d59b'],['#292038','#73559d','#f0d9ff'],['#342416','#9c6941','#ffdc9e'],['#142334','#405378','#e8caff']];
+ const sources=new Set(),fallbacks=new Set();let reviewed=0,withVideo=0,cards=0,drive=0,youtube=0,editorial=0,replaced=0;
+ for(const slug of fs.readdirSync(profiles).sort()){
+  const file=path.join(profiles,slug,'index.html');if(!fs.existsSync(file))continue;reviewed++;
+  let html=fs.readFileSync(file,'utf8'),n=0;
+  const name=plain(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]||slug);
+  const blocks=/<div\b(?=[^>]*\bclass=["'][^"']*\b(?:u-video|poster|video)\b[^"']*["'])[^>]*>[\s\S]*?<\/div>/gi;
+  const buttons=/<button\b[^>]*(?:data-drive|data-youtube|data-play-video)\s*=[^>]*>/gi;
+  const expected=(html.match(buttons)||[]).length;
+  html=html.replace(blocks,(block,offset,full)=>{
+   const btn=block.match(buttons)?.[0];if(!btn)return block;
+   const yt=attr(btn,'data-youtube')||attr(btn,'data-play-video'),gd=attr(btn,'data-drive');
+   const isYT=/^[A-Za-z0-9_-]{11}$/.test(yt),isDrive=/^[A-Za-z0-9_-]{15,}$/.test(gd);
+   const old=block.match(/<img\b[^>]*>/i)?.[0],oldSrc=attr(old||'','src');
+   const heading=[...full.slice(Math.max(0,offset-3500),offset).matchAll(/<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi)].pop()?.[1]||'';
+   const title=(plain(heading)||(/apresenta/i.test(plain(block))?'Apresentação pessoal':'Registro audiovisual')).slice(0,90);
+   const key=slug+'|'+(++n)+'|'+(isYT?yt:isDrive?gd:title);
+   const hash=crypto.createHash('sha256').update(key).digest('hex'),id=slug+'-'+n+'-'+hash.slice(0,12);
+   const fallback='/artistas/assets/video-covers/'+id+'.svg';
+   if(fallbacks.has(fallback))throw Error('Capa editorial repetida '+id);fallbacks.add(fallback);
+   const [dark,accent,gold]=palettes[parseInt(hash.slice(0,2),16)%palettes.length],x=160+parseInt(hash.slice(2,4),16)*2;
+   const lines=[];let line='';for(const word of title.split(' ')){if(line&&(line+' '+word).length>30){lines.push(line);line=word}else line+=(line?' ':'')+word}if(line)lines.push(line);
+   const label=/apresenta/i.test(title)?'APRESENTAÇÃO PESSOAL':/monólogo/i.test(title)?'MONÓLOGO':'ACERVO AUDIOVISUAL';
+   const svg='<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><defs><linearGradient id="b" x2="1" y2="1"><stop stop-color="'+dark+'"/><stop offset="1" stop-color="'+accent+'"/></linearGradient><radialGradient id="l"><stop stop-color="'+gold+'" stop-opacity=".26"/><stop offset="1" stop-color="'+gold+'" stop-opacity="0"/></radialGradient></defs><rect width="960" height="540" fill="url(#b)"/><ellipse cx="'+x+'" cy="160" rx="500" ry="380" fill="url(#l)"/><g fill="none" stroke="'+gold+'" opacity=".24" stroke-width="2"><circle cx="'+(960-x)+'" cy="245" r="220"/><circle cx="'+(960-x)+'" cy="245" r="184"/><path d="M0 390L960 '+(250+parseInt(hash.slice(4,6),16))+'M0 430L960 360"/></g><rect x="24" y="24" width="912" height="492" rx="24" stroke="'+gold+'" stroke-opacity=".45" fill="none"/><g font-family="Arial,sans-serif"><text x="56" y="75" font-size="22" letter-spacing="3" fill="'+gold+'">EDUCART · '+label+'</text><text x="904" y="75" text-anchor="end" font-size="22" fill="'+gold+'">'+String(n).padStart(2,'0')+'</text>'+lines.slice(0,3).map((l,i)=>'<text x="56" y="'+(365+i*42)+'" fill="#fff8ec" font-size="36" font-weight="700">'+esc(l)+'</text>').join('')+'<text x="56" y="493" font-size="24" fill="'+gold+'">'+esc(name.slice(0,70))+'</text><text x="904" y="493" font-size="15" text-anchor="end" fill="'+gold+'">CAPA EDITORIAL</text></g></svg>';
+   fs.writeFileSync(path.join(dest,id+'.svg'),svg,'utf8');
+   let src=fallback;
+   // Preferência: capa do próprio vídeo, nunca a foto do perfil.
+   if(isYT){
+    const own='https://i.ytimg.com/vi/'+yt+'/hqdefault.jpg';
+    src=[own,'https://i.ytimg.com/vi/'+yt+'/1.jpg','https://i.ytimg.com/vi/'+yt+'/2.jpg','https://i.ytimg.com/vi/'+yt+'/3.jpg'].find(s=>!sources.has(s))||fallback;
+    youtube++;
+   }else if(isDrive){
+    const own='https://drive.google.com/thumbnail?id='+gd+'&sz=w800';
+    if(!sources.has(own))src=own;
+    drive++;
+   }
+   if(src===fallback)editorial++;
+   if(sources.has(src))throw Error('Fonte de capa repetida '+src);sources.add(src);cards++;if(oldSrc.replace(/&amp;/g,'&')!==src)replaced++;
+   const image='<img src="'+esc(src)+'" alt="'+esc('Capa de '+title+' — '+name)+'" loading="lazy" decoding="async" data-video-cover="'+esc(id)+'" data-cover-fallback="'+fallback+'" onerror="this.onerror=null;this.src=this.dataset.coverFallback" onload="if(this.src!==new URL(this.dataset.coverFallback,location.href).href &amp;&amp; this.naturalWidth&lt;160){this.onerror=null;this.src=this.dataset.coverFallback}">';
+   return old?block.replace(old,()=>image):block.replace(btn,()=>image+btn);
+  });
+  if(n!==expected)throw Error('Vídeo fora do padrão de capas '+slug+': '+n+'/'+expected);
+  if(n){withVideo++;fs.writeFileSync(file,html,'utf8')}
+ }
+ if(reviewed!==49||cards<1||sources.size!==cards||fallbacks.size!==cards)throw Error('Auditoria de capas incompleta');
+ console.log('EducART capas audiovisuais: '+reviewed+' perfis revisados; '+withVideo+' com vídeos; '+cards+' cartões; '+youtube+' YouTube; '+drive+' Drive; '+editorial+' editoriais diretas; '+replaced+' fontes alteradas; '+sources.size+' fontes únicas; '+fallbacks.size+' capas editoriais únicas; zero avatares como capa.');
+})();
