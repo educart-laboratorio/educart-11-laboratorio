@@ -69,3 +69,16 @@ body :is(.profile-actions .btn,.u-tabs button,.u-video button,.u-action a,.u-act
 body :is(.profile-actions .btn,.u-tabs button,.u-video button,.u-action a,.u-action button,.cast-shortcut,.cast-album,.cast-album-dialog header button,.u-content .button,main.shell>.row .button):is(:disabled,[aria-disabled="true"]){opacity:.48;cursor:not-allowed;filter:none!important;--glass-y:0px;--glass-depth:1px}
 @media(max-width:420px){body .cast-shortcut{padding:12px!important;min-height:80px}body .u-tabs button{padding:10px 13px!important}body .u-action :is(a,button){max-width:100%;overflow-wrap:anywhere}}
 @media(prefers-reduced-motion:reduce){body :is(.profile-actions .btn,.u-tabs button,.u-video button,.u-action a,.u-action button,.cast-shortcut,.cast-album,.cast-album-dialog header button,.u-content .button,main.shell>.row .button){transition:none!important}}
+
+/* Hierarquia tipográfica EducART: amarelo institucional / branco / slim. */
+body{--portfolio-title:#f0c787;--portfolio-subtitle:#f7f4ef;--portfolio-caption:#bdc9da}
+body .profile .names h1,body .u-pane>h2,body .ed-festival>h2{color:var(--portfolio-title)!important;font-weight:700}
+body .u-pane :is(.u-block,.section,.card)>h2,body .u-pane h3,body .u-sidebar h3,body .cast-shortcut strong,body .cast-album strong,body .cast-album-dialog header strong{color:var(--portfolio-subtitle)!important;font-weight:600;text-shadow:0 1px 2px #0005}
+body .u-pane :is(h4,h5,h6),body .profile .names>p:not(.u-intro),body .u-pane .u-detail,body .u-pane .u-muted,body .u-pane .lead,body .u-intro,body .cast-shortcut small,body .cast-album small,body .u-credit small,body .u-photo figcaption,body .cast-album-dialog figcaption,body .u-sidebar p{color:var(--portfolio-caption)!important;font-weight:300;line-height:1.55;text-shadow:none}
+body .u-pane :is(h4,h5,h6){letter-spacing:.025em}
+body .u-pane .u-detail,body .cast-shortcut small,body .cast-album small,body .u-credit small,body .u-photo figcaption,body .cast-album-dialog figcaption{font-size:clamp(12px,2.8vw,13px)}
+body .profile .names .note,body .u-badges span,body .cast-video-type{color:var(--portfolio-title)!important;font-weight:500}
+body .u-pane .u-credit>a,body .u-pane .u-credit>strong{color:var(--portfolio-subtitle)!important;font-weight:600}
+body .u-pane .u-video button,body .profile-actions .btn-primary{color:#fff2d7!important}
+body .u-tabs button[aria-selected="true"]{color:var(--portfolio-title)!important}
+body .cast-album-dialog header strong{color:var(--portfolio-title)!important}
