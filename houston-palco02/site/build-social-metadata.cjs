@@ -45,3 +45,5 @@ for(const [before,after] of [
 }
 fs.writeFileSync(catalogFile,catalogHtml,'utf8');
 new (require('node:vm').Script)(fs.readFileSync(path.join(root,'educart-navigation-v23-1.js'),'utf8'));walk(root);console.log('Houston social metadata: '+count+' pages, '+portraits+' artist portraits, '+institutional+' institutional covers');if(count<70)throw Error('Incomplete Houston package');
+
+require('./build-portfolio-order.cjs');
