@@ -32,16 +32,8 @@ if(!/<script\b[^>]*\bsrc=["']\/educart-navigation-v23-1\.js["']/i.test(publicHtm
 }
 fs.writeFileSync(f,publicHtml,'utf8');count++;
 }
-// Padronização pontual da nomenclatura no catálogo de formações adicionais.
-const catalogFile=path.join(root,'educart-base.html');
-let catalogHtml=fs.readFileSync(catalogFile,'utf8');
-for(const [before,after] of [
-  ['"id":"SOL-023","title":"Leitura Dramática"','"id":"SOL-023","title":"Leituras dramatizadas"'],
-  ['"summary":"Leitura dramática, circunstâncias, subtexto, objetivos e experimentações em dupla."','"summary":"Leituras dramatizadas, circunstâncias, subtexto, objetivos e experimentações em dupla."']
-]){
-  if(catalogHtml.includes(after)&&!catalogHtml.includes(before))continue;
-  if(catalogHtml.split(before).length!==2)throw Error('Unexpected catalog entry: '+before);
-  catalogHtml=catalogHtml.replace(before,after);
-}
-fs.writeFileSync(catalogFile,catalogHtml,'utf8');
+// Catálogo público reduzido por decisão da direção: preserve apenas a formação adicional autorizada.
+const catalogHtml=fs.readFileSync(path.join(root,'educart-base.html'),'utf8');
+const additional=JSON.parse(catalogHtml.match(/const items=(\[[^\r\n]+\]);/)[1]);
+if(additional.length!==1||additional[0].id!=='SOL-032'||!additional[0].waitlist)throw Error('Unexpected additional training catalogue');
 new (require('node:vm').Script)(fs.readFileSync(path.join(root,'educart-navigation-v23-1.js'),'utf8'));walk(root);console.log('Houston social metadata: '+count+' pages, '+portraits+' artist portraits, '+institutional+' institutional covers');if(count<70)throw Error('Incomplete Houston package');
