@@ -1,0 +1,31 @@
+/* Superfície de portfólio EducART compartilhável, sem alterar os dados do artista. */
+body .shell{max-width:1160px}
+body .profile{background:radial-gradient(ellipse at 12% 0,#1e4c8160,transparent 60%),linear-gradient(145deg,#172941,#0b1424);box-shadow:inset 0 1px 1px #e2edff33,0 12px 32px #0005}
+body .cover{height:clamp(105px,18vw,180px);background:radial-gradient(ellipse at 15% 20%,#38649b,transparent 65%),linear-gradient(145deg,#164b91,#0b1930)}
+body .profile-head{align-items:center}
+body .u-layout{grid-template-columns:minmax(0,1fr) 250px}
+body .u-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;padding:10px 3px 14px;position:sticky;top:0;z-index:8;background:#0b1424f5}
+body .u-tabs button{flex:0 0 auto;min-height:44px;border-radius:10px;background:linear-gradient(180deg,#ffffff19,transparent 46%,#0003),linear-gradient(135deg,#244f85,#142d51);border:1px solid #7298c27a;box-shadow:inset 0 1px 1px #ffffff38,0 3px 0 #08192d;color:#e9f1ff;padding:10px 14px}
+body .u-tabs button[aria-selected="true"]{border-color:#f0c787;color:#ffe1a5;box-shadow:inset 0 1px 1px #fff5,0 3px 0 #8e642e}
+body .u-content,body .u-pane{min-width:0}
+.cast-overview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.cast-shortcut,.cast-album{display:block;min-width:0;text-align:left;border:1px solid #7195bb88;border-radius:15px;padding:15px;background:linear-gradient(160deg,#254e7e,#12263e);box-shadow:inset 0 1px 2px #ffffff45,0 4px 0 #08182a,0 8px 20px #0005;color:#fff;cursor:pointer}
+.cast-shortcut strong,.cast-album strong{display:block;color:#fff5e3;font-size:1rem}
+.cast-shortcut small,.cast-album small{display:block;color:#c9d9ec;font-size:.8rem;margin-top:5px}
+.cast-album{width:100%;margin:10px 0 14px}
+.cast-album-stack{position:relative;display:block;aspect-ratio:2.8;max-height:190px;margin-bottom:12px;overflow:hidden}
+.cast-album-stack img{position:absolute;top:5%;left:50%;width:42%;height:85%;object-fit:cover;border:4px solid #ede5d2;border-bottom-width:9px;border-radius:5px;box-shadow:0 5px 12px #0009;transform:translateX(-50%) rotate(-3deg)}
+.cast-album-stack img:nth-child(1){transform:translateX(-105%) rotate(-12deg)}
+.cast-album-stack img:nth-child(2){transform:translateX(4%) rotate(10deg)}
+.cast-album-stack img:last-child{z-index:2}
+.cast-album-dialog{width:min(900px,calc(100% - 18px));max-height:90dvh;padding:0;border:1px solid #e4bf80;border-radius:18px;background:#101c30;color:#fff;box-shadow:0 22px 70px #000a}
+.cast-album-dialog::backdrop{background:#03070cdd;backdrop-filter:blur(4px)}
+.cast-album-dialog header{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;background:linear-gradient(145deg,#164b91,#102c51);border-bottom:1px solid #89a8d0}
+.cast-album-dialog header button{min-height:44px;padding:8px 12px;background:#1e4b81;border:1px solid #e5c17b;border-radius:8px;color:#fff}
+.cast-album-dialog .cast-gallery-body{padding:14px}
+.cast-album-dialog .u-grid-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.cast-album-dialog .u-photo img{width:100%;aspect-ratio:3/4;object-fit:contain;background:#091220}
+.cast-video-type{display:inline-block;border:1px solid #e6bd7655;border-radius:6px;padding:4px 8px;color:#ffe0a5;font-size:12px;font-weight:700;margin-bottom:8px}
+body .u-video{border-radius:12px;overflow:hidden}
+@media(max-width:760px){body .u-layout{grid-template-columns:1fr}body .profile-head{align-items:end}body .u-tabs{top:0}body .cast-overview{gap:10px}body .cast-shortcut{padding:12px}body .cast-album-stack{aspect-ratio:2.1}}
+@media(prefers-reduced-motion:reduce){.cast-album-dialog{scroll-behavior:auto}}
