@@ -33,7 +33,50 @@ if(!/<script\b[^>]*\bsrc=["']\/educart-navigation-v23-1\.js["']/i.test(publicHtm
 fs.writeFileSync(f,publicHtml,'utf8');count++;
 }
 // Catálogo público reduzido por decisão da direção: preserve apenas a formação adicional autorizada.
-const catalogHtml=fs.readFileSync(path.join(root,'educart-base.html'),'utf8');
+// Candidata isolada: aplica alterações pontuais ao HTML integral no build.
+function applyCorpoetico(html){
+ const replace=(before,after)=>{if(html.split(before).length!==2)throw Error("Unexpected Houston source: "+before.slice(0,100));html=html.replace(before,()=>after);};
+ const match=html.match(/const items=(\[[^\r\n]+\]);/);
+ if(!match)throw Error("Catalogue missing");
+ const items=JSON.parse(match[1]);if(items.length!==1||items[0].id!=="SOL-032"||!items[0].waitlist)throw Error("Unexpected original catalogue");
+ const aline={id:"CORPOETICO",title:"Corpoético",category:0,format:"CONFIRMADA",summary:"Caminhos para uma Atuação Essencial. Com Aline Nepomuceno, atriz, diretora e arte-educadora. Uma vivência de investigação do corpo, da presença cênica e da criação poética, em diálogo com a referência de Jerzy Grotowski.",photo:"aline-nepomuceno-retrato",confirmed:true,waitlist:false};
+ replace(match[0],"const items="+JSON.stringify([aline,...items])+";");
+ replace("Dramaturgia, interpretação e construção cênica',icon:","Corpo, dramaturgia, interpretação e construção cênica',icon:");
+ replace("const photo=id=>id==='fernando-santana-retrato'?", "const photo=id=>id==='aline-nepomuceno-retrato'?(Array.from(document.querySelectorAll('.conhecaPerson')).find(e=>e.querySelector('h3')?.textContent.trim()==='Aline Nepomuceno')?.querySelector('img.conhecaFace')?.getAttribute('src')||''):id==='fernando-santana-retrato'?");
+ replace("return whatsappLink(item.waitlist?", "return whatsappLink(item.confirmed?'Olá, EducART! Gostaria de informações sobre Corpoético, com Aline Nepomuceno, em 13 de dezembro, na Casa Gameleira.':item.waitlist?");
+ replace('<strong>1 formação adicional</strong><small>Da Palavra à Atuação · fila de espera</small>','<strong>2 formações adicionais</strong><small>Corpoético · 13/12 · Da Palavra à Atuação · fila de espera</small>');
+ replace('aria-label="Formações em planejamento" class="block"><div class="blockHeader"><h3><span class="bullet dim"></span> Formações em planejamento</h3><small>FILA DE INTERESSE · GRATUITA</small>','aria-label="Formações adicionais" class="block"><div class="blockHeader"><h3><span class="bullet dim"></span> Formações adicionais</h3><small>CONFIRMADA E FILA DE ESPERA</small>');
+ replace('item.waitlist?"Fila de espera":"Em planejamento"','item.confirmed?"Confirmada · 13/12":item.waitlist?"Fila de espera":"Em planejamento"');
+ replace('item.waitlist?"FILA DE ESPERA":"EM PLANEJAMENTO"','item.confirmed?"CONFIRMADA · 13/12":item.waitlist?"FILA DE ESPERA":"EM PLANEJAMENTO"');
+ replace('<span>FORMAÇÃO PROPOSTA</span><span>${item.waitlist?', '<span>${item.confirmed?"FORMAÇÃO CONFIRMADA":"FORMAÇÃO PROPOSTA"}</span><span>${item.waitlist?');
+ replace('item.waitlist?"Domingos · 9h às 13h · 4h por encontro":prices[item.format].label','item.confirmed?"Domingo · 8h às 13h":item.waitlist?"Domingos · 9h às 13h · 4h por encontro":prices[item.format].label');
+ replace('<span>Sem data definida</span></div>${item.waitlist?"":', '<span>${item.confirmed?"13/12/2026 · Casa Gameleira":"Sem data definida"}</span></div>${item.waitlist||item.confirmed?"":');
+ replace('item.waitlist?"Quero entrar na fila de espera":"Tenho interesse"','item.confirmed?"Ver detalhes":item.waitlist?"Quero entrar na fila de espera":"Tenho interesse"');
+ replace("item.id+(item.waitlist?' · FILA DE ESPERA':' · FORMAÇÃO ADICIONAL EM PLANEJAMENTO');","item.id+(item.confirmed?' · CONFIRMADA · 13/12':item.waitlist?' · FILA DE ESPERA':' · FORMAÇÃO ADICIONAL EM PLANEJAMENTO');");
+ replace("  if(item.waitlist){content.querySelector('.stageNote')", "  if(item.confirmed){content.querySelector('.stageNote').textContent='13 de dezembro de 2026 · domingo · 8h às 13h · Casa Gameleira. Valores e inscrições ainda não divulgados.';content.querySelector('#openLead').textContent='Consultar informações';content.querySelector('.educart-wa-hint').textContent='Contato informativo; sem matrícula ou pagamento nesta prévia.';}\n  if(item.waitlist){content.querySelector('.stageNote')");
+ replace('Da Palavra à Atuação está em fila de espera. Consulte a equipe EducART sobre programação e disponibilidade.','Corpoético · 13 de dezembro, com Aline Nepomuceno. Da Palavra à Atuação · fila de espera, com Fernando Santana.');
+ replace("else if(item.waitlist)coverLayer.append","else if(item.confirmed)coverLayer.append(node('span','ha-tile-recommend','CONFIRMADA · 13/12'));\n  else if(item.waitlist)coverLayer.append");
+ replace("mainCourse?'CURSO FORMADOR · 4 SEMESTRES':item.waitlist?", "mainCourse?'CURSO FORMADOR · 4 SEMESTRES':item.confirmed?'13/12 · 8H ÀS 13H':item.waitlist?");
+ replace("item.id+(item.waitlist?' · FILA DE ESPERA':' · FORMAÇÃO ADICIONAL EM PLANEJAMENTO')));","item.id+(item.confirmed?' · CONFIRMADA · 13/12':item.waitlist?' · FILA DE ESPERA':' · FORMAÇÃO ADICIONAL EM PLANEJAMENTO')));");
+ replace("': item.waitlist?'Professor Fernando Santana","': item.confirmed?'Aline Nepomuceno · domingo, 13 de dezembro de 2026, das 8h às 13h · Casa Gameleira. Valores e inscrições ainda não divulgados.':item.waitlist?'Professor Fernando Santana");
+ replace("  summary.append(note);\n  if(!mainCourse",`  summary.append(note);
+  if(!mainCourse && item.confirmed){
+    const program=node('section','');
+    program.append(node('h4','','Programação proposta'));
+    [['8h – 8h30','Acolhimento'],['8h30 – 9h','O corpo que chega'],['9h – 9h50','O corpo que se revela'],['9h50 – 10h05','Intervalo'],['10h05 – 10h55','O corpo que encontra'],['10h55 – 11h40','O corpo que cria'],['11h40 – 12h30','Carta Para o Corpo'],['12h30 – 13h','Convivência e despedida']].forEach(([time,title])=>program.append(node('p','',time+' · '+title)));
+    program.append(node('p','ha-v95-detail-note','Programação pedagógica proposta, sujeita à validação final da formadora.'));summary.append(program);
+  }
+  if(!mainCourse`);
+ replace("item.waitlist?'Quero entrar na fila de espera':'Quero participar desta formação'","item.confirmed?'Consultar informações':item.waitlist?'Quero entrar na fila de espera':'Quero participar desta formação'");
+ replace("Conheça Da Palavra à Atuação, com Fernando Santana. A formação está em fila de espera, com início a definir.","Conheça Corpoético, com Aline Nepomuceno, em 13 de dezembro, e Da Palavra à Atuação, com Fernando Santana, em fila de espera.");
+ replace("el('span','ht-pill','1 formação')","el('span','ht-pill','2 formações')");
+ replace("grid.setAttribute('aria-label','1 Formação Adicional')","grid.setAttribute('aria-label','2 Formações Adicionais')");
+ replace("item.waitlist?'Entrar na fila de espera':'Tenho interesse'","item.confirmed?'Consultar informações':item.waitlist?'Entrar na fila de espera':'Tenho interesse'");
+ return html;
+}
+const catalogPath=path.join(root,'educart-base.html');
+const catalogHtml=applyCorpoetico(fs.readFileSync(catalogPath,'utf8'));
 const additional=JSON.parse(catalogHtml.match(/const items=(\[[^\r\n]+\]);/)[1]);
-if(additional.length!==1||additional[0].id!=='SOL-032'||!additional[0].waitlist)throw Error('Unexpected additional training catalogue');
+if(additional.length!==2||additional[0].id!=='CORPOETICO'||!additional[0].confirmed||additional[1].id!=='SOL-032'||!additional[1].waitlist)throw Error('Unexpected unified catalogue');
+fs.writeFileSync(catalogPath,catalogHtml,'utf8');
 new (require('node:vm').Script)(fs.readFileSync(path.join(root,'educart-navigation-v23-1.js'),'utf8'));walk(root);console.log('Houston social metadata: '+count+' pages, '+portraits+' artist portraits, '+institutional+' institutional covers');if(count<70)throw Error('Incomplete Houston package');
