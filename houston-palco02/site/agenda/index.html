@@ -824,7 +824,7 @@
       return formatter.format(new Date());
     }
 
-    // Dataset oficial — Lote 02 (27 espetáculos, 63 sessões, 82 créditos)
+    // Dataset oficial — Lote 02 + adendo Alice (28 espetáculos, 64 sessões, 94 créditos)
     const REAL_DATASET = {
       "meta": {
         "cidade": "Salvador",
@@ -837,10 +837,10 @@
           "excecao_fim_de_ano_ate": "2026-12-24",
           "retomada_padrao_em": "2026-12-11"
         },
-        "gerado_em": "2026-11-24",
-        "total_eventos": 27,
-        "total_sessoes": 63,
-        "total_creditos": 82,
+        "gerado_em": "2026-11-27",
+        "total_eventos": 28,
+        "total_sessoes": 64,
+        "total_creditos": 94,
         "versao": "02"
       },
       "eventos": [
@@ -1566,6 +1566,96 @@
           "sessoes": [
             { "sessao_id": "evt-027-s01", "data": "2026-12-17", "hora_inicio": "18:00", "local": { "nome": "Teatro da Cidade", "bairro": "Paralela" }, "ingresso": { "gratuito": null, "texto_exibicao": null, "url_bilheteria": "https://www.sympla.com.br/evento/cia-geringonca-os-miseraveis-mudanca-de-habito/3637186" }, "status_sessao": "programada", "aviso_publico": "Programação conjunta das duas montagens com previsão até 22h30; ingresso único.", "verificado_em": "2026-11-24" }
           ]
+        },
+        {
+          "id": "evt-028",
+          "slug": "alice-e-as-maravilhas-de-ser-quem-somos",
+          "espetaculo": {
+            "titulo": "Alice e as Maravilhas de Ser Quem Somos",
+            "companhia": "Curso de Teatro Deixa A Arte Me Levar",
+            "resumo_editorial": "Ao seguir um misterioso Coelho, Alice atravessa um universo fantástico, encontra personagens encantadores e vive descobertas que a ajudam a compreender a beleza de ser diferente. A aventura celebra a amizade, a imaginação e a liberdade de ser quem somos.",
+            "contexto_artistico": "Espetáculo teatral para toda a família, apresentado pelo Curso de Teatro Deixa A Arte Me Levar. Texto e direção de Eric Flávio, artista formador e professor da EducART. Maria Flor, estudante da oficina EducART, integra o elenco. A montagem valoriza a infância, a diversidade e o poder transformador da arte.",
+            "classificacao_indicativa": null,
+            "duracao_minutos": null,
+            "acessibilidade": null,
+            "cartaz": {
+              "url": null,
+              "autorizado": false
+            },
+            "fontes_verificadas": [
+              "https://www.instagram.com/deixaaartemelevar/"
+            ],
+            "verificado_em": "2026-11-27"
+          },
+          "ficha_tecnica": [
+            {
+              "funcao": "Texto e direção · artista formador EducART",
+              "nome_exibicao": "Eric Flávio"
+            },
+            {
+              "funcao": "Elenco",
+              "nome_exibicao": "Alice Ribeiro"
+            },
+            {
+              "funcao": "Elenco",
+              "nome_exibicao": "Ceci Mascarenhas"
+            },
+            {
+              "funcao": "Elenco",
+              "nome_exibicao": "Gael Gomes"
+            },
+            {
+              "funcao": "Elenco",
+              "nome_exibicao": "Gabriela Gonzaga"
+            },
+            {
+              "funcao": "Elenco",
+              "nome_exibicao": "Lis Oliveira"
+            },
+            {
+              "funcao": "Elenco · estudante da oficina EducART",
+              "nome_exibicao": "Maria Flor"
+            },
+            {
+              "funcao": "Elenco",
+              "nome_exibicao": "Melissa Elis"
+            },
+            {
+              "funcao": "Elenco",
+              "nome_exibicao": "Moana Reis"
+            },
+            {
+              "funcao": "Elenco",
+              "nome_exibicao": "Sophia Clemente"
+            },
+            {
+              "funcao": "Elenco",
+              "nome_exibicao": "Vinícius Almeida"
+            },
+            {
+              "funcao": "Ator convidado",
+              "nome_exibicao": "Djan Vilanova"
+            }
+          ],
+          "sessoes": [
+            {
+              "sessao_id": "evt-028-s01",
+              "data": "2026-12-06",
+              "hora_inicio": "11:00",
+              "local": {
+                "nome": "Espaço Xisto Bahia",
+                "bairro": null
+              },
+              "ingresso": {
+                "gratuito": false,
+                "texto_exibicao": "R$ 30 inteira / R$ 15 meia",
+                "url_bilheteria": "https://wa.me/5571999341991"
+              },
+              "status_sessao": "programada",
+              "aviso_publico": "Venda de ingressos pelo WhatsApp da produção: (71) 99934-1991. Fonte: anúncio do perfil @deixaaartemelevar, enviado à EducART em 27/11/2026. Duração, classificação indicativa formal e acessibilidade não informadas no anúncio.",
+              "verificado_em": "2026-11-27"
+            }
+          ]
         }
       ]
     };
@@ -1653,6 +1743,7 @@
     }
 
     function buildShareUrl(slug, sessaoId) {
+      if(slug==="alice-e-as-maravilhas-de-ser-quem-somos" && sessaoId==="evt-028-s01")return "https://educart.pro/agenda/eventos/alice-e-as-maravilhas-de-ser-quem-somos.html";
       const url = new URL("https://educart.pro/agenda/");
       url.searchParams.set("evento", slug);
       url.searchParams.set("sessao", sessaoId);
