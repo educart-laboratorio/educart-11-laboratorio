@@ -32,7 +32,7 @@ function runtime(rank){
    if(slugs(p).length!==1)break;card=p;
   }
  }
- for(const p of parents){const items=[...p.children].map(n=>({n,s:slugs(n)})).filter(x=>x.s.length===1),sorted=items.slice().sort((a,b)=>rank[a.s[0]]-rank[b.s[0]]);if(items.every((x,i)=>x.n===sorted[i].n))continue;const slots=items.map(x=>{const m=document.createComment("educart-order");x.n.before(m);x.n.remove();return m});slots.forEach((m,i)=>m.replaceWith(sorted[i].n))}
+ for(const p of parents){if(location.pathname.replace(/index\.html$/,'').replace(/\/$/,'')==='/artistas/todos')continue;const items=[...p.children].map(n=>({n,s:slugs(n)})).filter(x=>x.s.length===1),sorted=items.slice().sort((a,b)=>rank[a.s[0]]-rank[b.s[0]]);if(items.every((x,i)=>x.n===sorted[i].n))continue;const slots=items.map(x=>{const m=document.createComment("educart-order");x.n.before(m);x.n.remove();return m});slots.forEach((m,i)=>m.replaceWith(sorted[i].n))}
 }
 (function generate(){
  const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
@@ -46,6 +46,7 @@ function runtime(rank){
  const useful=tag=>{const src=decode(attr(tag,'src'));return src&&!/placeholder|default-avatar|avatar-default|i\.ytimg\.com|logo|og-image/i.test(src)&&(/^https:\/\//.test(src)||src.startsWith('/')&&fs.existsSync(path.join(root,src.slice(1))))?src:''};
  const pane=(body,id)=>body.match(new RegExp('<section\\b(?=[^>]*\\bid=["\\x27]u-'+id+'["\\x27])[^>]*>([\\s\\S]*?)<\\/section>','i'))?.[1]||'';
  const entries=[];
+ function correctName(d){for(const f of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,f.name);if(f.isDirectory())correctName(p);else if(f.name==='index.html'||f.name==='educart-base.html'){const old=fs.readFileSync(p,'utf8'),next=old.replace(/João Toti/g,'João Todt').replace(/Joao Toti/g,'João Todt');if(next!==old)fs.writeFileSync(p,next,'utf8')}}}correctName(root);
  for(const slug of fs.readdirSync(dir).sort()){
   if(docenteSlugs.has(slug))continue; // perfil institucional, não integra o catálogo de casting.
   const file=path.join(dir,slug,'index.html');if(!fs.existsSync(file))continue;
@@ -66,6 +67,14 @@ function runtime(rank){
  }
  entries.sort((a,b)=>Number(b.photos>0)-Number(a.photos>0)||b.score-a.score||a.name.localeCompare(b.name,'pt-BR'));
  if(!entries.length||entries.some(e=>docenteSlugs.has(e.slug)))throw Error('Catálogo de artistas deve conter 51 perfis, sem coordenação institucional');
+ const contentRank=Object.fromEntries(entries.map((e,i)=>[e.slug,i]));
+ const men=new Set(["arthur-regis","celso-carvalho","dan-menezes","felipe-bispo","fernando-guerreiro","gabriel-da-matta","geovane-eduardo","germano","henrique-bianchi","icaro-moreira","joao-toti","jotta-erre","luan-pinto","lucas-s-dias","luiz-alberto-leal","mateus-de-jesus","pedro-antonio","thiago-oliveira","veloso","vinicius-machado","wlamir-mattos","yago-savalla"]),women=new Set(["barbara-nunes","beatriz-david","bia-montarroyos","bia-trabuco","clarice-lemos","clarice-rezende","dai-dias","dildiana","erica-dantas","ery-danda","gabriela-duarte","jack-rolim","jesse","laira-maissa","laura-assis","liliana-falcao","liz-moreira","luisa-salvador","maria-sotero","mel-cosme","michele-santana","mirelle-miqueias","mon-anjos","nice-santana","rhanna-borges","sarah-falcao","vani-bia","vicky-vargas"]);
+ if(entries.some(e=>men.has(e.slug)===women.has(e.slug)))throw Error('Classificação editorial ausente ou duplicada');
+ const m=entries.filter(e=>men.has(e.slug)),f=entries.filter(e=>women.has(e.slug)),ordered=[];
+ if(m.length>f.length+1)throw Error('Alternância impossível sem excluir artistas');
+ while(m.length||f.length){const prev=ordered.at(-1);const mustFemale=prev&&men.has(prev.slug);const mustMale=m.length>f.length;const takeMale=m.length&&!mustFemale&&(mustMale||!f.length||contentRank[m[0].slug]<contentRank[f[0].slug]);ordered.push(takeMale?m.shift():f.shift());}
+ if(ordered.some((e,i)=>i&&men.has(e.slug)&&men.has(ordered[i-1].slug)))throw Error('Dois perfis masculinos consecutivos');
+ entries.splice(0,entries.length,...ordered);
  const rank=Object.fromEntries(entries.map((e,i)=>[e.slug,i]));
  const catalog=path.join(root,'artistas','todos','index.html');let html=fs.readFileSync(catalog,'utf8');
  const h='<h2>Artistas com monólogo</h2><div class="cast-grid">',split='</div></div><div class="section"><h2>Outros artistas</h2><div class="cast-grid">',end='</div></div></main>';
@@ -81,7 +90,7 @@ function runtime(rank){
  html=html.slice(0,start)+'<h2>Todos os '+entries.length+' artistas</h2><p class="lead">Perfis organizados pela quantidade e variedade do acervo disponível.</p><div class="cast-grid">'+entries.map(e=>bySlug[e.slug]).join('')+html.slice(stop);
  fs.writeFileSync(catalog,html,'utf8');
  updateDirectory(root,entries,rank,fs,path,attr,esc);
- const script='('+runtime.toString()+')('+JSON.stringify(rank)+');';new vm.Script(script);
+ const script='('+runtime.toString()+')('+JSON.stringify(contentRank)+');';new vm.Script(script);
  fs.writeFileSync(path.join(root,'artistas','assets','portfolio-content-order.js'),script,'utf8');
  let pages=0;function walk(d){for(const f of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,f.name);if(f.isDirectory())walk(p);else if(f.name==='index.html'){let s=fs.readFileSync(p,'utf8');if(!/href=["'][^"']*\/artistas\/perfil\//i.test(s)||s.includes('/artistas/assets/portfolio-content-order.js'))continue;const i=s.toLowerCase().lastIndexOf('</body>');if(i<0)throw Error('Sem body '+p);s=s.slice(0,i)+'<script defer src="/artistas/assets/portfolio-content-order.js"></script>'+s.slice(i);fs.writeFileSync(p,s,'utf8');pages++}}}walk(root);
  console.log('EducART ordenação por acervo: '+entries.length+' perfis, '+(entries.length-cards.length)+' reintegrados no catálogo, '+pages+' páginas; sem foto: '+entries.filter(e=>!e.photos).length);
