@@ -416,3 +416,38 @@ if(school&&welcome){
   e.preventDefault();e.stopImmediatePropagation();open(id,titleOf(el),el);
  },true);
 })();
+
+/* Formações adicionais: vínculos docentes confirmados, separados das propostas sem professor. */
+(function(){
+ 'use strict';
+ const records={
+  'aline nepomuceno':[{title:'EducART & Eloquence',state:'Experiência realizada',desc:'Construção de personagens, ensaios e apresentação cênica.',href:'/escola/experiencias-formativas/#eloquence'}],
+  'antonio marques':[{title:'Teatro Musical',state:'Experiência realizada',desc:'Atividade formativa de teatro musical.',href:'/escola/experiencias-formativas/#teatro-musical'}],
+  'felipe bispo':[{title:'Teatro para o Autoconhecimento',state:'Realizada · 15/11/2025',desc:'Atividade de teatro e autoconhecimento na TV Pelourinho.',href:'/escola/experiencias-formativas/#teatro-autoconhecimento'}],
+  'fernando santana':[{title:'Da Palavra à Atuação',state:'Fila de espera · SOL-032',desc:'Dramaturgia, interpretação e construção cênica. Domingos, 9h às 13h. Início a definir.',solution:'SOL-032'}],
+  'deko alves':[],'eric flavio':[],'marcelo jardim':[],'marcia gil-braz':[],'taiana lemos':[],'tassia gramacho':[]
+ };
+ const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s*\(alininha\)\s*$/i,'').trim().toLowerCase();
+ const style=document.createElement('style');style.textContent='.educart-docent-offers{margin:12px 0;padding:14px;border:1px solid #d8b87866;border-radius:14px;background:linear-gradient(150deg,#d8b87813,#18283e44);color:inherit}.educart-docent-offers h3,.educart-docent-offers h4{margin:0 0 8px;color:#f1ce8c;font-size:1rem}.educart-docent-offers .offer-item{padding:10px 0;border-top:1px solid #d8b87833}.educart-docent-offers .offer-item:first-of-type{border-top:0}.educart-docent-offers strong{display:block}.educart-docent-offers small{display:block;color:#d6c8ad;margin:4px 0}.educart-docent-offers p{margin:5px 0 9px}.educart-docent-offers button,.educart-docent-offers a{display:inline-flex;align-items:center;min-height:36px;color:#f1ce8c;background:none;border:0;text-decoration:underline;cursor:pointer;text-align:left;padding:0;font:inherit;font-weight:700}';
+ document.head.append(style);
+ function node(tag,text){const e=document.createElement(tag);if(text)e.textContent=text;return e}
+ function section(name,card){
+  const list=records[norm(name)];if(!list||card.querySelector('.educart-docent-offers'))return;
+  const box=node('section');box.className='educart-docent-offers';box.setAttribute('aria-label','Formações adicionais oferecidas');
+  box.append(node(card.matches('.conhecaPerson')?'h4':'h3','Formações adicionais e experiências'));
+  if(!list.length)box.append(node('p','Ofertas específicas a confirmar pela coordenação.'));
+  for(const item of list){
+   const row=node('div');row.className='offer-item';row.append(node('strong',item.title),node('small',item.state),node('p',item.desc));
+   if(item.solution){const btn=node('button','Ver formação e fila de espera ↗');btn.type='button';btn.addEventListener('click',()=>{const dialog=btn.closest('dialog');if(dialog?.open)dialog.close();document.dispatchEvent(new CustomEvent('houston:open-additional-solution',{detail:{id:item.solution,origin:document.querySelector('#educart-formadores-button')||btn}}))});row.append(btn)}
+   if(item.href){const link=node('a','Conhecer a experiência ↗');link.href=item.href;row.append(link)}
+   box.append(row);
+  }
+  if(card.matches('.conhecaPerson')){const content=card.querySelector('.conhecaPersonContent')||card;const bio=content.querySelector('.conhecaBio');if(bio)bio.before(box);else content.append(box)}
+  else {const intro=card.querySelector('.u-intro');const header=card.querySelector('.profile-head');(header||intro||card.firstElementChild)?.after(box)}
+ }
+ function update(){
+  for(const card of document.querySelectorAll('.conhecaPerson')){const name=card.querySelector('h3')?.textContent||'';section(name,card);if(norm(name)==='aline nepomuceno'){const content=card.querySelector('.conhecaPersonContent')||card;if(!content.querySelector('.educart-coordination-profile')){const link=node('a','Conhecer a coordenadora ↗');link.className='conhecaFonte educart-coordination-profile';link.href='/artistas/perfil/aline-nepomuceno/';content.querySelector('.conhecaRole')?.after(link)}}}
+  const profile=document.querySelector('main.shell>.profile');if(profile)section(profile.querySelector('h1')?.textContent||'',profile);
+ }
+ update();const target=document.querySelector('#educart-formadores-modal .formadores-content');if(target)new MutationObserver(update).observe(target,{childList:true});
+})();

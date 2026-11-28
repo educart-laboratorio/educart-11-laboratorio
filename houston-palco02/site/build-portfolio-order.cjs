@@ -46,6 +46,7 @@ function runtime(rank){
  const pane=(body,id)=>body.match(new RegExp('<section\\b(?=[^>]*\\bid=["\\x27]u-'+id+'["\\x27])[^>]*>([\\s\\S]*?)<\\/section>','i'))?.[1]||'';
  const entries=[];
  for(const slug of fs.readdirSync(dir).sort()){
+  if(slug==='aline-nepomuceno')continue; // perfil institucional, não integra o catálogo de casting.
   const file=path.join(dir,slug,'index.html');if(!fs.existsSync(file))continue;
   const html=fs.readFileSync(file,'utf8'),body=html.slice(html.search(/<body\b/i)).replace(/<script\b[\s\S]*?<\/script>/gi,'').replace(/<style\b[\s\S]*?<\/style>/gi,'');
   const name=plain(body.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]||slug);
@@ -63,7 +64,7 @@ function runtime(rank){
   entries.push({slug,name,avatar,photos:photos.size,videos:vids.size,words,score:(avatar?16:0)+Math.min(photos.size,40)*3+Math.min(vids.size,12)*12+Math.min(words/8,28)+Math.min(works.size,8)*2});
  }
  entries.sort((a,b)=>Number(b.photos>0)-Number(a.photos>0)||b.score-a.score||a.name.localeCompare(b.name,'pt-BR'));
- if(!entries.length)throw Error('Nenhum perfil encontrado');
+ if(entries.length!==51||entries.some(e=>e.slug==='aline-nepomuceno'))throw Error('Catálogo de artistas deve conter 51 perfis, sem coordenação institucional');
  const rank=Object.fromEntries(entries.map((e,i)=>[e.slug,i]));
  const catalog=path.join(root,'artistas','todos','index.html');let html=fs.readFileSync(catalog,'utf8');
  const h='<h2>Artistas com monólogo</h2><div class="cast-grid">',split='</div></div><div class="section"><h2>Outros artistas</h2><div class="cast-grid">',end='</div></div></main>';

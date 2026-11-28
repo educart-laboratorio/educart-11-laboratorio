@@ -3,6 +3,7 @@ const tabs=make("nav","u-tabs");tabs.setAttribute("role","tablist");tabs.setAttr
 })();
 (()=>{"use strict";const root=document.querySelector(".u-content"),tabs=document.querySelector(".u-tabs");if(!root||!tabs)return;
 /* Participações em festivais pertencem exclusivamente a Trabalhos. */
+const institutional=!!document.querySelector("[data-educart-institutional-profile]");
 const creditsPane=document.getElementById("u-creditos");
 if(creditsPane){
  const festivalBlocks=[...document.querySelectorAll("main.shell .ed-festival")];
@@ -13,7 +14,7 @@ if(creditsPane){
 /* Estrutura curricular comum baseada no portfólio profissional de Michele.
    Dados individuais existentes são preservados; nunca inferir dados faltantes. */
 const curriculum=document.getElementById("u-historico"),releasePane=document.getElementById("u-release");
-if(curriculum){
+if(curriculum&&!institutional){
  const title=curriculum.querySelector(":scope > h2");if(title)title.textContent="Formação e trajetória";
  const normalize=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
  const labels=[...curriculum.querySelectorAll("h3,h4,li>strong,dt")].map(n=>normalize(n.textContent));
@@ -35,7 +36,7 @@ if(curriculum){
   curriculum.append(block);
  }
 }
-if(releasePane){
+if(releasePane&&!institutional){
  const original=[...releasePane.querySelectorAll("a[href]")].find(a=>/portf[oó]lio/i.test(a.textContent)&&(/\.pdf(?:[?#]|$)/i.test(a.href)||a.hasAttribute("data-portfolio-pdf")));
  if(!original){
   const block=document.createElement("article");block.className="u-block cast-portfolio-document";
@@ -45,7 +46,7 @@ if(releasePane){
  }
 }
 const overview=document.createElement("section");overview.id="u-overview";overview.className="u-pane";overview.setAttribute("role","tabpanel");overview.setAttribute("aria-labelledby","u-tab-overview");
-const heading=document.createElement("h2");heading.textContent="Biografia";overview.append(heading);
+const heading=document.createElement("h2");heading.textContent=institutional?"Coordenação e formação teatral":"Biografia";overview.append(heading);
 const bio=document.querySelector(".profile .names .u-intro");
 const bioText=(bio?.textContent||document.querySelector(".u-sidebar p")?.textContent||"").trim();
 if(bioText){const p=document.createElement("p");p.className="cast-overview-bio";p.textContent=bioText;overview.append(p);if(bio)bio.remove()}else{const p=document.createElement("p");p.className="cast-overview-bio";p.textContent="Biografia ainda não cadastrada.";overview.append(p)}
@@ -63,7 +64,8 @@ const records=videos.map((img,index)=>{
  const kind=/apresenta/i.test(title)?"intro":/mon[oó]logo/i.test(title)?"monologue":"other";
  return {img,title,kind,index,yt:validYT?yt:"",gd:validGD?gd:""};
 }).filter(v=>v.kind==="intro"&&(v.yt||v.gd)).slice(0,1);
-if(records.length){
+if(institutional){const section=document.createElement("article");section.className="u-block";section.innerHTML='<h3>Qualificações e atuação pedagógica</h3><p>Licenciatura em Teatro (UFBA) · coordenação, docência e direção teatral.</p><div class="u-action"><a href="#historico" data-institutional-pane="historico">Consultar qualificações ↗</a><a href="#videos" data-institutional-pane="videos">Experiências com alunos ↗</a><a href="#photos" data-institutional-pane="photos">Acervo pedagógico ↗</a></div>';overview.append(section);section.addEventListener("click",e=>{const a=e.target.closest("[data-institutional-pane]");if(!a)return;e.preventDefault();tabs.querySelector("[data-pane="+a.dataset.institutionalPane+"]")?.click()});}
+if(records.length&&!institutional){
  const section=document.createElement("section");section.className="cast-overview-videos";section.setAttribute("aria-label","Vídeo de apresentação");
  
  const stack=document.createElement("div");stack.className="cast-video-stack";section.append(stack);
@@ -85,7 +87,7 @@ if(records.length){
 
 root.prepend(overview);
 const tab=document.createElement("button");tab.type="button";tab.id="u-tab-overview";tab.dataset.pane="overview";tab.setAttribute("role","tab");tab.setAttribute("aria-controls","u-overview");tab.textContent="Visão geral";tabs.prepend(tab);
-const tabLabels={videos:"Vídeos",photos:"Fotos",historico:"Currículo",release:"Release",creditos:"Trabalhos"};for(const b of tabs.querySelectorAll("[data-pane]"))if(tabLabels[b.dataset.pane])b.textContent=tabLabels[b.dataset.pane];
+const tabLabels=institutional?{videos:"Vídeos",photos:"Fotos",historico:"Qualificações",release:"Release",creditos:"Direção"}:{videos:"Vídeos",photos:"Fotos",historico:"Currículo",release:"Release",creditos:"Trabalhos"};for(const b of tabs.querySelectorAll("[data-pane]"))if(tabLabels[b.dataset.pane])b.textContent=tabLabels[b.dataset.pane];
 function show(id){root.closest(".u-layout")?.classList.toggle("cast-overview-active",id==="overview");if(id!=="overview")overviewPlayers.forEach(p=>p.stop());for(const b of tabs.querySelectorAll("[data-pane]")){const active=b.dataset.pane===id;b.setAttribute("aria-selected",String(active));b.tabIndex=active?0:-1;const pane=document.getElementById("u-"+b.dataset.pane);if(pane)pane.hidden=!active}}
 tabs.addEventListener("click",e=>{const b=e.target.closest("[data-pane]");if(!b)return;show(b.dataset.pane);history.replaceState(null,"",location.pathname+location.search+"#"+b.dataset.pane)});
 show(document.getElementById("u-"+location.hash.slice(1))?location.hash.slice(1):"overview");
