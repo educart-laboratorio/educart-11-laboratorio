@@ -9,6 +9,41 @@ if(creditsPane){
  for(const block of festivalBlocks){if(!creditsPane.contains(block))creditsPane.append(block)}
  if(festivalBlocks.length){for(const p of creditsPane.querySelectorAll(":scope > p.u-muted"))if(p.textContent.trim()==="Trabalhos aguardam complementação.")p.remove()}
 }
+
+/* Estrutura curricular comum baseada no portfólio profissional de Michele.
+   Dados individuais existentes são preservados; nunca inferir dados faltantes. */
+const curriculum=document.getElementById("u-historico"),releasePane=document.getElementById("u-release");
+if(curriculum){
+ const title=curriculum.querySelector(":scope > h2");if(title)title.textContent="Formação e trajetória";
+ const normalize=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+ const labels=[...curriculum.querySelectorAll("h3,h4,li>strong,dt")].map(n=>normalize(n.textContent));
+ const sections=[
+  {label:"Oficinas e formação complementar",match:/oficina|formacao complementar|cursos complementares/},
+  {label:"Certificados",match:/certificad/},
+  {label:"Habilidades corporais e artísticas",match:/habilidade|competencia|aptidao/},
+  {label:"Dados informados no portfólio",match:/dados informados|dados de casting|medidas|altura|peso|idade/}
+ ];
+ const missing=sections.filter(s=>!labels.some(l=>s.match.test(l)));
+ if(missing.length){
+  const block=document.createElement("article");block.className="u-block cast-curriculum-pending";block.setAttribute("aria-label","Campos de complementação curricular");
+  for(const item of missing){
+   const group=document.createElement("div");group.className="cast-curriculum-field";
+   const h=document.createElement("h3");h.textContent=item.label;
+   const p=document.createElement("p");p.className="u-muted";p.textContent="A complementar";
+   group.append(h,p);block.append(group);
+  }
+  curriculum.append(block);
+ }
+}
+if(releasePane){
+ const original=[...releasePane.querySelectorAll("a[href]")].find(a=>/portf[oó]lio/i.test(a.textContent)&&(/\.pdf(?:[?#]|$)/i.test(a.href)||a.hasAttribute("data-portfolio-pdf")));
+ if(!original){
+  const block=document.createElement("article");block.className="u-block cast-portfolio-document";
+  const h=document.createElement("h3");h.textContent="Portfólio artístico em PDF";
+  const p=document.createElement("p");p.className="u-muted";p.textContent="Documento ainda não disponibilizado.";
+  block.append(h,p);releasePane.append(block);
+ }
+}
 const overview=document.createElement("section");overview.id="u-overview";overview.className="u-pane";overview.setAttribute("role","tabpanel");overview.setAttribute("aria-labelledby","u-tab-overview");
 const heading=document.createElement("h2");heading.textContent="Biografia";overview.append(heading);
 const bio=document.querySelector(".profile .names .u-intro");
