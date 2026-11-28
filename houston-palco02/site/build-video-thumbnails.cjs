@@ -23,6 +23,13 @@ module.exports=async function(){
  let cursor=0,approved=0,editorial=0;
  await Promise.all(Array.from({length:16},async()=>{while(cursor<jobs.length){const j=jobs[cursor++];if(!cache.has(j.url))cache.set(j.url,inspect(j.url));const image=await cache.get(j.url);if(!image){editorial++;continue}const dst=j.fallback.replace(/\.svg$/,'.jpg');fs.writeFileSync(path.join(root,dst.slice(1)),image);j.page.changes.push([j.tag,j.tag.replace(/\bsrc="[^"]*"/,'src="'+dst+'"')]);approved++}}));
  for(const p of pages){if(!p.changes.length)continue;let html=p.html;for(const [a,b] of p.changes)html=html.replace(a,()=>b);fs.writeFileSync(p.file,html,'utf8')}
+ const expFile=path.join(root,'escola','experiencias-formativas','index.html');
+ let exp=fs.readFileSync(expFile,'utf8'),real=0,covers=0;
+ const tags=(exp.match(/<img\b[^>]*>/gi)||[]).filter(t=>t.includes('data-experience-source')||((t.includes('alt="Registro da experiência"')||t.includes('alt=""'))&&t.includes('drive.google.com/thumbnail')));
+ const dir=path.join(root,'escola','experiencias-formativas','media');fs.mkdirSync(dir,{recursive:true});
+ const results=await Promise.all(tags.map(async tag=>{const video=tag.includes('data-experience-source'),url=decode(attr(tag,video?'data-experience-source':'src'));const id=new URL(url).searchParams.get('id');if(!/^[A-Za-z0-9_-]+$/.test(id||''))return null;if(!cache.has(url))cache.set(url,inspect(url));const bytes=await cache.get(url);if(!bytes)return null;const filename=(video?'video-':'foto-')+id+'.jpg';fs.writeFileSync(path.join(dir,filename),bytes);return {tag,video,replacement:video?tag.replace(' hidden','').replace('/>',' src="/escola/experiencias-formativas/media/'+filename+'"/>'):tag.replace(/src="[^"]*"/,'src="/escola/experiencias-formativas/media/'+filename+'"')}}));
+ for(const r of results){if(!r)continue;exp=exp.replace(r.tag,()=>r.replacement);if(r.video)real++;else covers++}
+ fs.writeFileSync(expFile,exp,'utf8');console.log('Experiências: '+real+'/28 miniaturas reais; '+covers+'/8 capas fotográficas verificadas por luminosidade e contraste.');
  if(approved+editorial!==jobs.length)throw Error('Auditoria de miniaturas incompleta');
  console.log('EducART miniaturas: '+approved+' imagens do próprio vídeo aprovadas em luminosidade/contraste; '+editorial+' capas editoriais seguras; '+jobs.length+' fontes avaliadas. Conteúdo visual não certificado semanticamente.');
 };
