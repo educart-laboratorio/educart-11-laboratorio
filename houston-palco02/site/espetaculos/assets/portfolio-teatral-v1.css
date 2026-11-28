@@ -4,3 +4,44 @@
 .educart-stage-portfolio .ep-overview,.educart-stage-portfolio .ep-supplement{background:linear-gradient(135deg,#182942,#101c30);border:1px solid #435775;border-radius:15px;padding:clamp(14px,3vw,22px);margin:16px 0;color:#f6f6fa}.educart-stage-portfolio .ep-overview h2,.educart-stage-portfolio .ep-supplement h2{font-size:clamp(19px,3vw,25px);margin:0 0 8px;color:#f6f6fa}.educart-stage-portfolio .ep-overview p,.educart-stage-portfolio .ep-supplement p{margin:8px 0;color:#c5d0df}.educart-stage-portfolio .ep-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(140px,100%),1fr));gap:8px;margin-top:12px}.educart-stage-portfolio .ep-actions a{display:block;border:1px solid #435775;background:#142238;border-radius:10px;padding:12px;color:#f5f1e9;text-decoration:none;font-weight:700}.educart-stage-portfolio .ep-actions small{display:block;margin-top:4px;font-size:11px;color:#b8c6d8;font-weight:500}.educart-stage-portfolio [data-ep-anchor]{scroll-margin-top:115px}.educart-stage-portfolio .ep-supplement a{color:#f0c787}@media(max-width:730px){.educart-stage-portfolio .ep-nav{margin:12px 0 16px}.educart-stage-portfolio .ep-nav a{font-size:12px;padding:9px 10px}.educart-stage-portfolio [data-ep-anchor]{scroll-margin-top:135px}}
 /* Navegação visível sem rolagem horizontal e capa responsiva. */
 .educart-stage-portfolio .ep-nav{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));overflow:visible;scrollbar-width:auto;align-items:stretch}.educart-stage-portfolio .ep-nav a{white-space:normal;min-width:0;text-align:center;line-height:1.25;padding:10px 5px;overflow-wrap:normal}.educart-stage-portfolio .ep-cover{display:block;margin:0 0 18px;overflow:hidden;border-radius:12px;background:#101c30}.educart-stage-portfolio .ep-cover img{display:block;width:100%;max-height:420px;aspect-ratio:16/9;object-fit:cover;object-position:center}.educart-stage-portfolio .ep-cover:focus-visible{outline:2px solid #f0c787;outline-offset:3px}.educart-stage-portfolio .photo .media-label{font-size:12px;line-height:1.35;padding:9px 10px;color:#d5dfed}@media(max-width:730px){.educart-stage-portfolio .ep-nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.educart-stage-portfolio .ep-nav a{font-size:11px;padding:9px 3px}.educart-stage-portfolio .ep-nav a:first-child{grid-column:span 2}.educart-stage-portfolio .ep-cover img{aspect-ratio:16/10;max-height:300px}}@media(max-width:365px){.educart-stage-portfolio .ep-nav a{font-size:10px;padding:8px 2px}}
+
+/* Portfólios teatrais — linguagem de vidro dos perfis de artistas, com abas funcionais. */
+html body .educart-stage-portfolio .ep-nav{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px!important;padding:4px 0!important;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
+html body .educart-stage-portfolio .ep-nav>button{display:flex!important;align-items:center;justify-content:center;min-width:0;min-height:44px!important;padding:8px 5px!important;border-radius:12px!important;white-space:normal!important;text-align:center;font:600 clamp(11px,2.8vw,14px)/1.2 system-ui,sans-serif!important;letter-spacing:0!important;cursor:pointer;transform:none!important;filter:none!important;color:#becadc!important}
+html body .educart-stage-portfolio .ep-nav>button:focus-visible{outline:2px solid #f0c787;outline-offset:2px!important}
+html body .educart-stage-portfolio .ep-pane[hidden]{display:none!important}
+.educart-stage-portfolio .ep-profile-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 14px}
+html body .educart-stage-portfolio .ep-profile-actions>:is(button,a){display:flex;justify-content:center;align-items:center;text-decoration:none;text-align:center;min-height:44px;min-width:0;padding:8px 10px;border-radius:12px;line-height:1.25;font-weight:700;font-size:clamp(11px,3vw,14px);white-space:normal}
+html body .educart-stage-portfolio .ep-share{background:#f0c787;border:1px solid #f0c787;color:#141725}
+html body .educart-stage-portfolio .ep-catalog{background:#202c43;border:1px solid #6f7790;color:#f4e6d5}
+.educart-stage-portfolio .ep-cover img{object-fit:contain;aspect-ratio:auto;max-height:440px;background:#10151c}
+@media(max-width:730px){html body .educart-stage-portfolio .ep-nav{grid-template-columns:repeat(4,minmax(0,1fr))}html body .educart-stage-portfolio .ep-nav>button:first-child{grid-column:span 2}html body .educart-stage-portfolio .ep-nav>button{font-size:11px!important;padding:8px 3px!important}}
+html body .educart-stage-portfolio .ep-nav>button:not([aria-selected="true"]){
+  --glass-top:rgba(255,255,255,.07);--glass-bottom:rgba(25,25,25,.12);--glass-edge:rgba(255,255,255,.20);--glass-base:transparent;--glass-halo:transparent;
+  background:linear-gradient(155deg,rgba(255,255,255,.07),rgba(255,255,255,.015) 55%,rgba(0,0,0,.065))!important;
+  border:1px solid rgba(255,255,255,.20)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.20),inset 0 -1px 0 rgba(255,255,255,.035),0 2px 7px rgba(0,0,0,.12)!important;
+  -webkit-backdrop-filter:grayscale(1) saturate(0) blur(10px)!important;
+  backdrop-filter:grayscale(1) saturate(0) blur(10px)!important;
+  color:#becadc!important;
+  filter:none!important;
+}
+/* Aba ativa: derivação discreta do acabamento dourado do catalogBenefitStamp. */
+html body .educart-stage-portfolio .ep-nav>button[aria-selected="true"]{
+  position:relative;isolation:isolate;overflow:hidden;
+  background:radial-gradient(ellipse at 20% 8%,rgba(255,211,107,.22),transparent 70%),linear-gradient(155deg,rgba(164,107,30,.19),rgba(57,39,18,.13) 56%,rgba(124,81,27,.19))!important;
+  border:1px solid rgba(255,210,103,.64)!important;
+  box-shadow:inset 0 1px 0 rgba(255,238,177,.44),inset 0 0 13px rgba(255,204,89,.12),0 0 11px rgba(255,211,117,.20)!important;
+  color:#f0c787!important;text-shadow:0 0 7px rgba(255,212,123,.32),0 1px 2px rgba(0,0,0,.45)!important;
+}
+html body .educart-stage-portfolio .ep-nav>button[aria-selected="true"]::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(110deg,transparent 38%,rgba(255,228,161,.10) 46%,rgba(255,252,225,.22) 50%,rgba(255,196,82,.09) 55%,transparent 63%);
+  background-size:260% 100%;background-position:115% 50%;
+  animation:educartPortfolioGoldSweep 7s ease-in-out infinite;
+}
+@keyframes educartPortfolioGoldSweep{0%,30%{background-position:115% 50%}64%,100%{background-position:-115% 50%}}
+@media(max-width:480px){html body .educart-stage-portfolio .ep-nav>button[aria-selected="true"]:nth-child(-n+3){border-top-color:rgba(255,210,103,.64)!important}}
+@media(prefers-reduced-motion:reduce){html body .educart-stage-portfolio .ep-nav>button[aria-selected="true"]::after{animation:none!important;background-position:50% 50%}}
+
+
