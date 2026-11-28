@@ -49,6 +49,21 @@ const heading=document.createElement("h2");heading.textContent="Biografia";overv
 const bio=document.querySelector(".profile .names .u-intro");
 const bioText=(bio?.textContent||document.querySelector(".u-sidebar p")?.textContent||"").trim();
 if(bioText){const p=document.createElement("p");p.className="cast-overview-bio";p.textContent=bioText;overview.append(p);if(bio)bio.remove()}else{const p=document.createElement("p");p.className="cast-overview-bio";p.textContent="Biografia ainda não cadastrada.";overview.append(p)}
+/* Biografia aparece somente na Visão geral. Preserva links exclusivos do acervo nas abas correspondentes. */
+const sidebar=root.closest(".u-layout")?.querySelector(":scope > .u-sidebar");
+if(sidebar){
+ const canonical=a=>{try{const u=new URL(a.getAttribute("href"),location.href);return u.origin+u.pathname.replace(/\/$/,"")+u.search}catch{return a.getAttribute("href")||""}};
+ for(const a of [...sidebar.querySelectorAll("a[href]")]){
+  const href=a.getAttribute("href")||"",label=a.textContent.trim();
+  if(href.startsWith("#")||/biografia completa/i.test(label))continue;
+  if([...root.querySelectorAll("a[href]")].some(existing=>canonical(existing)===canonical(a)))continue;
+  const target=/foto|galeria|pasta original|drive\/folders/i.test(label+" "+href)?document.getElementById("u-photos"):/portf[oó]lio|\.pdf(?:$|[?#])/i.test(label+" "+href)?releasePane:overview;
+  if(target){const actions=document.createElement("div");actions.className="u-action";actions.append(a);target.append(actions)}
+ }
+ const layout=sidebar.parentElement;
+ sidebar.remove();
+ if(layout)layout.style.gridTemplateColumns="minmax(0,1fr)";
+}
 const videoPane=document.getElementById("u-videos");
 function previewImg(img){const clone=img.cloneNode(false);clone.removeAttribute("id");clone.removeAttribute("width");clone.removeAttribute("height");clone.removeAttribute("style");clone.loading="lazy";return clone}
 const videos=[...videoPane?.querySelectorAll(".u-video img[data-video-cover],.poster img[data-video-cover],.video img[data-video-cover]")||[]];
