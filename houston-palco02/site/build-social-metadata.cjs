@@ -48,4 +48,4 @@ new (require('node:vm').Script)(fs.readFileSync(path.join(root,'educart-navigati
 
 require('./build-portfolio-order.cjs');
 
-require('./build-artist-social-covers.cjs')().catch(e=>{console.error(e);process.exitCode=1});
+require('./build-artist-social-covers.cjs')().then(()=>require('./build-video-thumbnails.cjs')()).catch(e=>{console.error(e);process.exitCode=1});

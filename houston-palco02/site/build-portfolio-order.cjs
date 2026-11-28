@@ -102,6 +102,19 @@ function runtime(rank){
   const file=path.join(profiles,slug,'index.html');if(!fs.existsSync(file))continue;reviewed++;
   let html=fs.readFileSync(file,'utf8'),n=0;
   const name=plain(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]||slug);
+  // Nome editorial derivado exclusivamente da categoria já documentada, não do conteúdo presumido.
+  const editorialTitle=t=>{
+   const number=n=>String(Number(n)).padStart(2,'0');
+   return t.replace(/^Gravação bruta\s+(\d+)$/i,(_,n)=>'Sessão de gravação · tomada '+number(n))
+    .replace(/^Editado\s+(\d+)$/i,(_,n)=>'Registro audiovisual · edição '+number(n))
+    .replace(/^Apresentação\s+(\d+)$/i,(_,n)=>'Apresentação pessoal · versão '+number(n))
+    .replace(/^Selftape\s+(\d+)$/i,(_,n)=>'Interpretação para câmera · selftape '+number(n))
+    .replace(/^Making of\s*·\s*(?:\d{2}\/\d{2}\/\d{4}\s*·\s*)?Registro\s+(\d+)$/i,(_,n)=>'Making of · bastidores '+number(n))
+    .replace(/^Atuação com (.+?)\s+\d+$/i,(_,person)=>'Atuação com '+person)
+    .replace(/^Vídeo sem título confirmado$/i,'Registro audiovisual · título da obra a confirmar');
+  };
+  html=html.replace(/<section\b[^>]*id=["']u-videos["'][^>]*>[\s\S]*?<\/section>/i,pane=>pane.replace(/<h3\b([^>]*)>([^<]*)<\/h3>/gi,(whole,attrs,t)=>'<h3'+attrs+'>'+editorialTitle(t)+'</h3>'));
+
   const blocks=/<div\b(?=[^>]*\bclass=["'][^"']*\b(?:u-video|poster|video)\b[^"']*["'])[^>]*>[\s\S]*?<\/div>/gi;
   const buttons=/<button\b[^>]*(?:data-drive|data-youtube|data-play-video)\s*=[^>]*>/gi;
   const expected=(html.match(buttons)||[]).length;
@@ -121,20 +134,13 @@ function runtime(rank){
    const label=/apresenta/i.test(title)?'APRESENTAÇÃO PESSOAL':/monólogo/i.test(title)?'MONÓLOGO':'ACERVO AUDIOVISUAL';
    const svg='<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><defs><linearGradient id="b" x2="1" y2="1"><stop stop-color="'+dark+'"/><stop offset="1" stop-color="'+accent+'"/></linearGradient><radialGradient id="l"><stop stop-color="'+gold+'" stop-opacity=".26"/><stop offset="1" stop-color="'+gold+'" stop-opacity="0"/></radialGradient></defs><rect width="960" height="540" fill="url(#b)"/><ellipse cx="'+x+'" cy="160" rx="500" ry="380" fill="url(#l)"/><g fill="none" stroke="'+gold+'" opacity=".24" stroke-width="2"><circle cx="'+(960-x)+'" cy="245" r="220"/><circle cx="'+(960-x)+'" cy="245" r="184"/><path d="M0 390L960 '+(250+parseInt(hash.slice(4,6),16))+'M0 430L960 360"/></g><rect x="24" y="24" width="912" height="492" rx="24" stroke="'+gold+'" stroke-opacity=".45" fill="none"/><g font-family="Arial,sans-serif"><text x="56" y="75" font-size="22" letter-spacing="3" fill="'+gold+'">EDUCART · '+label+'</text><text x="904" y="75" text-anchor="end" font-size="22" fill="'+gold+'">'+String(n).padStart(2,'0')+'</text>'+lines.slice(0,3).map((l,i)=>'<text x="56" y="'+(365+i*42)+'" fill="#fff8ec" font-size="36" font-weight="700">'+esc(l)+'</text>').join('')+'<text x="56" y="493" font-size="24" fill="'+gold+'">'+esc(name.slice(0,70))+'</text><text x="904" y="493" font-size="15" text-anchor="end" fill="'+gold+'">CAPA EDITORIAL</text></g></svg>';
    fs.writeFileSync(path.join(dest,id+'.svg'),svg,'utf8');
+   // Capa editorial colorida é sempre a base; somente uma miniatura analisada poderá substituí-la.
+   const candidate=isYT?'https://i.ytimg.com/vi/'+yt+'/hqdefault.jpg':isDrive?'https://drive.google.com/thumbnail?id='+gd+'&sz=w800':'';
    let src=fallback;
-   // Preferência: capa do próprio vídeo, nunca a foto do perfil.
-   if(isYT){
-    const own='https://i.ytimg.com/vi/'+yt+'/hqdefault.jpg';
-    src=[own,'https://i.ytimg.com/vi/'+yt+'/1.jpg','https://i.ytimg.com/vi/'+yt+'/2.jpg','https://i.ytimg.com/vi/'+yt+'/3.jpg'].find(s=>!sources.has(s))||fallback;
-    youtube++;
-   }else if(isDrive){
-    const own='https://drive.google.com/thumbnail?id='+gd+'&sz=w800';
-    if(!sources.has(own))src=own;
-    drive++;
-   }
+   if(isYT)youtube++;else if(isDrive)drive++;
    if(src===fallback)editorial++;
    if(sources.has(src))throw Error('Fonte de capa repetida '+src);sources.add(src);cards++;if(oldSrc.replace(/&amp;/g,'&')!==src)replaced++;
-   const image='<img src="'+esc(src)+'" alt="'+esc('Capa de '+title+' — '+name)+'" loading="lazy" decoding="async" data-video-cover="'+esc(id)+'" data-cover-fallback="'+fallback+'" onerror="this.onerror=null;this.src=this.dataset.coverFallback" onload="if(this.src!==new URL(this.dataset.coverFallback,location.href).href &amp;&amp; this.naturalWidth&lt;160){this.onerror=null;this.src=this.dataset.coverFallback}">';
+   const image='<img src="'+esc(src)+'" alt="'+esc('Capa de '+title+' — '+name)+'" loading="lazy" decoding="async" data-video-cover="'+esc(id)+'" data-cover-source="'+esc(candidate)+'" data-cover-fallback="'+fallback+'" onerror="this.onerror=null;this.src=this.dataset.coverFallback" onload="if(this.src!==new URL(this.dataset.coverFallback,location.href).href &amp;&amp; this.naturalWidth&lt;160){this.onerror=null;this.src=this.dataset.coverFallback}">';
    return old?block.replace(old,()=>image):block.replace(btn,()=>image+btn);
   });
   if(n!==expected)throw Error('Vídeo fora do padrão de capas '+slug+': '+n+'/'+expected);

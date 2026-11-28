@@ -197,3 +197,6 @@ html body #u-historico .cast-curriculum-field{min-width:0}
 html body #u-historico .cast-curriculum-field h3,html body #u-release .cast-portfolio-document h3{font-size:14px!important;line-height:1.35;margin:0 0 4px!important}
 html body #u-historico .cast-curriculum-field p,html body #u-release .cast-portfolio-document p{margin:0!important;font-size:12px!important;line-height:1.4}
 @media(max-width:360px){html body #u-historico .cast-curriculum-pending{grid-template-columns:minmax(0,1fr)}}
+
+/* Retratos preservam as cores do original; não aplicar filtros monocromáticos aos avatares. */
+html body main.shell :is(.profile .avatar,.intro.person-hero .portrait) img{filter:none!important;-webkit-filter:none!important;mix-blend-mode:normal!important;opacity:1!important}
