@@ -72,7 +72,7 @@ if(records.length){
   const article=document.createElement("article");article.className="cast-overview-video";article.dataset.kind=v.kind;
   const h=document.createElement("h4");h.textContent=v.kind==="intro"?"Vídeo de apresentação":v.title.replace(/^\s*[🎭🎬]\s*/u,"");article.append(h);
   const box=document.createElement("div");box.className="cast-overview-player";article.append(box);
-  const button=document.createElement("button");button.type="button";button.className="cast-overview-play";button.setAttribute("aria-label","Reproduzir "+h.textContent);
+  const button=document.createElement("button");button.type="button";button.className="cast-overview-play";if(v.gd&&!v.yt)button.dataset.drive=v.gd;button.setAttribute("aria-label","Reproduzir "+h.textContent);
   const img=previewImg(v.img);img.alt="";const glyph=document.createElement("span");glyph.className="cast-overview-play-icon";glyph.setAttribute("aria-hidden","true");glyph.textContent="▶";button.append(img,glyph);box.append(button);
   const fallback=document.createElement("a");fallback.className="cast-overview-source";fallback.href=v.yt?"https://www.youtube.com/watch?v="+v.yt:"https://drive.google.com/file/d/"+v.gd+"/view";fallback.target="_blank";fallback.rel="noopener noreferrer";fallback.textContent="Se não reproduzir, abrir vídeo original ↗";fallback.hidden=true;article.append(fallback);
   const stop=()=>{if(box.querySelector("iframe")){box.replaceChildren(button);fallback.hidden=true}};

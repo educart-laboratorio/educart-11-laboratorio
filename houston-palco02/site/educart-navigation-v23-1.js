@@ -373,3 +373,46 @@ if(school&&welcome){
 
 /* EducART — experiências formativas dentro da Escola; preserva as portas da home. */
 (function(){'use strict';const portal=document.getElementById('portalView');if(!portal)return;const section=document.createElement('section');section.id='educart-experiencias-formativas';section.style.cssText='max-width:1000px;margin:24px auto;padding:16px 18px;color:inherit';section.innerHTML='<h2 style="font-size:clamp(22px,4vw,30px);margin:0 0 8px">Experiências Formativas</h2><p>Conheça aulas, oficinas e processos de formação teatral na prática.</p><a class="ux-glass-primary" style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:9px 15px;text-decoration:none" href="/escola/experiencias-formativas/">Explorar experiências formativas ↗</a>';if(!document.getElementById(section.id))portal.append(section);for(const person of document.querySelectorAll('.conhecaPerson')){const name=person.querySelector('h3')?.textContent.trim();const dest=name&&(/Aline Nepomuceno/i.test(name)?'aline-nepomuceno':/Ant[oô]nio Marques/i.test(name)?'antonio-marques':/Felipe Bispo/i.test(name)?'felipe-bispo':'');if(!dest||person.querySelector('[data-educart-full-profile]'))continue;const a=document.createElement('a');a.dataset.educartFullProfile='1';a.className='conhecaFonte';a.href='/artistas/perfil/'+dest+'/';a.textContent='Portfólio completo ↗';(person.querySelector('.conhecaBio')||person).append(a)}})();
+
+/* Houston · player modal único para vídeos Google Drive. Fotografias e documentos mantêm a navegação original. */
+(function(){
+ 'use strict';
+ if(document.getElementById('educart-drive-video-modal'))return;
+ const idPattern=/^[A-Za-z0-9_-]{15,}$/;
+ function driveId(url){try{const u=new URL(url,location.href);if(u.origin!=='https://drive.google.com')return '';return u.pathname.match(/^\/file\/d\/([A-Za-z0-9_-]{15,})(?:\/(?:view|preview))?\/?$/)?.[1]||''}catch{return ''}}
+ const style=document.createElement('style');style.textContent='#educart-drive-video-modal{box-sizing:border-box;width:min(780px,calc(100% - 24px));max-width:none;max-height:calc(100dvh - 24px);margin:auto;padding:14px;border:1px solid #dbc18b80;border-radius:18px;background:#111c2d;color:#fff8eb;box-shadow:0 18px 65px #000a;overflow:auto;font:15px/1.45 system-ui,sans-serif}#educart-drive-video-modal::backdrop{background:#050a13d9;backdrop-filter:blur(5px)}#educart-drive-video-modal header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}#educart-drive-video-modal h2{font:700 clamp(16px,4vw,22px)/1.3 system-ui;margin:0;overflow-wrap:anywhere}#educart-drive-video-modal button{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1px solid #eacb9366;background:#26364d;color:white;font-size:26px;cursor:pointer}#educart-drive-video-modal .drive-player{width:100%;aspect-ratio:16/9;background:#0c1523;border-radius:10px;overflow:hidden}#educart-drive-video-modal iframe{display:block;width:100%;height:100%;border:0}#educart-drive-video-modal footer{display:flex;flex-wrap:wrap;gap:9px;align-items:center;padding-top:12px}#educart-drive-video-modal a{color:#f1cb88;text-decoration:underline}#educart-drive-video-modal :focus-visible{outline:2px solid #f0c787;outline-offset:3px}';
+ document.head.append(style);
+ const d=document.createElement('dialog');d.id='educart-drive-video-modal';d.setAttribute('aria-labelledby','educart-drive-video-title');
+ d.innerHTML='<header><h2 id="educart-drive-video-title">Vídeo</h2><button type="button" aria-label="Fechar vídeo" title="Fechar vídeo">×</button></header><div class="drive-player"></div><footer><a data-drive-external target="_blank" rel="noopener noreferrer">Abrir original no Drive ↗</a><small>O Drive pode solicitar autorização de acesso.</small></footer>';
+ document.body.append(d);const player=d.querySelector('.drive-player'),close=d.querySelector('button'),heading=d.querySelector('h2'),original=d.querySelector('a');
+ let opener=null;
+ function clear(){player.replaceChildren()}
+ function shut(){clear();if(d.open)d.close()}
+ d.addEventListener('close',()=>{clear();const el=opener;opener=null;if(el?.isConnected)el.focus({preventScroll:true})});
+ d.addEventListener('cancel',e=>{e.preventDefault();shut()});
+ close.addEventListener('click',shut);
+ d.addEventListener('click',e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)shut()});
+ window.addEventListener('pagehide',shut);
+ function open(id,title,trigger){if(!idPattern.test(id))return;clear();opener=trigger;heading.textContent=title||'Registro audiovisual';original.href='https://drive.google.com/file/d/'+id+'/view';const f=document.createElement('iframe');f.title=heading.textContent;f.src='https://drive.google.com/file/d/'+id+'/preview';f.allow='autoplay; fullscreen; encrypted-media; picture-in-picture';f.allowFullscreen=true;f.referrerPolicy='strict-origin-when-cross-origin';player.append(f);if(!d.open)d.showModal();close.focus({preventScroll:true})}
+ function titleOf(el){return (el.closest('article,.u-block,.cast-overview-video')?.querySelector('h3,h4')?.textContent||el.getAttribute('aria-label')||el.textContent||'Registro audiovisual').trim().replace(/↗/g,'').trim()}
+ // Substitui embeds de vídeo explicitamente identificados; não interfere com PDF.
+ for(const frame of document.querySelectorAll('iframe[src*="drive.google.com/file/d/"]')){
+  const id=driveId(frame.src),label=frame.title||'';if(!id||!/v[ií]deo|audiovisual|filmagem|grava[cç][aã]o/i.test(label))continue;
+  const button=document.createElement('button');button.type='button';button.dataset.drive=id;button.className='ux-glass-primary';button.textContent='▶ Assistir ao vídeo';button.setAttribute('aria-label',label);button.style.cssText='margin:12px auto;min-height:44px;padding:10px 16px;display:block';frame.replaceWith(button);
+ }
+ document.addEventListener('click',e=>{
+  const el=e.target instanceof Element?e.target.closest('button[data-drive],a[href]'):null;if(!el||el.closest('#educart-drive-video-modal'))return;
+  let id=el.dataset.drive||'';
+  if(el.tagName==='BUTTON'&&(el.dataset.youtube||el.dataset.playVideo))return;
+  if(el.tagName==='A'){
+   if(el.hasAttribute('data-drive-external')||el.querySelector('img')||el.closest('figure,.educart-media-grid,.u-grid-photos')||el.matches('.photo,.drive-thumbnail'))return;
+   id=driveId(el.href);if(!id)return;
+   const label=el.textContent.trim(),institution=location.pathname.startsWith('/acervo/registros-institucionais/');
+   const sameCard=[...el.closest('article,.u-block')?.querySelectorAll('button[data-drive]')||[]].some(b=>b.dataset.drive===id);
+   if(!sameCard&&!/v[ií]deo|audiovisual|selftape|filmagem|\.mov\b|\.mp4\b/i.test(label)&&!(institution&&/^Registro\s+\d+/i.test(label)))return;
+   if(/\.pdf\b|documento|fotografia|retrato|imagem/i.test(label))return;
+  }
+  if(!idPattern.test(id))return;
+  e.preventDefault();e.stopImmediatePropagation();open(id,titleOf(el),el);
+ },true);
+})();
