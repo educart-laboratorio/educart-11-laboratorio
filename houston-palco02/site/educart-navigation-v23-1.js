@@ -151,6 +151,22 @@ if(school&&welcome){
   stack.append(kicker,title,cards);
 })();
 
+/* EducART · acesso ao portfólio da coordenadora nos cartões institucionais. */
+(function(){'use strict';
+ const url='/escola/equipe/aline-nepomuceno/';
+ const team=document.querySelector('#conhecaNos .conhecaGrid');
+ const card=team&&Array.from(team.querySelectorAll('.conhecaPerson')).find(el=>el.querySelector('h3')?.textContent.trim()==='Aline Nepomuceno');
+ if(!card)return;
+ const title=card.querySelector('h3');
+ if(!title.querySelector('a')){
+  const a=document.createElement('a');a.href=url;a.textContent='Aline Nepomuceno';a.style.color='inherit';a.style.textDecoration='underline';a.style.textUnderlineOffset='3px';title.replaceChildren(a);
+ }
+ if(!card.querySelector('a[data-educart-aline-perfil]')){
+  const a=document.createElement('a');a.className='conhecaFonte';a.href=url;a.textContent='Ver perfil artístico ↗';a.setAttribute('data-educart-aline-perfil','');a.setAttribute('aria-label','Abrir perfil artístico de Aline Nepomuceno');
+  (card.querySelector('.conhecaRole')||title).after(a);
+ }
+})();
+
 /* EducART · HOME: artistas formadores, com os cartões docentes já existentes. */
 (function(){'use strict';
   const home=document.getElementById('educartWelcomeScreen');
@@ -228,7 +244,7 @@ if(school&&welcome){
       grid.append(card);
     }
     const leader=Array.from(grid.querySelectorAll('.conhecaPerson')).find(card=>card.querySelector('h3')?.textContent.trim()==='Aline Nepomuceno');
-    if(leader){const name=leader.querySelector('h3');name.textContent='Aline Nepomuceno (Alininha)';grid.prepend(leader);}
+    if(leader){grid.prepend(leader);}
     content.replaceChildren(grid);
   }
   trigger.addEventListener('click',()=>{if(dialog.open)return;populate();dialog.showModal();});
@@ -369,4 +385,25 @@ if(school&&welcome){
   document.querySelectorAll('a.photo[href^="https://drive.google.com/file/d/"] img').forEach(img=>{
     if(img.complete&&img.naturalWidth===0)preserveOriginal(img);
   });
+})();
+
+/* EducART · créditos dos espetáculos: perfil institucional único da coordenadora. */
+(function(){'use strict';
+ if(!/^\/espetaculos\/[^/]+(?:\/|$)/.test(location.pathname))return;
+ const root=document.querySelector('main');if(!root)return;
+ const url='/escola/equipe/aline-nepomuceno/';
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){
+  const parent=node.parentElement;if(!parent||parent.closest('a,script,style,textarea,button,template,svg,[hidden]'))return NodeFilter.FILTER_REJECT;
+  return /\bAline\s+Nepomuceno\b/.test(node.nodeValue||'')?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+ }});
+ const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ for(const node of nodes){
+  const value=node.nodeValue,fragment=document.createDocumentFragment(),pattern=/\bAline\s+Nepomuceno\b/g;let last=0;
+  for(const match of value.matchAll(pattern)){
+   fragment.append(document.createTextNode(value.slice(last,match.index)));
+   const a=document.createElement('a');a.href=url;a.textContent=match[0];a.style.color='inherit';a.style.textDecoration='underline';a.style.textUnderlineOffset='3px';a.setAttribute('aria-label','Aline Nepomuceno — ver perfil artístico');fragment.append(a);
+   last=match.index+match[0].length;
+  }
+  fragment.append(document.createTextNode(value.slice(last)));node.replaceWith(fragment);
+ }
 })();
