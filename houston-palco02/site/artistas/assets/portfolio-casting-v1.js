@@ -13,13 +13,44 @@ const photos=[...new Map([...photoPane?.querySelectorAll(".u-photo img,.u-grid-p
 const videos=[...videoPane?.querySelectorAll(".u-video img[data-video-cover],.poster img[data-video-cover],.video img[data-video-cover]")||[]];
 const works=[...workPane?.querySelectorAll(".tile img")||[]].filter(img=>img.getAttribute("src")&&img.src!==avatar?.src);
 feature("Fotografias",photoPane,photos.slice(0,2),"Seleção do acervo fotográfico");
-feature("Audiovisual",videoPane,videos.slice(0,2),videos.length+" "+(videos.length===1?"vídeo no portfólio":"vídeos no portfólio"));
+
+/* Visão geral: apresentação primeiro, monólogos depois, reprodução no perfil. */
+const overviewPlayers=[];
+const records=videos.map((img,index)=>{
+ const box=img.closest(".u-video,.poster,.video"),block=box?.closest("article,.u-block")||box?.parentElement;
+ const control=box?.querySelector("[data-youtube],[data-drive],[data-play-video]");
+ const title=(block?.querySelector("h3")?.textContent||control?.textContent||"Registro audiovisual").trim();
+ const yt=control?.dataset.youtube||control?.dataset.playVideo||"",gd=control?.dataset.drive||"";
+ const validYT=/^[A-Za-z0-9_-]{11}$/.test(yt),validGD=/^[A-Za-z0-9_-]{15,}$/.test(gd);
+ const kind=/apresenta/i.test(title)?"intro":/mon[oó]logo/i.test(title)?"monologue":"other";
+ return {img,title,kind,index,yt:validYT?yt:"",gd:validGD?gd:""};
+}).filter(v=>v.yt||v.gd).sort((a,b)=>({intro:0,monologue:1,other:2}[a.kind]-{intro:0,monologue:1,other:2}[b.kind])||a.index-b.index);
+if(records.length){
+ const section=document.createElement("section");section.className="cast-overview-videos";section.setAttribute("aria-label","Apresentação e atuação");
+ const label=document.createElement("h3");label.className="cast-video-section-title";label.textContent=records.some(v=>v.kind==="intro")?"Apresentação e atuação":records.some(v=>v.kind==="monologue")?"Monólogos":"Registros audiovisuais";section.append(label);
+ const stack=document.createElement("div");stack.className="cast-video-stack";section.append(stack);
+ const stopPlayers=()=>overviewPlayers.forEach(p=>p.stop());
+ for(const v of records){
+  const article=document.createElement("article");article.className="cast-overview-video";article.dataset.kind=v.kind;
+  const h=document.createElement("h4");h.textContent=v.kind==="intro"?"Vídeo de apresentação":v.title.replace(/^\s*[🎭🎬]\s*/u,"");article.append(h);
+  const box=document.createElement("div");box.className="cast-overview-player";article.append(box);
+  const button=document.createElement("button");button.type="button";button.className="cast-overview-play";button.setAttribute("aria-label","Reproduzir "+h.textContent);
+  const img=previewImg(v.img);img.alt="";const glyph=document.createElement("span");glyph.className="cast-overview-play-icon";glyph.setAttribute("aria-hidden","true");glyph.textContent="▶";button.append(img,glyph);box.append(button);
+  const fallback=document.createElement("a");fallback.className="cast-overview-source";fallback.href=v.yt?"https://www.youtube.com/watch?v="+v.yt:"https://drive.google.com/file/d/"+v.gd+"/view";fallback.target="_blank";fallback.rel="noopener noreferrer";fallback.textContent="Se não reproduzir, abrir vídeo original ↗";fallback.hidden=true;article.append(fallback);
+  const stop=()=>{if(box.querySelector("iframe")){box.replaceChildren(button);fallback.hidden=true}};
+  overviewPlayers.push({stop});
+  button.addEventListener("click",()=>{stopPlayers();const frame=document.createElement("iframe");frame.title=h.textContent;frame.src=v.yt?"https://www.youtube.com/embed/"+v.yt+"?autoplay=1&rel=0":"https://drive.google.com/file/d/"+v.gd+"/preview";frame.allow="autoplay; encrypted-media; picture-in-picture; fullscreen";frame.allowFullscreen=true;box.replaceChildren(frame);fallback.hidden=false;frame.focus()});
+  stack.append(article);
+ }
+ overview.append(section);
+}
+
 feature("Espetáculos",workPane,works.slice(0,2),"Registros de trabalhos e participações");
 if(grid.children.length){overview.append(grid)}else{const p=document.createElement("p");p.className="cast-overview-note";p.textContent="Consulte as seções acima para conhecer a trajetória e os registros disponíveis.";overview.append(p)}
 root.prepend(overview);
 const tab=document.createElement("button");tab.type="button";tab.id="u-tab-overview";tab.dataset.pane="overview";tab.setAttribute("role","tab");tab.setAttribute("aria-controls","u-overview");tab.textContent="Visão geral";tabs.prepend(tab);
 const tabLabels={videos:"Vídeos",photos:"Fotos",historico:"Currículo",release:"Release",creditos:"Trabalhos"};for(const b of tabs.querySelectorAll("[data-pane]"))if(tabLabels[b.dataset.pane])b.textContent=tabLabels[b.dataset.pane];
-function show(id){for(const b of tabs.querySelectorAll("[data-pane]")){const active=b.dataset.pane===id;b.setAttribute("aria-selected",String(active));b.tabIndex=active?0:-1;const pane=document.getElementById("u-"+b.dataset.pane);if(pane)pane.hidden=!active}}
+function show(id){if(id!=="overview")overviewPlayers.forEach(p=>p.stop());for(const b of tabs.querySelectorAll("[data-pane]")){const active=b.dataset.pane===id;b.setAttribute("aria-selected",String(active));b.tabIndex=active?0:-1;const pane=document.getElementById("u-"+b.dataset.pane);if(pane)pane.hidden=!active}}
 tabs.addEventListener("click",e=>{const b=e.target.closest("[data-pane]");if(!b)return;show(b.dataset.pane);history.replaceState(null,"",location.pathname+location.search+"#"+b.dataset.pane)});
 show(document.getElementById("u-"+location.hash.slice(1))?location.hash.slice(1):"overview");
 for(const block of document.querySelectorAll("#u-videos .u-block")){if(!block.querySelector(".u-video"))continue;const label=document.createElement("span");label.className="cast-video-type";label.textContent=block.querySelector("[data-drive]")&&/apresenta/i.test(block.querySelector("h3")?.textContent||"")?"Apresentação pessoal":/apresenta/i.test(block.querySelector("h3")?.textContent||"")?"Apresentação pessoal":"Atuação";block.prepend(label)}
