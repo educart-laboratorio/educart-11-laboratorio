@@ -423,7 +423,7 @@ if(school&&welcome){
  const records={
   'aline nepomuceno':[{title:'EducART & Eloquence',state:'Experiência realizada',desc:'Construção de personagens, ensaios e apresentação cênica.',href:'/escola/experiencias-formativas/#eloquence'}],
   'antonio marques':[{title:'Teatro Musical',state:'Experiência realizada',desc:'Atividade formativa de teatro musical.',href:'/escola/experiencias-formativas/#teatro-musical'}],
-  'felipe bispo':[{title:'Teatro para o Autoconhecimento',state:'Realizada · 15/11/2025',desc:'Atividade de teatro e autoconhecimento na TV Pelourinho.',href:'/escola/experiencias-formativas/#teatro-autoconhecimento'}],
+  'felipe bispo':[{title:'Curso de Expressão',state:'Realizada · 15/11/2025',desc:'Curso de Expressão na TV Pelourinho.',href:'/escola/experiencias-formativas/#curso-de-expressao'}],
   'fernando santana':[{title:'Da Palavra à Atuação',state:'Fila de espera · SOL-032',desc:'Dramaturgia, interpretação e construção cênica. Domingos, 9h às 13h. Início a definir.',solution:'SOL-032'}],
   'deko alves':[],'eric flavio':[],'marcelo jardim':[],'marcia gil-braz':[],'taiana lemos':[],'tassia gramacho':[]
  };
