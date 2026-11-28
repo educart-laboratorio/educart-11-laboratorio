@@ -22,7 +22,7 @@ async function run(){
   const file=path.join(profiles,slug,'index.html');if(!fs.existsSync(file))continue;
   results.push({slug,file});
  }
- if(results.length!==49)throw Error('Expected 49 profiles');
+ if(results.length!==52)throw Error('Expected 52 profiles');
  const output=await Promise.all(results.map(async ({slug,file})=>{
   const html=fs.readFileSync(file,'utf8'),head=html.match(/<head\b[^>]*>[\s\S]*?<\/head>/i)?.[0];if(!head)throw Error('Missing head '+slug);
   const meta=(head.match(/<meta\b[^>]*>/gi)||[]).find(t=>attr(t,'property')==='og:image');
@@ -57,7 +57,7 @@ async function run(){
  }));
  for(const r of output)console.log('EducART OG artist: '+r.slug+' '+r.kind+(r.file?' '+r.file+' '+r.bytes+' bytes':r.reason?' '+r.reason:''));
  const converted=output.filter(r=>r.file).length,missing=output.filter(r=>r.kind==='no-portrait').length,remote=output.filter(r=>r.kind==='remote-unavailable').length;
- if(converted+missing+remote!==49)throw Error('Incomplete social portrait audit');
- console.log('EducART OG artist summary: '+converted+' JPEGs individuais; '+missing+' sem retrato; '+remote+' retratos externos indisponíveis; 49 perfis.');
+ if(converted+missing+remote!==52)throw Error('Incomplete social portrait audit');
+ console.log('EducART OG artist summary: '+converted+' JPEGs individuais; '+missing+' sem retrato; '+remote+' retratos externos indisponíveis; 52 perfis.');
 }
 module.exports=run;
