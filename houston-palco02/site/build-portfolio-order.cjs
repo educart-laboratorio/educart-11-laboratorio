@@ -1,4 +1,4 @@
-const docenteSlugs=new Set(['aline-nepomuceno','antonio-marques','deko-alves','eric-flavio','felipe-bispo','fernando-santana','marcelo-jardim','marcia-gil-braz','taiana-lemos','tassia-gramacho']);
+const docenteSlugs=new Set(['aline-nepomuceno','antonio-marques','deko-alves','eric-flavio','fernando-santana','marcelo-jardim','marcia-gil-braz','taiana-lemos','tassia-gramacho']);
 function updateDirectory(root,entries,rank,fs,path,attr,esc){
  const main=path.join(root,'artistas','index.html');let s=fs.readFileSync(main,'utf8');
  const countLink=/<a\b[^>]*class=["'][^"']*\bar-all-45-link\b[^"']*["'][^>]*>[\s\S]*?<\/a>/gi;
