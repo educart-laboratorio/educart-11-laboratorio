@@ -45,6 +45,17 @@ if(releasePane&&!institutional){
   block.append(h,p);releasePane.append(block);
  }
 }
+/* Formação existente no início de Trabalhos, sem campos vazios. */
+if(creditsPane){
+ const norm=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+ const match=t=>/^(?:formacao(?: academica| adicional| complementar)?|oficinas e formacao complementar|especialidades e qualificacoes|certificados|cursos complementares)$/.test(norm(t));
+ const blocks=[...document.querySelectorAll("main.shell .u-block,main.shell .cast-curriculum-field")].filter(b=>match(b.querySelector(":scope > h3")?.textContent||"")&&!b.closest(".cast-curriculum-pending")&&!b.closest("#u-videos,#u-photos"));
+ if(blocks.length){
+  const group=document.createElement("section");group.className="u-block";group.setAttribute("aria-label","Formações e qualificações");const h=document.createElement("h3");h.textContent="Formações e qualificações";group.append(h);
+  for(const b of blocks){const title=b.querySelector(":scope > h3");if(title){const sub=document.createElement("h4");sub.textContent=title.textContent;title.replaceWith(sub)}group.append(b)}
+  const head=creditsPane.querySelector(":scope > h2");if(head)head.after(group);else creditsPane.prepend(group);
+ }
+}
 const overview=document.createElement("section");overview.id="u-overview";overview.className="u-pane";overview.setAttribute("role","tabpanel");overview.setAttribute("aria-labelledby","u-tab-overview");
 const heading=document.createElement("h2");heading.textContent=institutional?"Formação e atuação pedagógica":"Biografia";overview.append(heading);
 const bio=document.querySelector(".profile .names .u-intro");
@@ -64,7 +75,7 @@ const records=videos.map((img,index)=>{
  const kind=/apresenta/i.test(title)?"intro":/mon[oó]logo/i.test(title)?"monologue":"other";
  return {img,title,kind,index,yt:validYT?yt:"",gd:validGD?gd:""};
 }).filter(v=>v.kind==="intro"&&(v.yt||v.gd)).slice(0,1);
-if(institutional){const section=document.createElement("article");section.className="u-block";section.innerHTML='<h3>Qualificações e atuação pedagógica</h3><p>Conheça a formação, especialidades e trajetória do profissional, bem como sua prática com alunos.</p><div class="u-action"><a href="#historico" data-institutional-pane="historico">Consultar qualificações ↗</a><a href="#videos" data-institutional-pane="videos">Experiências com alunos ↗</a><a href="#photos" data-institutional-pane="photos">Acervo pedagógico ↗</a></div>';overview.append(section);section.addEventListener("click",e=>{const a=e.target.closest("[data-institutional-pane]");if(!a)return;e.preventDefault();tabs.querySelector("[data-pane="+a.dataset.institutionalPane+"]")?.click()});}
+if(institutional){const section=document.createElement("article");section.className="u-block";section.innerHTML='<h3>Qualificações e atuação pedagógica</h3><p>Conheça a formação, especialidades e trajetória do profissional, bem como sua prática com alunos.</p><div class="u-action"><a href="#creditos" data-institutional-pane="creditos">Consultar qualificações ↗</a><a href="#videos" data-institutional-pane="videos">Experiências com alunos ↗</a><a href="#photos" data-institutional-pane="photos">Acervo pedagógico ↗</a></div>';overview.append(section);section.addEventListener("click",e=>{const a=e.target.closest("[data-institutional-pane]");if(!a)return;e.preventDefault();tabs.querySelector("[data-pane="+a.dataset.institutionalPane+"]")?.click()});}
 if(records.length&&!institutional){
  const section=document.createElement("section");section.className="cast-overview-videos";section.setAttribute("aria-label","Vídeo de apresentação");
  
@@ -87,7 +98,7 @@ if(records.length&&!institutional){
 
 root.prepend(overview);
 const tab=document.createElement("button");tab.type="button";tab.id="u-tab-overview";tab.dataset.pane="overview";tab.setAttribute("role","tab");tab.setAttribute("aria-controls","u-overview");tab.textContent="Visão geral";tabs.prepend(tab);
-const tabLabels=institutional?{videos:"Vídeos",photos:"Fotos",historico:"Qualificações",release:"Release",creditos:"Atuação"}:{videos:"Vídeos",photos:"Fotos",historico:"Currículo",release:"Release",creditos:"Trabalhos"};for(const b of tabs.querySelectorAll("[data-pane]"))if(tabLabels[b.dataset.pane])b.textContent=tabLabels[b.dataset.pane];
+const tabLabels=institutional?{videos:"Vídeos",photos:"Fotos",historico:"Qualificações",release:"Release",creditos:"Trabalhos"}:{videos:"Vídeos",photos:"Fotos",historico:"Currículo",release:"Release",creditos:"Trabalhos"};for(const b of tabs.querySelectorAll("[data-pane]"))if(tabLabels[b.dataset.pane])b.textContent=tabLabels[b.dataset.pane];
 function show(id){root.closest(".u-layout")?.classList.toggle("cast-overview-active",id==="overview");if(id!=="overview")overviewPlayers.forEach(p=>p.stop());for(const b of tabs.querySelectorAll("[data-pane]")){const active=b.dataset.pane===id;b.setAttribute("aria-selected",String(active));b.tabIndex=active?0:-1;const pane=document.getElementById("u-"+b.dataset.pane);if(pane)pane.hidden=!active}}
 tabs.addEventListener("click",e=>{const b=e.target.closest("[data-pane]");if(!b)return;show(b.dataset.pane);history.replaceState(null,"",location.pathname+location.search+"#"+b.dataset.pane)});
 show(document.getElementById("u-"+location.hash.slice(1))?location.hash.slice(1):"overview");
