@@ -3,18 +3,14 @@ const tabs=make("nav","u-tabs");tabs.setAttribute("role","tablist");tabs.setAttr
 })();
 (()=>{"use strict";const root=document.querySelector(".u-content"),tabs=document.querySelector(".u-tabs");if(!root||!tabs)return;
 const overview=document.createElement("section");overview.id="u-overview";overview.className="u-pane";overview.setAttribute("role","tabpanel");overview.setAttribute("aria-labelledby","u-tab-overview");
-const heading=document.createElement("h2");heading.textContent="Portfólio profissional";overview.append(heading);
-const grid=document.createElement("div");grid.className="cast-editorial";
-const avatar=document.querySelector(".profile .avatar img");
-const photoPane=document.getElementById("u-photos"),videoPane=document.getElementById("u-videos"),workPane=document.getElementById("u-creditos");
+const heading=document.createElement("h2");heading.textContent="Biografia";overview.append(heading);
+const bio=document.querySelector(".profile .names .u-intro");
+const bioText=(bio?.textContent||document.querySelector(".u-sidebar p")?.textContent||"").trim();
+if(bioText){const p=document.createElement("p");p.className="cast-overview-bio";p.textContent=bioText;overview.append(p);if(bio)bio.remove()}else{const p=document.createElement("p");p.className="cast-overview-bio";p.textContent="Biografia ainda não cadastrada.";overview.append(p)}
+const videoPane=document.getElementById("u-videos");
 function previewImg(img){const clone=img.cloneNode(false);clone.removeAttribute("id");clone.removeAttribute("width");clone.removeAttribute("height");clone.removeAttribute("style");clone.loading="lazy";return clone}
-function feature(label,pane,imgs,detail){if(!imgs.length)return;const article=document.createElement("article");article.className="cast-feature";const visual=document.createElement("div");visual.className="cast-feature-media";imgs.forEach(img=>visual.append(previewImg(img)));const h=document.createElement("h3");h.textContent=label;const caption=document.createElement("p");caption.textContent=detail;article.append(visual,h,caption);grid.append(article)}
-const photos=[...new Map([...photoPane?.querySelectorAll(".u-photo img,.u-grid-photos img")||[]].filter(img=>img.getAttribute("src")&&img.src!==avatar?.src&&!/placeholder|default-avatar|avatar-default/i.test(img.src)).map(img=>[img.src,img])).values()];
 const videos=[...videoPane?.querySelectorAll(".u-video img[data-video-cover],.poster img[data-video-cover],.video img[data-video-cover]")||[]];
-const works=[...workPane?.querySelectorAll(".tile img")||[]].filter(img=>img.getAttribute("src")&&img.src!==avatar?.src);
-feature("Fotografias",photoPane,photos.slice(0,2),"Seleção do acervo fotográfico");
-
-/* Visão geral: apresentação primeiro, monólogos depois, reprodução no perfil. */
+/* Visão geral: somente apresentação pessoal confirmada e biografia. */
 const overviewPlayers=[];
 const records=videos.map((img,index)=>{
  const box=img.closest(".u-video,.poster,.video"),block=box?.closest("article,.u-block")||box?.parentElement;
@@ -24,10 +20,10 @@ const records=videos.map((img,index)=>{
  const validYT=/^[A-Za-z0-9_-]{11}$/.test(yt),validGD=/^[A-Za-z0-9_-]{15,}$/.test(gd);
  const kind=/apresenta/i.test(title)?"intro":/mon[oó]logo/i.test(title)?"monologue":"other";
  return {img,title,kind,index,yt:validYT?yt:"",gd:validGD?gd:""};
-}).filter(v=>v.yt||v.gd).sort((a,b)=>({intro:0,monologue:1,other:2}[a.kind]-{intro:0,monologue:1,other:2}[b.kind])||a.index-b.index);
+}).filter(v=>v.kind==="intro"&&(v.yt||v.gd)).slice(0,1);
 if(records.length){
- const section=document.createElement("section");section.className="cast-overview-videos";section.setAttribute("aria-label","Apresentação e atuação");
- const label=document.createElement("h3");label.className="cast-video-section-title";label.textContent=records.some(v=>v.kind==="intro")?"Apresentação e atuação":records.some(v=>v.kind==="monologue")?"Monólogos":"Registros audiovisuais";section.append(label);
+ const section=document.createElement("section");section.className="cast-overview-videos";section.setAttribute("aria-label","Vídeo de apresentação");
+ 
  const stack=document.createElement("div");stack.className="cast-video-stack";section.append(stack);
  const stopPlayers=()=>overviewPlayers.forEach(p=>p.stop());
  for(const v of records){
@@ -45,12 +41,10 @@ if(records.length){
  overview.append(section);
 }
 
-feature("Espetáculos",workPane,works.slice(0,2),"Registros de trabalhos e participações");
-if(grid.children.length){overview.append(grid)}else{const p=document.createElement("p");p.className="cast-overview-note";p.textContent="Consulte as seções acima para conhecer a trajetória e os registros disponíveis.";overview.append(p)}
 root.prepend(overview);
 const tab=document.createElement("button");tab.type="button";tab.id="u-tab-overview";tab.dataset.pane="overview";tab.setAttribute("role","tab");tab.setAttribute("aria-controls","u-overview");tab.textContent="Visão geral";tabs.prepend(tab);
 const tabLabels={videos:"Vídeos",photos:"Fotos",historico:"Currículo",release:"Release",creditos:"Trabalhos"};for(const b of tabs.querySelectorAll("[data-pane]"))if(tabLabels[b.dataset.pane])b.textContent=tabLabels[b.dataset.pane];
-function show(id){if(id!=="overview")overviewPlayers.forEach(p=>p.stop());for(const b of tabs.querySelectorAll("[data-pane]")){const active=b.dataset.pane===id;b.setAttribute("aria-selected",String(active));b.tabIndex=active?0:-1;const pane=document.getElementById("u-"+b.dataset.pane);if(pane)pane.hidden=!active}}
+function show(id){root.closest(".u-layout")?.classList.toggle("cast-overview-active",id==="overview");if(id!=="overview")overviewPlayers.forEach(p=>p.stop());for(const b of tabs.querySelectorAll("[data-pane]")){const active=b.dataset.pane===id;b.setAttribute("aria-selected",String(active));b.tabIndex=active?0:-1;const pane=document.getElementById("u-"+b.dataset.pane);if(pane)pane.hidden=!active}}
 tabs.addEventListener("click",e=>{const b=e.target.closest("[data-pane]");if(!b)return;show(b.dataset.pane);history.replaceState(null,"",location.pathname+location.search+"#"+b.dataset.pane)});
 show(document.getElementById("u-"+location.hash.slice(1))?location.hash.slice(1):"overview");
 for(const block of document.querySelectorAll("#u-videos .u-block")){if(!block.querySelector(".u-video"))continue;const label=document.createElement("span");label.className="cast-video-type";label.textContent=block.querySelector("[data-drive]")&&/apresenta/i.test(block.querySelector("h3")?.textContent||"")?"Apresentação pessoal":/apresenta/i.test(block.querySelector("h3")?.textContent||"")?"Apresentação pessoal":"Atuação";block.prepend(label)}
