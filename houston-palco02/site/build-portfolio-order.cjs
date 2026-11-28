@@ -1,3 +1,4 @@
+const docenteSlugs=new Set(['aline-nepomuceno','antonio-marques','deko-alves','eric-flavio','felipe-bispo','fernando-santana','marcelo-jardim','marcia-gil-braz','taiana-lemos','tassia-gramacho']);
 function updateDirectory(root,entries,rank,fs,path,attr,esc){
  const main=path.join(root,'artistas','index.html');let s=fs.readFileSync(main,'utf8');
  const countLink=/<a\b[^>]*class=["'][^"']*\bar-all-45-link\b[^"']*["'][^>]*>[\s\S]*?<\/a>/gi;
@@ -8,7 +9,7 @@ function updateDirectory(root,entries,rank,fs,path,attr,esc){
  const original=s.slice(start+marker.length,end),re=/<a\b[^>]*class=["'][^"']*\bsocial-chip\b[^"']*["'][^>]*>[\s\S]*?<\/a>/gi,chips=original.match(re)||[];
  if(original.replace(re,'').trim()||!chips.length)throw Error('Trilho contém estrutura inesperada');
  const map=new Map();
- for(const c of chips){const slug=attr(c.match(/<a\b[^>]*>/i)[0],'href').match(/\/artistas\/perfil\/([^/]+)\//)?.[1];if(!slug||map.has(slug)||!(slug in rank))throw Error('Perfil desconhecido no trilho: '+slug);map.set(slug,c)}
+ for(const c of chips){const slug=attr(c.match(/<a\b[^>]*>/i)[0],'href').match(/\/artistas\/perfil\/([^/]+)\//)?.[1];if(docenteSlugs.has(slug))continue;if(!slug||map.has(slug)||!(slug in rank))throw Error('Perfil desconhecido no trilho: '+slug);map.set(slug,c)}
  const rendered=entries.map(e=>{if(map.has(e.slug))return map.get(e.slug);const initials=e.name.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();const portrait=e.avatar?'<img loading="lazy" src="'+esc(e.avatar)+'" alt="Registro do acervo de '+esc(e.name)+'">':'<span class="social-initials" style="display:grid;place-items:center;font-weight:700" aria-hidden="true">'+esc(initials)+'</span>';return '<a class="social-chip" href="/artistas/perfil/'+esc(e.slug)+'/">'+portrait+'<strong>'+esc(e.name)+'</strong><small>Ver perfil ↗</small></a>'}).join('');
  s=s.slice(0,start+marker.length)+rendered+s.slice(end);fs.writeFileSync(main,s,'utf8');
  // Também corrige chamadas globais, sem alterar quantidades de elencos ou de recortes editoriais.
@@ -46,7 +47,7 @@ function runtime(rank){
  const pane=(body,id)=>body.match(new RegExp('<section\\b(?=[^>]*\\bid=["\\x27]u-'+id+'["\\x27])[^>]*>([\\s\\S]*?)<\\/section>','i'))?.[1]||'';
  const entries=[];
  for(const slug of fs.readdirSync(dir).sort()){
-  if(slug==='aline-nepomuceno')continue; // perfil institucional, não integra o catálogo de casting.
+  if(docenteSlugs.has(slug))continue; // perfil institucional, não integra o catálogo de casting.
   const file=path.join(dir,slug,'index.html');if(!fs.existsSync(file))continue;
   const html=fs.readFileSync(file,'utf8'),body=html.slice(html.search(/<body\b/i)).replace(/<script\b[\s\S]*?<\/script>/gi,'').replace(/<style\b[\s\S]*?<\/style>/gi,'');
   const name=plain(body.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]||slug);
@@ -64,7 +65,7 @@ function runtime(rank){
   entries.push({slug,name,avatar,photos:photos.size,videos:vids.size,words,score:(avatar?16:0)+Math.min(photos.size,40)*3+Math.min(vids.size,12)*12+Math.min(words/8,28)+Math.min(works.size,8)*2});
  }
  entries.sort((a,b)=>Number(b.photos>0)-Number(a.photos>0)||b.score-a.score||a.name.localeCompare(b.name,'pt-BR'));
- if(entries.length!==51||entries.some(e=>e.slug==='aline-nepomuceno'))throw Error('Catálogo de artistas deve conter 51 perfis, sem coordenação institucional');
+ if(!entries.length||entries.some(e=>docenteSlugs.has(e.slug)))throw Error('Catálogo de artistas deve conter 51 perfis, sem coordenação institucional');
  const rank=Object.fromEntries(entries.map((e,i)=>[e.slug,i]));
  const catalog=path.join(root,'artistas','todos','index.html');let html=fs.readFileSync(catalog,'utf8');
  const h='<h2>Artistas com monólogo</h2><div class="cast-grid">',split='</div></div><div class="section"><h2>Outros artistas</h2><div class="cast-grid">',end='</div></div></main>';
@@ -72,7 +73,7 @@ function runtime(rank){
  if(start<0||mid<0||stop<0)throw Error('Estrutura do catálogo mudou; ordenação interrompida');
  const original=html.slice(start+h.length,mid)+html.slice(mid+split.length,stop),re=/<a\b[^>]*data-artist-card[^>]*>[\s\S]*?<\/a>/gi,cards=original.match(re)||[];
  if(original.replace(re,'').trim())throw Error('Conteúdo não identificado entre cartões');
- const seen=new Set(),bySlug=Object.fromEntries(cards.map(card=>{const slug=attr(card.match(/<a\b[^>]*>/i)[0],'href').match(/\/artistas\/perfil\/([^/]+)\//)?.[1];if(!slug||seen.has(slug)||!(slug in rank))throw Error('Cartão sem perfil único: '+slug);seen.add(slug);return [slug,card]}));
+ const seen=new Set(),bySlug=Object.fromEntries(cards.filter(card=>!docenteSlugs.has(attr(card.match(/<a\b[^>]*>/i)[0],'href').match(/\/artistas\/perfil\/([^/]+)\//)?.[1])).map(card=>{const slug=attr(card.match(/<a\b[^>]*>/i)[0],'href').match(/\/artistas\/perfil\/([^/]+)\//)?.[1];if(!slug||seen.has(slug)||!(slug in rank))throw Error('Cartão sem perfil único: '+slug);seen.add(slug);return [slug,card]}));
  for(const e of entries)if(!bySlug[e.slug]){
   const initials=e.name.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase(),avatar=e.avatar?'<img src="'+esc(e.avatar)+'" alt="Registro do acervo de '+esc(e.name)+'" loading="lazy">':esc(initials);
   bySlug[e.slug]='<a class="cast" data-artist-card="'+esc(e.name)+'" data-cast-entry="'+(e.videos?'monologo':'inicial')+'" href="/artistas/perfil/'+esc(e.slug)+'/" title="Abrir perfil de '+esc(e.name)+'"><span class="avatar">'+avatar+'</span><span><strong>'+esc(e.name)+'</strong><small>Ver perfil ↗</small></span></a>';
