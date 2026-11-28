@@ -140,7 +140,7 @@ function runtime(rank){
   if(n!==expected)throw Error('Vídeo fora do padrão de capas '+slug+': '+n+'/'+expected);
   if(n){withVideo++;fs.writeFileSync(file,html,'utf8')}
  }
- if(reviewed!==49||cards<1||sources.size!==cards||fallbacks.size!==cards)throw Error('Auditoria de capas incompleta');
+ if(reviewed!==52||cards<1||sources.size!==cards||fallbacks.size!==cards)throw Error('Auditoria de capas incompleta');
  console.log('EducART capas audiovisuais: '+reviewed+' perfis revisados; '+withVideo+' com vídeos; '+cards+' cartões; '+youtube+' YouTube; '+drive+' Drive; '+editorial+' editoriais diretas; '+replaced+' fontes alteradas; '+sources.size+' fontes únicas; '+fallbacks.size+' capas editoriais únicas; zero avatares como capa.');
 })();
 
@@ -159,6 +159,6 @@ function runtime(rank){
   if(!h.includes(css)||!h.includes(js))throw Error('Padrão de portfólio ausente: '+slug);
   if(h!==before){fs.writeFileSync(file,h,'utf8');added++}count++;
  }
- if(count!==49)throw Error('Quantidade de perfis inesperada: '+count);
- console.log('EducART padrão de portfólio: '+count+'/49 perfis com CSS e JS comuns; '+added+' inclusões; JavaScript válido.');
+ if(count!==52)throw Error('Quantidade de perfis inesperada: '+count);
+ console.log('EducART padrão de portfólio: '+count+'/52 perfis com CSS e JS comuns; '+added+' inclusões; JavaScript válido.');
 })();
