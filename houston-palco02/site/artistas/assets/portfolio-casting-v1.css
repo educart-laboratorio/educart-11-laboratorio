@@ -120,3 +120,12 @@ html body #u-overview .cast-feature-media>img{width:100%;height:100%;min-width:0
 html body #u-overview .cast-feature h3{font-size:15px!important;line-height:1.3;margin:8px 0 2px!important;color:#f2eee5!important}
 html body #u-overview :is(.cast-feature p,.cast-overview-note){margin:0!important;color:#bdc9da;font-size:12px;line-height:1.45}
 @media(max-width:480px){html body main.shell>.u-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}html body main.shell>.u-tabs>button:nth-child(-n+3){border-top:0!important}html body #u-overview .cast-editorial{gap:12px 10px}html body #u-overview .cast-feature-media{aspect-ratio:4/3}}
+
+
+/* EducART — teste de vidro neutro translúcido nas seis abas, sem tonalidade azul. */
+html body main.shell>.u-tabs{gap:7px!important;padding:4px 0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+html body main.shell>.u-tabs>button{min-height:44px!important;padding:8px 5px!important;border-radius:12px!important;border:1px solid rgba(255,255,255,.18)!important;background:linear-gradient(160deg,rgba(255,255,255,.105),rgba(255,255,255,.025) 60%,rgba(255,255,255,.055))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.23),inset 0 -1px 0 rgba(255,255,255,.045),0 3px 9px rgba(0,0,0,.15)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;color:#becadc!important}
+html body main.shell>.u-tabs>button[aria-selected="true"]{color:#f0c787!important;border-color:rgba(240,199,135,.48)!important;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.035) 65%,rgba(255,255,255,.07))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.27),0 0 8px rgba(240,199,135,.10)!important}
+@media(hover:hover){html body main.shell>.u-tabs>button:hover{background:linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.05))!important;color:#becadc!important}html body main.shell>.u-tabs>button[aria-selected="true"]:hover{color:#f0c787!important}}
+html body main.shell>.u-tabs>button:focus-visible{outline-offset:2px!important}
+@media(max-width:480px){html body main.shell>.u-tabs>button:nth-child(-n+3){border-top:1px solid rgba(255,255,255,.18)!important}html body main.shell>.u-tabs>button[aria-selected="true"]:nth-child(-n+3){border-top-color:rgba(240,199,135,.48)!important}}
